@@ -65,3 +65,31 @@
 {"level":"error","message":"Cast to ObjectId failed for value \"[\" at path \"_id\" for model \"proposalModel\""}
 {"level":"error","message":"Unexpected token f in JSON at position 3"}
 {"level":"error","message":"Cannot read properties of undefined (reading '1')"}
+{"level":"error","message":"AddressModel is not defined"}
+{"level":"error","message":"Cannot set properties of null (setting 'enablePost')"}
+{"level":"error","message":"Cast to ObjectId failed for value \"id\" at path \"_id\" for model \"AddressModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"id\" at path \"_id\" for model \"AddressModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"id\" at path \"_id\" for model \"AddressModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"{ _id: 'id' }\" at path \"_id\" for model \"AddressModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"id\" at path \"_id\" for model \"AddressModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"id\" at path \"_id\" for model \"AddressModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"id\" at path \"_id\" for model \"AddressModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"id\" at path \"_id\" for model \"AddressModel\""}
+{"level":"error","message":"Cannot set headers after they are sent to the client"}
+{"level":"error","message":"Cast to ObjectId failed for value \"id\" at path \"_id\" for model \"AddressModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"{ _id: 'id' }\" at path \"_id\" for model \"AddressModel\""}
+{"level":"error","message":"Cannot set headers after they are sent to the client"}
+{"level":"error","message":"postPrice is not defined"}
+{"level":"error","message":"Cannot read properties of null (reading 'price')"}
+{"level":"error","message":"postPrice.save is not a function"}
+{"level":"error","message":"postPrice.save is not a function"}
+{"level":"error","message":"postPrice.save is not a function"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'price')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'price')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot set headers after they are sent to the client"}
+{"level":"error","message":"Cannot read properties of null (reading 'comment')"}
+{"level":"error","message":"ChildItemModel validation failed: comment.0.starId: Cast to ObjectID failed for value \"starId\" at path \"starId\", comment.0.answer: Path `answer` is required., comment.0.allstar: Path `allstar` is required."}

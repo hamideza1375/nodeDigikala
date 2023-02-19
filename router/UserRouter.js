@@ -11,7 +11,7 @@ router.post('/sendcodeForgetPass', User.sendcodeForgetPass);
 router.post("/verifycodeForgetPass", User.verifycodeForgetPass);
 router.post('/resetpassword/:id', User.resetPassword);
 router.post("/sendproposal", User.sendProposal);
-// router.get("/getLastPayment",Auth, User.getLastPayment);
+router.get("/getLastPayment", Auth, User.getLastPayment);
 router.get("/captcha.png/:id", User.captcha);
 
 module.exports = router;

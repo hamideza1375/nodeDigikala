@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { UserModel, proposalModel } = require('../model/UserModel');
+const { AddressVoucherModel } = require('../model/AdminModel');
 const captchapng = require("captchapng");
 const nodeCache = require("node-cache");
 var Kavenegar = require('kavenegar');
@@ -55,6 +56,7 @@ function UserController() {
     if (!user) return res.status(400).json('مشخصات اشتباه هست')
     const pass = await bcrypt.compare(req.body.password, user.password);
     if (!pass) return res.status(400).json('مشخصات اشتباه هست')
+
     const tokenUser = {
       isAdmin: user.isAdmin,
       userId: user._id.toString(),
@@ -70,6 +72,74 @@ function UserController() {
     //   // throw new TypeError('مساوی نیست')
     // }
   }
+
+
+
+
+
+
+  // this.login = async (req, res) => {
+  //   const user = await UserModel.findOne({ phone: req.body.phone });
+  //   if (!user) return res.status(400).json('مشخصات اشتباه هست')
+  //   const pass = await bcrypt.compare(req.body.password, user.password);
+  //   if (!pass) return res.status(400).json('مشخصات اشتباه هست')
+
+  //   if (user.isAdmin != true) {
+
+  //     const tokenUser = {
+  //       isAdmin: user.isAdmin,
+  //       userId: user._id.toString(),
+  //       phone: user.phone,
+  //       fullname: user.fullname,
+  //     }
+  //     const token = jwt.sign(tokenUser, "secret", { expiresIn: req.body.remember });
+  //     if (parseInt(req.body.captcha) == CAPTCHA_NUM) {
+  //       res.status(200).header(token).json({ token });
+  //     }
+  //     else {res.status(400).send('کد وارد شده اشتباه هست')}
+  //   } else {
+  //     const random = Math.floor(Math.random() * 90000 + 10000)
+  //     myCache.set("code", random)
+  //     api.Send({
+  //       message: `ارسال کد از رستوران 
+  //     Code: ${random}`,
+  //       sender: "2000500666",
+  //       receptor: req.body.phone,
+  //     },
+  //       function (response, status) {
+  //         if (!status || !response) return res.status(400).json('مشکلی پیش آمد بعدا دوباره امتحان کنید')
+  //         console.log('response', response)
+  //         res.status(status).json(response)
+  //       });
+  //   }
+  // }
+
+
+
+
+
+
+  // this.verifyCodeLoginForAdmin = async (req, res) => {
+  //   const user = await UserModel.findOne({ phone: req.body.phone });
+  //   const pass = await bcrypt.compare(req.body.password, user.password);
+  //   if (!pass) return res.status(400).json('مشخصات اشتباه هست')
+  //   const tokenUser = {
+  //     isAdmin: user.isAdmin,
+  //     userId: user._id.toString(),
+  //     phone: user.phone,
+  //     fullname: user.fullname,
+  //   }
+  //   const token = jwt.sign(tokenUser, "secret", { expiresIn: req.body.remember });
+  //   // if (parseInt(req.body.captcha) == CAPTCHA_NUM) {
+  //   res.status(200).header(token).json({ token });
+  //   // }
+  //   // else {
+  //   //   return res.status(400).send('کد وارد شده اشتباه هست')
+  //   //   // throw new TypeError('مساوی نیست')
+  //   // }
+  // }
+
+
 
 
 
@@ -121,7 +191,6 @@ function UserController() {
 
 
   this.sendProposal = async (req, res) => {
-    if (!req.body.message) return res.status(400).send('کادر پیام نباید خالی باشد')
     const proposal = await proposalModel.create({ message: req.body.message });
     res.json({ proposal })
     // res.send('پیام شما با موفقیت ارسال شد')
@@ -129,10 +198,10 @@ function UserController() {
 
 
 
-  // this.getLastPayment = async (req, res) => {
-  //   const Address = await AddressModel.findOne({ user: req.user.payload.userId }).sort({ createdAt: -1 });
-  //   res.send(Address)
-  // }
+  this.getLastPayment = async (req, res) => {
+    const AddressVoucher = await AddressVoucherModel.findOne({ user: req.user.payload.userId }).sort({ createdAt: -1 });
+    res.json({ AddressVoucher })
+  }
 
 
   this.captcha = (req, res) => {

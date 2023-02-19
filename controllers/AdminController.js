@@ -3,7 +3,7 @@ const appRootPath = require("app-root-path");
 const sharp = require("sharp");
 const shortid = require("shortid");
 const { CategoryModel, ChildItemModel } = require("../model/ClientModel");
-const { NotifeeModel } = require("../model/AdminModel");
+const { NotifeeModel, AddressVoucherModel, PostPriceModel } = require("../model/AdminModel");
 const { UserModel, proposalModel } = require("../model/UserModel");
 
 
@@ -221,33 +221,49 @@ function AdminController() {
   }
 
 
-
-  this.senddisablePayment = async (req, res) => {
-    const Address = await AddressModel.findById(req.body._id);
-    Address.enablePayment = 0
-    Address.save()
+  this.getAllAddress = async (req, res) => {
+    const allAddress = await AddressVoucherModel.find().sort({ createdAt: -1 });
+    if (!req.user || !req.user.payload.isAdmin) return res.status(400).send('نمایش فقط برای ادمین مجاز')
+    res.json({ allAddress })
   }
 
 
-
-    this.getAllAddress = async (req, res) => {
-      const allAddress = await AddressModel.find().sort({ createdAt: -1 });
-      return res.json({allAddress})
-  }
-
-
-  this.deleteAddress = async (req, res) => {
-      let address = await AddressModel.findById(req.params.id)
-      if (!address) return res.status(400).send('err')
-      address.del = req.user.payload.userId
-      address.save()
-      res.json("del")
+  this.deleteAddressForOneAdmin = async (req, res) => {
+    let address = await AddressVoucherModel.findById(req.params.id)
+    if (!address) return res.status(400).send('برای حذف این فیش از صفحه خارج شده و دوباره وارد شوید')
+    address.deleteForUser = req.user.payload.userId
+    address.save()
+    res.send("با موفقیت حذف شد")
   }
 
 
   this.deleteAllAddress = async (req, res) => {
-      await AddressModel.deleteMany()
-      res.json("del")
+    await AddressVoucherModel.deleteMany()
+    res.send("با موفقیت حذف شدن")
+  }
+
+
+  this.sendDisablePost = async (req, res) => {
+    const Address = await AddressVoucherModel.findById(req.body._id);
+    if (!Address) return res.status(400).send('این سفارش فعال نیست')
+    Address.enablePost = 0
+    Address.save()
+    res.send('حالت انتظار برای مشتری لغو شد')
+  }
+
+
+
+  this.sendPostPrice = async (req, res) => {
+    await new PostPriceModel({ price: req.body.price }).save()
+    res.status(200).send('قیمت پست با موفقیت ثبت شد')
+  }
+
+
+
+  this.getPostPrice = async (req, res) => {
+    const postPrice = await PostPriceModel.find()
+    const price = postPrice.length ? postPrice[postPrice.length - 1].price : 20000
+    res.status(200).json({ price })
   }
 
 

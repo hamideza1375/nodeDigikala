@@ -20,29 +20,17 @@ function ClientController() {
   }
 
 
-  // this.createCommentChildFood = async (req, res) => {
-  //   const { message, allstar, starId, fullname, imageUrl, id } = req.body;
-  //   const user = await UserModel.findById({ _id: req.user.payload.userId })
-  //   let uc = user && user.CommentPermission ? user.CommentPermission.find((uc) => uc === id) : null
-  //   if (!uc && (req.user.payload.isAdmin !== 1)) return res.status(400).json('err')
-  //   const food = await FoodModel.findById({ _id: req.params.id })
-  //   const child = food.childFood.find((f) => f._id == req.query.id)
-  //   let find = child.comment.findIndex((c) => (c.starId == req.user.payload.userId))
-  //   if (!child.comment[find]) {
-  //     child.comment.push({ message, allstar, starId, fullname, imageUrl })
-  //     food.save()
-  //   }
-  //   else {
-  //     child.comment[find].message = message
-  //     child.comment[find].allstar = allstar
-  //     food.save()
-  //   }
-  //   res.status(200).json({ ...child.comment })
-  // }
+  this.createComment = async (req, res) => {
+    const { message, allStar, starId, fullname, imageUrl, id } = req.body;
+    const childItem = await ChildItemModel.findById({ _id: req.params.id })
+    childItem.comment.push({ message, allStar, starId, fullname, imageUrl })
+    await childItem.save()
+    res.status(200).json({ comment: childItem.comment })
+  }
 
 
 
-  // this.editcomment = async (req, res) => {
+  // this.editComment = async (req, res) => {
   //   await CommentSchema.validate(req.body)
   //   const { message, allstar } = req.body;
   //   if (!req.user?.payload) return res.status(400).send('err')
@@ -61,35 +49,7 @@ function ClientController() {
   // }
 
 
-
-  // this.getCommentChildFood = async (req, res) => {
-  //   const food = await FoodModel.findById({ _id: req.params.id })
-  //   const child = food.childFood.find((f) => f._id == req.query.id)
-  //   let m = []
-  //   let index = null
-  //   child.comment.length && child.comment.forEach((f, i) => { index = i + 1; m.push(f.allstar) })
-  //   const totalStar = m.length ? m.reduce((total, number) => total + number) : 0
-  //   let meanStar = totalStar && totalStar / index
-  //   if (meanStar && change.get(req.query.id) != meanStar || child.comment.length != change.get(req.query.id + 'length')) {
-  //     child.meanStar = meanStar
-  //     await food.save()
-  //     change.set(req.query.id, meanStar)
-  //     change.set(req.query.id + 'length', child.comment.length)
-  //   }
-  //   res.status(200).json({ comment: child.comment })
-  // }
-
-
-  // this.getCommentSingleFood = async (req, res) => {
-  //   const food = await FoodModel.findById({ _id: req.params.id })
-  //   const allChild = food.childFood.find((f) => f._id == req.query.id)
-  //   const child = allChild.comment.find((f) => f._id == req.query.single_id)
-  //   res.status(200).json({ comment: child })
-  // }
-
-
-
-  // this.deletecomment = async (req, res) => {
+  // this.deleteComment = async (req, res) => {
   //   const food = await FoodModel.findById({ _id: req.params.id })
   //   if (!food) return res.status(400).send('err')
   //   if (!req.user?.payload) return res.status(400).send('err')
@@ -107,106 +67,38 @@ function ClientController() {
   // }
 
 
-  // this.confirmPayment = async (req, res) => {
-  //   let foods = req.body.foods
-  //   if (!req.user) return res.status(400).send('err')
-  //   if (!req.body.floor) return res.status(385).send('err')
-  //   if (!req.body.plaque) return res.status(385).send('err')
-  //   const response = await zarinpal.PaymentRequest({
-  //     Amount: req.query.allprice,
-  //     CallbackURL: 'http://localhost:4000/verifyPayment',
-  //     Description: 'زستوران',
-  //     Email: req.user.payload.email,
-  //   });
-  //   await new PaymentModel({
-  //     user: req.user.payload.userId,
-  //     fullname: req.user.payload.fullname,
-  //     phone: req.user.payload.phone,
-  //     title: foods[0],
-  //     origin: JSON.parse(req.body.origin),
-  //     floor: req.body.floor,
-  //     plaque: req.body.plaque,
-  //     formattedAddress: req.body.formattedAddress,
-  //     streetName: req.body.streetName,
-  //     price: req.query.allprice,
-  //     foodTitle: req.body.allFoodTitle,
-  //     paymentCode: response.authority,
-  //     description: req.body.description,
-  //     enablePayment: 1,
-  //     createdAt: new Date(),
-  //   }).save();
-
-  //   if (req.user?.payload?.userId) {
-  //     const user = await UserModel.findById({ _id: req.user.payload.userId })
-  //     for (let food of foods) {
-  //       if (user?.CommentPermission) {
-  //         let uc = user.CommentPermission.find((uc) => uc == food)
-  //         if (!uc) { user.CommentPermission = user.CommentPermission.concat(food) }
-  //       }
-  //     };
-  //     if (user?.CommentPermission) await user.save()
+  // this.getChildItemComments = async (req, res) => {
+  //   const food = await FoodModel.findById({ _id: req.params.id })
+  //   const child = food.childFood.find((f) => f._id == req.query.id)
+  //   let m = []
+  //   let index = null
+  //   child.comment.length && child.comment.forEach((f, i) => { index = i + 1; m.push(f.allstar) })
+  //   const totalStar = m.length ? m.reduce((total, number) => total + number) : 0
+  //   let meanStar = totalStar && totalStar / index
+  //   if (meanStar && change.get(req.query.id) != meanStar || child.comment.length != change.get(req.query.id + 'length')) {
+  //     child.meanStar = meanStar
+  //     await food.save()
+  //     change.set(req.query.id, meanStar)
+  //     change.set(req.query.id + 'length', child.comment.length)
   //   }
-  //   res.status(200).json(response.url);
+  //   res.status(200).json({ comment: child.comment })
   // }
 
 
-  // this.verifyPayment = async (req, res) => {
-  //   const paymentCode = req.query.Authority;
-  //   const status = req.query.Status;
-  //   const payment = await PaymentModel.findOne({ paymentCode });
-  //   if (!payment) return res.status(400).send('err')
-  //   const response = await zarinpal.PaymentVerification({
-  //     Amount: payment.price, Authority: paymentCode
-  //   });
-  //   if (status === "OK") {
-  //     payment.refId = response.RefID;
-  //     payment.success = true;
-  //     await payment.save();
-  //     const allAddress = await AddressModel.find();
-  //     await new AddressModel({
-  //       user: payment.user,
-  //       fullname: payment.fullname,
-  //       phone: payment.phone,
-  //       floor: payment.floor,
-  //       plaque: payment.plaque,
-  //       origin: payment.origin,
-  //       price: payment.price,
-  //       foodTitle: payment.foodTitle,
-  //       createdAt: new Date(),
-  //       id: allAddress.length ? allAddress[allAddress.length - 1].id + 1 : 1,
-  //       formattedAddress: payment.formattedAddress,
-  //       streetName: payment.streetName,
-  //       description: payment.description,
-  //       enablePayment: payment.enablePayment
-  //     }).save()
-  //     // open(`http://localhost:3000/VerifyPayment?qualification=ok&&fullname=${payment.fullname}&&price=${payment.price}&&phone=${payment.phone}&&refId=${response.RefID}&&floor=${payment.floor}&&plaque=${payment.plaque}&&formattedAddress=${payment.formattedAddress}&&createdAt=${JSON.stringify(new Date)}`)
-  //     // res.redirect(`http://localhost:3000/VerifyPayment?qualification=ok&&fullname=${payment.fullname}&&price=${payment.price}&&phone=${payment.phone}&&refId=${response.RefID}&&floor=${payment.floor}&&plaque=${payment.plaque}&&formattedAddress=${payment.formattedAddress}&&createdAt=${JSON.stringify(new Date)}`)
-
-  //     res.render("./paymant", {
-  //       pageTitle: "پرداخت",
-  //       qualification: 'ok',
-  //       fullname: payment.fullname,
-  //       price: payment.price,
-  //       phone: payment.phone,
-  //       refId: response.RefID,
-  //       floor: payment.floor,
-  //       plaque: payment.plaque,
-  //       formattedAddress: payment.formattedAddress,
-  //       foodTitle: payment.foodTitle,
-  //       createdAt: JSON.stringify(new Date),
-  //     })
-
-  //   } else {
-  //     res.status(500).render("./paymant", {
-  //       pageTitle: "پرداخت",
-  //       qualification: 'error',
-  //     })
-  //     // res.status(500).redirect(`http://localhost:3000/VerifyPayment?qualification=error`)
-  //   }
+  // this.getSingleComment = async (req, res) => {
+  //   const food = await FoodModel.findById({ _id: req.params.id })
+  //   const allChild = food.childFood.find((f) => f._id == req.query.id)
+  //   const child = allChild.comment.find((f) => f._id == req.query.single_id)
+  //   res.status(200).json({ comment: child })
   // }
 
 
-  // this.notification = async (req, res) => {
+
+
+
+
+
+  // this.getNotification = async (req, res) => {
   //   let not = await NotifeeModel.findOne()
   //   not ?
   //     res.status(200).json({ title: not.title, message: not.message })
@@ -214,36 +106,6 @@ function ClientController() {
   //     res.status(200).json({ title: '', message: '' })
   // }
 
-
-  // this.reverse = async (req, res) => {
-  //   let options = { provider: 'openstreetmap' };
-  //   let geoCoder = nodeGeocoder(options);
-  //   geoCoder.reverse({ lat: req.body.lat, lon: req.body.lng })
-  //     .then((re) => {
-  //       res.json(re)
-  //     })
-  //     .catch((err) => console.log(err));
-  // }
-
-
-  // this.geocode = async (req, res) => {
-  //   let options = { provider: 'openstreetmap' };
-  //   let geoCoder = nodeGeocoder(options);
-  //   geoCoder.geocode(req.body.loc)
-  //     .then((re) => {
-  //       res.json(re)
-  //     })
-  //     .catch((err) => console.log(err));
-  // }
-
-
-  // this.imagechat = async (req, res) => {
-  //   const image = req.files.uri;
-  //   if (!image) return res.status(400).send(err)
-  //   const fileName = req.body.name;
-  //   await sharp(image.data).toFile(`${appRoot}/public/upload/${fileName}`)
-  //   res.status(200).json(fileName)
-  // }
 
 
   // this.sendImageProfile = async (req, res) => {
@@ -303,17 +165,128 @@ function ClientController() {
   // }
 
 
-  // this.getSendPrice = async (req, res) => {
-  //   const price = await SendPriceModel.findOne().sort({ createdAt: -1 })
-  //   res.status(200).json({ sendPrice: price.sendPrice })
+
+  // this.reverse = async (req, res) => {
+  //   let options = { provider: 'openstreetmap' };
+  //   let geoCoder = nodeGeocoder(options);
+  //   geoCoder.reverse({ lat: req.body.lat, lon: req.body.lng })
+  //     .then((re) => {
+  //       res.json(re)
+  //     })
+  //     .catch((err) => console.log(err));
   // }
 
 
-  // this.SendPrice = async (req, res) => {
-  //   const price = await SendPriceModel()
-  //   price.sendPrice = req.body.sendPrice
-  //   price.save()
-  //   res.status(200).json('good')
+  // this.geocode = async (req, res) => {
+  //   let options = { provider: 'openstreetmap' };
+  //   let geoCoder = nodeGeocoder(options);
+  //   geoCoder.geocode(req.body.loc)
+  //     .then((re) => {
+  //       res.json(re)
+  //     })
+  //     .catch((err) => console.log(err));
+  // }
+
+
+
+
+
+  // this.confirmPayment = async (req, res) => {
+  //   let foods = req.body.foods
+  //   if (!req.user) return res.status(400).send('err')
+  //   if (!req.body.floor) return res.status(385).send('err')
+  //   if (!req.body.plaque) return res.status(385).send('err')
+  //   const response = await zarinpal.PaymentRequest({
+  //     Amount: req.query.allprice,
+  //     CallbackURL: 'http://localhost:4000/verifyPayment',
+  //     Description: 'زستوران',
+  //     Email: req.user.payload.email,
+  //   });
+  //   await new PaymentModel({
+  //     user: req.user.payload.userId,
+  //     fullname: req.user.payload.fullname,
+  //     phone: req.user.payload.phone,
+  //     title: foods[0],
+  //     origin: JSON.parse(req.body.origin),
+  //     floor: req.body.floor,
+  //     plaque: req.body.plaque,
+  //     formattedAddress: req.body.formattedAddress,
+  //     streetName: req.body.streetName,
+  //     price: req.query.allprice,
+  //     foodTitle: req.body.allFoodTitle,
+  //     paymentCode: response.authority,
+  //     description: req.body.description,
+  //     enablePayment: 1,
+  //     createdAt: new Date(),
+  //   }).save();
+
+  //   if (req.user?.payload?.userId) {
+  //     const user = await UserModel.findById({ _id: req.user.payload.userId })
+  //     for (let food of foods) {
+  //       if (user?.CommentPermission) {
+  //         let uc = user.CommentPermission.find((uc) => uc == food)
+  //         if (!uc) { user.CommentPermission = user.CommentPermission.concat(food) }
+  //       }
+  //     };
+  //     if (user?.CommentPermission) await user.save()
+  //   }
+  //   res.status(200).json(response.url);
+  // }
+
+
+  // this.verifyPayment = async (req, res) => {
+  //   const paymentCode = req.query.Authority;
+  //   const status = req.query.Status;
+  //   const payment = await PaymentModel.findOne({ paymentCode });
+  //   if (!payment) return res.status(400).send('err')
+  //   const response = await zarinpal.PaymentVerification({
+  //     Amount: payment.price, Authority: paymentCode
+  //   });
+  //   if (status === "OK") {
+  //     payment.refId = response.RefID;
+  //     payment.success = true;
+  //     await payment.save();
+  //     const allAddress = await AddressVoucherModel.find();
+  //     await new AddressVoucherModel({
+  //       user: payment.user,
+  //       fullname: payment.fullname,
+  //       phone: payment.phone,
+  //       floor: payment.floor,
+  //       plaque: payment.plaque,
+  //       origin: payment.origin,
+  //       price: payment.price,
+  //       foodTitle: payment.foodTitle,
+  //       createdAt: new Date(),
+  //       id: allAddress.length ? allAddress[allAddress.length - 1].id + 1 : 1,
+  //       formattedAddress: payment.formattedAddress,
+  //       streetName: payment.streetName,
+  //       description: payment.description,
+  //       enablePayment: payment.enablePayment
+  //     }).save()
+  //     // open(`http://localhost:3000/VerifyPayment?qualification=ok&&fullname=${payment.fullname}&&price=${payment.price}&&phone=${payment.phone}&&refId=${response.RefID}&&floor=${payment.floor}&&plaque=${payment.plaque}&&formattedAddress=${payment.formattedAddress}&&createdAt=${JSON.stringify(new Date)}`)
+  //     // res.redirect(`http://localhost:3000/VerifyPayment?qualification=ok&&fullname=${payment.fullname}&&price=${payment.price}&&phone=${payment.phone}&&refId=${response.RefID}&&floor=${payment.floor}&&plaque=${payment.plaque}&&formattedAddress=${payment.formattedAddress}&&createdAt=${JSON.stringify(new Date)}`)
+
+  //     res.render("./paymant", {
+  //       pageTitle: "پرداخت",
+  //       qualification: 'ok',
+  //       fullname: payment.fullname,
+  //       price: payment.price,
+  //       phone: payment.phone,
+  //       refId: response.RefID,
+  //       floor: payment.floor,
+  //       plaque: payment.plaque,
+  //       formattedAddress: payment.formattedAddress,
+  //       foodTitle: payment.foodTitle,
+  //       createdAt: JSON.stringify(new Date),
+  //     })
+
+  //   } else {
+  //     res.status(500).render("./paymant", {
+  //       pageTitle: "پرداخت",
+  //       qualification: 'error',
+  //     })
+  //     // res.status(500).redirect(`http://localhost:3000/VerifyPayment?qualification=error`)
+  //   }
   // }
 
 
