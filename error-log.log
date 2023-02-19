@@ -1,0 +1,67 @@
+{"level":"error","message":"sharp is not defined"}
+{"level":"error","message":"Operation `categorymodels.insertOne()` buffering timed out after 10000ms"}
+{"level":"error","message":"appRoot is not defined"}
+{"level":"error","message":"appRoot is not defined"}
+{"level":"error","message":"C:\\Users\\rezaa\\Desktop\\nodeDgkala/public/upload/food/x7WfU6PZ7_2022-12-19.png: unable to open for write\nwindows error: The system cannot find the file specified.\r\n\n"}
+{"level":"error","message":"C:\\Users\\rezaa\\Desktop\\nodeDgkala/public/upload/food/V0RyOUnOr_2022-12-19.png: unable to open for write\nwindows error: The system cannot find the file specified.\r\n\n"}
+{"level":"error","message":"Cannot read properties of null (reading 'imageUrl')"}
+{"level":"error","message":"fs is not defined"}
+{"level":"error","message":"fs is not defined"}
+{"level":"error","message":"fs is not defined"}
+{"level":"error","message":"fs is not defined"}
+{"level":"error","message":"Cannot read properties of null (reading 'imageUrl')"}
+{"level":"error","message":"Cannot read properties of null (reading 'imageUrl')"}
+{"level":"error","message":"Cannot read properties of null (reading 'imageUrl')"}
+{"level":"error","message":"Cannot read properties of null (reading 'imageUrl')"}
+{"level":"error","message":"Cannot read properties of null (reading 'imageUrl')"}
+{"level":"error","message":"Cannot read properties of null (reading 'imageUrl')"}
+{"level":"error","message":"category.save is not a function"}
+{"level":"error","message":"Cannot read properties of null (reading 'imageUrl')"}
+{"level":"error","message":"Cast to ObjectId failed for value \":id=63ef77287eeeed2a7cb9da1c\" at path \"_id\" for model \"CategoryModel\""}
+{"level":"error","message":"Cannot read properties of undefined (reading 'push')"}
+{"level":"error","message":"CategoryModel validation failed: childItem.0.display: Cast to Number failed for value \"14 اینچ\" at path \"display\""}
+{"level":"error","message":"CategoryModel validation failed: childItem.0.display: Cast to Number failed for value \"14 اینچ\" at path \"display\""}
+{"level":"error","message":"CategoryModel validation failed: childItem.0.display: Cast to Number failed for value \"14 اینچ\" at path \"display\""}
+{"level":"error","message":"Cannot read properties of undefined (reading 'push')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'push')"}
+{"level":"error","message":"category is not defined"}
+{"level":"error","message":"childItem is not defined"}
+{"level":"error","message":"ChildItemModel validation failed: meanStar: Path `meanStar` is required."}
+{"level":"error","message":"Cannot read properties of undefined (reading 'find')"}
+{"level":"error","message":"Cannot read properties of null (reading 'imageUrl')"}
+{"level":"error","message":"Cannot read properties of null (reading 'imageUrl')"}
+{"level":"error","message":"Cannot read properties of null (reading 'imageUrl')"}
+{"level":"error","message":"Cannot read properties of null (reading 'imageUrl')"}
+{"level":"error","message":"Cannot read properties of null (reading 'imageUrl')"}
+{"level":"error","message":"CategoryModel validation failed: title: Path `title` is required."}
+{"level":"error","message":"Cannot read properties of null (reading 'imageUrl')"}
+{"level":"error","message":"Cannot read properties of null (reading 'imageUrl')"}
+{"level":"error","message":"Cannot read properties of null (reading 'imageUrl')"}
+{"level":"error","message":"Cannot read properties of null (reading 'imageUrl')"}
+{"level":"error","message":"user.save is not a function"}
+{"level":"error","message":"user.save is not a function"}
+{"level":"error","message":"UserModel validation failed: fullname: Path `fullname` is required."}
+{"level":"error","message":"\"expiresIn\" should be a number of seconds or string representing a timespan"}
+{"level":"error","message":"Cannot read properties of null (reading '_id')"}
+{"level":"error","message":"Cannot read properties of null (reading 'imageUrl')"}
+{"level":"error","message":"Cannot read properties of null (reading 'imageUrl')"}
+{"level":"error","message":"Cannot set headers after they are sent to the client"}
+{"level":"error","message":"fd is not defined"}
+{"level":"error","message":"available is not defined"}
+{"level":"error","message":"available is not defined"}
+{"level":"error","message":"UserModel is not defined"}
+{"level":"error","message":"UserModel is not defined"}
+{"level":"error","message":"E11000 duplicate key error collection: digikala.usermodels index: phone_1 dup key: { phone: \"09357522424\" }"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'phone')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'phone')"}
+{"level":"error","message":"Cast to ObjectId failed for value \"[\" at path \"_id\" for model \"proposalModel\""}
+{"level":"error","message":"Unexpected token f in JSON at position 3"}
+{"level":"error","message":"Unexpected token f in JSON at position 3"}
+{"level":"error","message":"Cast to ObjectId failed for value \"[\" at path \"_id\" for model \"proposalModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"6\" at path \"_id\" for model \"proposalModel\""}
+{"level":"error","message":"Unexpected token f in JSON at position 2"}
+{"level":"error","message":"Unexpected token f in JSON at position 3"}
+{"level":"error","message":"Unexpected token f in JSON at position 3"}
+{"level":"error","message":"Cast to ObjectId failed for value \"[\" at path \"_id\" for model \"proposalModel\""}
+{"level":"error","message":"Unexpected token f in JSON at position 3"}
+{"level":"error","message":"Cannot read properties of undefined (reading '1')"}
