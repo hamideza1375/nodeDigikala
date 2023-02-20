@@ -12,8 +12,8 @@ router.get('/getSingleItem/:id', ClientController.getSingleItem);
 // getItem
 // comment 
 router.post('/createComment/:id', Auth, ClientController.createComment);
-// router.put('/editComment/:id', Auth, ClientController.editComment);
-// router.delete('/deleteComment/:id', Auth, ClientController.deleteComment);
+router.put('/editComment/:id', Auth, ClientController.editComment);
+router.delete('/deleteComment/:id', Auth, ClientController.deleteComment);
 // router.get('/getChildItemComments', user, ClientController.getChildItemComments);
 // router.get('/getSingleComment/:id', user, ClientController.getSingleComment);
 // // comment 

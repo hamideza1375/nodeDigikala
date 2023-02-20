@@ -232,7 +232,7 @@ function AdminController() {
     let address = await AddressVoucherModel.findById(req.params.id)
     if (!address) return res.status(400).send('برای حذف این فیش از صفحه خارج شده و دوباره وارد شوید')
     address.deleteForUser = req.user.payload.userId
-    address.save()
+    await address.save()
     res.send("با موفقیت حذف شد")
   }
 
@@ -247,7 +247,7 @@ function AdminController() {
     const Address = await AddressVoucherModel.findById(req.body._id);
     if (!Address) return res.status(400).send('این سفارش فعال نیست')
     Address.enablePost = 0
-    Address.save()
+    await Address.save()
     res.send('حالت انتظار برای مشتری لغو شد')
   }
 

@@ -30,41 +30,27 @@ function ClientController() {
 
 
 
-  // this.editComment = async (req, res) => {
-  //   await CommentSchema.validate(req.body)
-  //   const { message, allstar } = req.body;
-  //   if (!req.user?.payload) return res.status(400).send('err')
-  //   const user = await UserModel.findById({ _id: req.user.payload.userId })
-  //   let uc = user.CommentPermission ? user.CommentPermission.find((uc) => uc === req.query.id) : null
-
-  //   if (!uc && req.user.payload.isAdmin !== 1) return res.status(400).json('err')
-
-  //   const food = await FoodModel.findById({ _id: req.params.id })
-  //   const child = food.childFood.find((f) => f._id == req.query.id)
-  //   const comment = child.comment.find((f) => f._id == req.query.commentid)
-  //   comment.message = message
-  //   comment.allstar = allstar
-  //   food.save()
-  //   res.status(200).json({ comment })
-  // }
+  this.editComment = async (req, res) => {
+    const { message, allStar } = req.body;
+    if (!req.user?.payload) return res.status(400).send('err')
+    const childItem = await ChildItemModel.findById({ _id: req.params.id })
+    const comment = childItem.comment.find((f) => f._id == req.query.commentId)
+    comment.message = message
+    comment.allStar = allStar
+    await childItem.save()
+    res.status(200).json({ comment })
+  }
 
 
-  // this.deleteComment = async (req, res) => {
-  //   const food = await FoodModel.findById({ _id: req.params.id })
-  //   if (!food) return res.status(400).send('err')
-  //   if (!req.user?.payload) return res.status(400).send('err')
+  this.deleteComment = async (req, res) => {
+    const childItem = await ChildItemModel.findById({ _id: req.params.id })
+    childItem.comment.id(req.query.commentid).remove()
+    await childItem.save()
+    res.status(200).json('{ cmd }')
+  }
 
-  //   const user = await UserModel.findById({ _id: req.user.payload.userId })
-  //   let uc = user.CommentPermission ? user.CommentPermission.find((uc) => uc === req.query.id) : null
-  //   if (!uc && req.user.payload.isAdmin !== 1) return res.status(400).json('err')
 
-  //   const child = food.childFood.find((f) => f._id == req.query.id)
-  //   const childIndex = food.childFood.findIndex((f) => f._id == req.query.id)
-  //   const comment = child.comment.filter((item) => item._id != req.query.commentid)
-  //   food.childFood[childIndex].comment = comment
-  //   food.save()
-  //   res.status(200).json('comment')
-  // }
+
 
 
   // this.getChildItemComments = async (req, res) => {

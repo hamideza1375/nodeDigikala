@@ -68,3 +68,34 @@ const CategoryModel = new mongoose.Schema({
 });
 
 exports.CategoryModel = mongoose.model("CategoryModel", CategoryModel);
+
+
+
+
+
+
+const PaymentModel = new mongoose.Schema({
+  phone : String ,
+  fullname: String,
+  price : Number,
+  title: String,
+  paymentCode : String,
+  refId : String,
+  floor: Number,
+  plaque: Number,
+  formattedAddress: String,
+  streetName:String,
+  origin:{type:Object},
+  foods:{type:Array},
+  foodTitle:{type:Array},
+  enablePayment:Number,
+  description:String,
+  success: { type: Boolean, default: false },
+  createdAt: { type: Date, default: new Date() },
+  user: { type : mongoose.Schema.Types.ObjectId, ref : "user" },
+});
+
+
+
+exports.PaymentModel = mongoose.model('PaymentModel', PaymentModel);;
+

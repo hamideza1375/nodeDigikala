@@ -93,3 +93,29 @@
 {"level":"error","message":"Cannot set headers after they are sent to the client"}
 {"level":"error","message":"Cannot read properties of null (reading 'comment')"}
 {"level":"error","message":"ChildItemModel validation failed: comment.0.starId: Cast to ObjectID failed for value \"starId\" at path \"starId\", comment.0.answer: Path `answer` is required., comment.0.allstar: Path `allstar` is required."}
+{"level":"error","message":"ChildItemModel validation failed: comment.0.allStar: Cast to Number failed for value \"allStar\" at path \"allStar\", comment.0.starId: Cast to ObjectID failed for value \"starId\" at path \"starId\""}
+{"level":"error","message":"ChildItemModel validation failed: comment.0.allStar: Cast to Number failed for value \"allStar\" at path \"allStar\""}
+{"level":"error","message":"UserModel is not defined"}
+{"level":"error","message":"child is not defined"}
+{"level":"error","message":"ChildItemModel validation failed: comment.0.message: Path `message` is required."}
+{"level":"error","message":"ChildItemModel validation failed: comment.0.message: Path `message` is required."}
+{"level":"error","message":"ChildItemModel validation failed: comment.5.message: Path `message` is required., comment.5.allStar: Path `allStar` is required., comment.5.fullname: Path `fullname` is required."}
+{"level":"error","message":"ChildItemModel validation failed: comment.0.message: Path `message` is required."}
+{"level":"error","message":"ChildItemModel validation failed: comment.5.message: Path `message` is required., comment.5.allStar: Path `allStar` is required., comment.5.fullname: Path `fullname` is required."}
+{"level":"error","message":"ChildItemModel validation failed: comment.5.message: Cast to String failed for value \"[ '1111', '1111' ]\" at path \"message\", comment.5.fullname: Path `fullname` is required."}
+{"level":"error","message":"ChildItemModel validation failed: comment.0.message: Path `message` is required."}
+{"level":"error","message":"ChildItemModel validation failed: comment.0.message: Path `message` is required."}
+{"level":"error","message":"ChildItemModel validation failed: comment.0.message: Path `message` is required."}
+{"level":"error","message":"ChildItemModel validation failed: comment.0.message: Path `message` is required."}
+{"level":"error","message":"ChildItemModel validation failed: comment.0.message: Path `message` is required."}
+{"level":"error","message":"Cannot read properties of null (reading 'comment')"}
+{"level":"error","message":"Cannot read properties of null (reading 'remove')"}
+{"level":"error","message":"Cannot set properties of undefined (setting 'message')"}
+{"level":"error","message":"a.id is not a function"}
+{"level":"error","message":"a[1].remove is not a function"}
+{"level":"error","message":"cmd is not defined"}
+{"level":"error","message":"b.remove is not a function"}
+{"level":"error","message":"a.remove is not a function"}
+{"level":"error","message":"a[1].id.remove is not a function"}
+{"level":"error","message":"a.remove is not a function"}
+{"level":"error","message":"a.remove is not a function"}
