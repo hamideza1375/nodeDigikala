@@ -165,3 +165,23 @@
 {"level":"error","message":"Cannot read properties of null (reading 'imageUrl')"}
 {"level":"error","message":"Cannot read properties of null (reading 'imageUrl')"}
 {"level":"error","message":"Cast to ObjectId failed for value \"63f1dc00d55bd43bbc2a4f3u\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Unexpected token f in JSON at position 3"}
+{"level":"error","message":"Unexpected token f in JSON at position 3"}
+{"level":"error","message":"Unexpected token f in JSON at position 3"}
+{"level":"error","message":"Unexpected token f in JSON at position 3"}
+{"level":"error","message":"Unexpected token f in JSON at position 3"}
+{"level":"error","message":"_id is not defined"}
+{"level":"error","message":"_id is not defined"}
+{"level":"error","message":"Cast to ObjectId failed for value \"[63f4c9b9ca146a25e4645f4f]\" at path \"_id\" for model \"proposalModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"[\" at path \"_id\" for model \"proposalModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"[\" at path \"_id\" for model \"proposalModel\""}
+{"level":"error","message":"Cannot read properties of undefined (reading 'length')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'length')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'length')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'length')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'payload')"}
+{"level":"error","message":"Cannot set properties of undefined (setting 'message')"}
+{"level":"error","message":"Cannot set properties of undefined (setting 'message')"}
+{"level":"error","message":"Cannot set properties of undefined (setting 'message')"}
+{"level":"error","message":"Cannot set properties of undefined (setting 'message')"}
+{"level":"error","message":"Cannot set properties of null (setting 'message')"}

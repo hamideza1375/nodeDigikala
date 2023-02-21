@@ -36,9 +36,8 @@ function ClientController() {
 
   this.editComment = async (req, res) => {
     const { message, allStar } = req.body;
-    if (!req.user?.payload) return res.status(400).send('err')
     const childItem = await ChildItemModel.findById({ _id: req.params.id })
-    const comment = childItem.comment.find((f) => f._id == req.query.commentId)
+    const comment = childItem.comment.id(req.query.commentId)
     comment.message = message
     comment.allStar = allStar
     await childItem.save()
@@ -48,11 +47,11 @@ function ClientController() {
 
   this.deleteComment = async (req, res) => {
     const childItem = await ChildItemModel.findById({ _id: req.params.id })
+    if (!childItem) return res.status(400).send('این نظر قبلا از سرور حذف شده')
     childItem.comment.id(req.query.commentid).remove()
     await childItem.save()
     res.status(200).send('نظر شما حذف شد')
   }
-
 
 
 
@@ -62,14 +61,11 @@ function ClientController() {
   }
 
 
+
   this.getSingleComment = async (req, res) => {
     const childItem = await ChildItemModel.findById(req.params.id)
-    const child = childItem.comment.id(req.query.commentid)
-    res.status(200).json({ comment: child })
+    res.status(200).json({ comment: childItem.comment.id(req.query.commentid) })
   }
-
-
-
 
 
 
@@ -93,6 +89,7 @@ function ClientController() {
   }
 
 
+  
   this.geocode = async (req, res) => {
     let geoCoder = node_geocoder({ provider: 'openstreetmap' });
     geoCoder.geocode(req.body.loc)

@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { UserModel, proposalModel, imageProfile } = require('../model/UserModel');
+const { UserModel, proposalModel, imageProfileModel } = require('../model/UserModel');
 const { AddressVoucherModel } = require('../model/AdminModel');
 const captchapng = require("captchapng");
 const nodeCache = require("node-cache");
@@ -30,7 +30,7 @@ function UserController() {
       receptor: req.body.phone,
     },
       function (response, status) {
-        if (!status || !response) return res.status(400).json('مشکلی پیش آمد بعدا دوباره امتحان کنید')
+        if (!status || !response) return res.status(400).send('مشکلی پیش آمد بعدا دوباره امتحان کنید')
         console.log('response', response)
         res.status(200).send('کد دریافتی را وارد کنید')
       });
@@ -39,7 +39,7 @@ function UserController() {
 
   this.verifycodeRegister = async (req, res) => {
     // console.log(req.body.code, myCache.get("code"));
-    if (req.body.code != myCache.get("code")) return res.status(400).json("کد وارد شده اشتباه هست")
+    if (req.body.code != myCache.get("code")) return res.status(400).send("کد وارد شده اشتباه هست")
     await UserModel.create({ fullname: req.body.fullname, password: req.body.password, phone: req.body.phone });
     let user = await UserModel.find();
     if (user.length === 1) {
@@ -57,9 +57,9 @@ function UserController() {
 
   this.login = async (req, res) => {
     const user = await UserModel.findOne({ phone: req.body.phone });
-    if (!user) return res.status(400).json('مشخصات اشتباه هست')
+    if (!user) return res.status(400).send('مشخصات اشتباه هست')
     const pass = await bcrypt.compare(req.body.password, user.password);
-    if (!pass) return res.status(400).json('مشخصات اشتباه هست')
+    if (!pass) return res.status(400).send('مشخصات اشتباه هست')
 
     if (user.isAdmin != true) {
 
@@ -100,7 +100,7 @@ function UserController() {
     if (req.body.code != myCache.get("code")) return res.status(400).send("کد وارد شده اشتباه هست")
     const user = await UserModel.findOne({ phone: req.body.phone });
     const pass = await bcrypt.compare(req.body.password, user.password);
-    if (!pass) return res.status(400).json('مشخصات اشتباه هست')
+    if (!pass) return res.status(400).send('مشخصات اشتباه هست')
     const tokenUser = {
       isAdmin: user.isAdmin,
       userId: user._id.toString(),
@@ -122,7 +122,7 @@ function UserController() {
 
 
 
-  this.sendcodeForgetPass = async (req, res) => {
+  this.sendCodeForgetPass = async (req, res) => {
     const user = await UserModel.findOne({ phone: req.body.phone });
     if (!user) return res.status(400).send('شما قبلا ثبت نام نکردین')
     const random = Math.floor(Math.random() * 90000 + 10000)
@@ -135,7 +135,7 @@ function UserController() {
       receptor: req.body.phone,
     },
       function (response, status) {
-        if (!status || !response) return res.status(400).json('مشکلی پیش آمد بعدا دوباره امتحان کنید')
+        if (!status || !response) return res.status(400).send('مشکلی پیش آمد بعدا دوباره امتحان کنید')
         console.log('response', response)
         res.status(200).send('کد دریافتی را وارد کنید')
       });
@@ -171,23 +171,21 @@ function UserController() {
 
 
   this.sendImageProfile = async (req, res) => {
-    if (!req.user?.payload?.userId) return res.status(400).json('err')
-    const image = req.files.uri;
-    if (!image) return res.status(400).json('err')
-    let purl = await imageProfile.findOne({ user: req.user.payload.userId })
-    await imageProfile.deleteMany({ user: req.user.payload.userId })
-    if (purl)
-      if (fs.existsSync(`${appRootPath}/public/upload/profile/${purl.uri}`))
-        fs.unlinkSync(`${appRootPath}/public/upload/profile/${purl.uri}`)
+    if (!req.file) return res.status(400).json('بعدا دوباره امتحان کنید')
+    let imageProfile = await imageProfileModel.findOne({ userId: req.user.payload.userId })
+    if (imageProfile)
+      if (fs.existsSync(`${appRootPath}/public/upload/profile/${imageProfile.uri}`))
+        fs.unlinkSync(`${appRootPath}/public/upload/profile/${imageProfile.uri}`)
+    await imageProfileModel.deleteMany({ userId: req.user.payload.userId })
 
     const uri = new Date().getTime() + req.user.payload.userId + `.${req.files.uri.mimetype.split('/')[1]}`
-    await sharp(image.data).toFile(`${appRootPath}/public/upload/profile/${uri}`)
+    await sharp(req.file.data).toFile(`${appRootPath}/public/upload/profile/${uri}`)
       .jpeg({ quality: 80 })
     // .resize({width: 150,height: 150})
     // .extract({ width: 500, height: 330, left: 120, top: 70  })
     // .extract({ width: 500, height: 330, left: 120, top: 70  })
     // .toFormat("jpeg", { mozjpeg: true })
-    await new imageProfile({ uri: uri, user: req.user.payload.userId }).save()
+    await new imageProfileModel({ uri: uri, userId: req.user.payload.userId }).save()
 
     const childItem = await ChildItemModel.find()
     for (let i in childItem) {
@@ -206,21 +204,15 @@ function UserController() {
           }
         }
     }
-    res.status(200).json('good')
+    res.status(200).json('موفق آمیز')
   }
 
 
 
-  this.getImageProfile = async (req, res) => {
-    try {
-      const uri = await imageProfile.findOne({ user: req.user?.payload && req.user.payload.userId })
-      if (uri)
-        res.status(200).json({ uri: uri.uri })
-      else
-        res.status(200).json(null)
-    } catch (err) {
-      console.log(err);
-    }
+  this.getImageProfile = async (req, res, next) => {
+    const imageProfile = await imageProfileModel.findOne({ userId: req.user?.payload && req.user.payload.userId })
+    if (imageProfile) res.status(200).json({ uri: imageProfile.uri })
+    else next()
   }
 
 

@@ -22,8 +22,8 @@ router.get('/getSingleComment/:id', user, ClientController.getSingleComment);
 router.get('/getNotification', ClientController.getNotification);
 // getNotification
 // Geocode
-router.post('/reverse', ClientController.reverse);
-router.post('/geocode', ClientController.geocode);
+router.post('/reverse', Auth, ClientController.reverse);
+router.post('/geocode', Auth, ClientController.geocode);
 // Geocode
 // Payment 
 router.post('/confirmPayment', Auth, ClientController.confirmPayment);

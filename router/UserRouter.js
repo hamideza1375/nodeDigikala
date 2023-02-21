@@ -1,18 +1,20 @@
 const router = require('express').Router();
-const User = require('../controllers/UserController');
+const UserController = require('../controllers/UserController');
 const Auth = require('../middleware/Auth');
+const fileUpload = require('../middleware/fileUpload');
 
 //! get put post delete
 
-router.post('/sendCodeRegister', User.sendCodeRegister);
-router.post("/verifycodeRegister", User.verifycodeRegister);
-router.post('/login', User.login);
-router.post('/verifyCodeLoginForAdmin', User.verifyCodeLoginForAdmin);
-router.post('/sendcodeForgetPass', User.sendcodeForgetPass);
-router.post("/verifycodeForgetPass", User.verifycodeForgetPass);
-router.post('/resetpassword/:id', User.resetPassword);
-router.post("/sendproposal", Auth, User.sendProposal);
-router.get("/getLastPayment", Auth, User.getLastPayment);
-router.get("/captcha.png/:id", User.captcha);
+router.post('/sendCodeRegister', UserController.sendCodeRegister);
+router.post("/verifycodeRegister", UserController.verifycodeRegister);
+router.post('/login', UserController.login);
+router.post('/verifyCodeLoginForAdmin', UserController.verifyCodeLoginForAdmin);
+router.post('/sendCodeForgetPass', UserController.sendCodeForgetPass);
+router.post("/verifycodeForgetPass", UserController.verifycodeForgetPass);
+router.post('/resetPassword', UserController.resetPassword);
+router.post('/sendImageProfile', [Auth, fileUpload], UserController.sendImageProfile);
+router.post("/sendProposal", Auth, UserController.sendProposal);
+router.get("/getLastPayment", Auth, UserController.getLastPayment);
+router.get("/captcha.png/:id", UserController.captcha);
 
 module.exports = router;

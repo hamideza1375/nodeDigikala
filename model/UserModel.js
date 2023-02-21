@@ -37,9 +37,9 @@ exports.proposalModel = mongoose.model("proposalModel", proposalModel);
 
 
 
-const imageProfile = new mongoose.Schema({
+const imageProfileModel = new mongoose.Schema({
   uri: String,
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "profile" },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "profile" },
 })
 
-exports.imageProfile = mongoose.model('imageProfile', imageProfile)
+exports.imageProfileModel = mongoose.model('imageProfileModel', imageProfileModel)

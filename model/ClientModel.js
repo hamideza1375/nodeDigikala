@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 // regex 
 // const Comment = new Schema({
-//     age: { type: Number, min: 18, max : 25 , minlength: 3, maxlength: 3, match: /[a-z]/, match: '/^.{0,20}$/', index: true, require:true, default: 'hahaha' },
+//     age: { type: Number, min: 18, max : 25 , minlength: 3, maxlength: 3, match: /[a-z]/, match: '/^.{0,20}$/', index: true, },
 //     date: { type: Date, default: Date.now },
 //     // buff: Buffer
 //   });
@@ -26,7 +26,7 @@ const CommenteModel = new mongoose.Schema({
     message: { type: String, required: true },
     like: Boolean,
     disLike: Boolean,
-    answer: { type: String },
+    answer: [AnswerModel],
     allStar: { type: Number, required: true },
     starId: { type: mongoose.Schema.Types.ObjectId, ref: "starId" },
     commentId: { type: mongoose.Schema.Types.ObjectId, ref: "ChildItemModel2" },

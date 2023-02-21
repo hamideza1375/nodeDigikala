@@ -1,42 +1,43 @@
 const router = require('express').Router();
 const AdminController = require('../controllers/AdminController');
 const Auth = require('../middleware/Auth');
-const AuthAdmin = require('../middleware/AuthAdmin');
+const AuthMainAdmin = require('../middleware/AuthMainAdmin');
+const AuthAllAdmin = require('../middleware/AuthAllAdmin');
 const fileUpload = require('../middleware/fileUpload');
 
 
 //! get put post delete
 
-router.post('/createCategory', [AuthAdmin, fileUpload], AdminController.createCategory);
-router.put('/editCategory/:id', [AuthAdmin, fileUpload], AdminController.editCategory);
-router.delete('/deleteCategory/:id', AuthAdmin, AdminController.deleteCategory);
+router.post('/createCategory', [AuthMainAdmin, fileUpload], AdminController.createCategory);
+router.put('/editCategory/:id', [AuthMainAdmin, fileUpload], AdminController.editCategory);
+router.delete('/deleteCategory/:id', AuthMainAdmin, AdminController.deleteCategory);
 
-router.post('/createChildItem/:id', [AuthAdmin, fileUpload], AdminController.createChildItem);
-router.put('/editChildItem/:id', [AuthAdmin, fileUpload], AdminController.editChildItem);
-router.delete('/deleteChildItem/:id', AuthAdmin, AdminController.deleteChildItem);
+router.post('/createChildItem/:id', [AuthMainAdmin, fileUpload], AdminController.createChildItem);
+router.put('/editChildItem/:id', [AuthMainAdmin, fileUpload], AdminController.editChildItem);
+router.delete('/deleteChildItem/:id', AuthMainAdmin, AdminController.deleteChildItem);
 
-router.get('/listUnAvailable', AuthAdmin, AdminController.listUnAvailable);
-router.post('/changeAvailable/:id', AuthAdmin, AdminController.changeAvailable);
+router.get('/listUnAvailable', AuthMainAdmin, AdminController.listUnAvailable);
+router.post('/changeAvailable/:id', AuthMainAdmin, AdminController.changeAvailable);
 
-router.post('/createNotification', AuthAdmin, AdminController.createNotification);
+router.post('/createNotification', AuthMainAdmin, AdminController.createNotification);
+router.delete('/deleteNotification', AuthMainAdmin, AdminController.deleteNotification);
 
-router.post('/setAdmin', AuthAdmin, AdminController.setAdmin);
-router.delete('/deleteAdmin', AuthAdmin, AdminController.deleteAdmin);
-router.get('/getAllAdmin', AuthAdmin, AdminController.getAllAdmin);
-router.put('/changeMainAdmin', AuthAdmin, AdminController.changeMainAdmin);
+router.post('/setAdmin', AuthMainAdmin, AdminController.setAdmin);
+router.delete('/deleteAdmin', AuthMainAdmin, AdminController.deleteAdmin);
+router.get('/getAllAdmin', AuthMainAdmin, AdminController.getAllAdmin);
+router.put('/changeMainAdmin', AuthMainAdmin, AdminController.changeMainAdmin);
 
-
-router.get('/getProposal', AuthAdmin, AdminController.getProposal);
-router.delete('/deleteMultiProposal', AuthAdmin, AdminController.deleteMultiProposal);
+router.get('/getProposal', AuthMainAdmin, AdminController.getProposal);
+router.delete('/deleteMultiProposal', AuthMainAdmin, AdminController.deleteMultiProposal);
 
 router.get('/getAllAddress', Auth, AdminController.getAllAddress);
-router.delete('/deleteAddressForOneAdmin/:id', Auth, AdminController.deleteAddressForOneAdmin);
-router.delete('/deleteAllAddress', AuthAdmin, AdminController.deleteAllAddress);
-router.post('/sendDisablePost', Auth, AdminController.sendDisablePost);
+router.delete('/deleteAddressForOneAdmin/:id', AuthAllAdmin, AdminController.deleteAddressForOneAdmin);
+router.delete('/deleteAllAddress', AuthMainAdmin, AdminController.deleteAllAddress);
+router.post('/sendDisablePost', AuthAllAdmin, AdminController.sendDisablePost);
 
 // priceForPost
-router.post('/sendPostPrice', AuthAdmin, AdminController.sendPostPrice);
-router.get('/getPostPrice', AuthAdmin, AdminController.getPostPrice);
+router.post('/sendPostPrice', AuthMainAdmin, AdminController.sendPostPrice);
+router.get('/getPostPrice', AuthMainAdmin, AdminController.getPostPrice);
 // priceForPost
 
 module.exports = router

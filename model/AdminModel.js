@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 
 const NotifeeModel = new mongoose.Schema({
-  title: String,
-  message: String,
+  title: { type: String, require: true },
+  message: { type: String, require: true },
 });
 
 exports.NotifeeModel = mongoose.model("NotifeeModel", NotifeeModel);

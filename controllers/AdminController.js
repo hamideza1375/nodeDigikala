@@ -1,11 +1,11 @@
 const fs = require("fs");
 const appRootPath = require("app-root-path");
 const sharp = require("sharp");
-const shortid = require("shortid");
 const { CategoryModel, ChildItemModel } = require("../model/ClientModel");
 const { NotifeeModel, AddressVoucherModel, PostPriceModel } = require("../model/AdminModel");
 const { UserModel, proposalModel } = require("../model/UserModel");
 
+var interval
 
 function AdminController() {
 
@@ -20,7 +20,7 @@ function AdminController() {
 
   this.editCategory = async (req, res) => {
     const category = await CategoryModel.findById(req.params.id);
-    if (!category) return res.status(400).send('این فایل از سرور حذف شده است')
+    if (!category) return res.status(400).send('این گزینه از سرور حذف شده است')
     if (req.files) {
       await sharp(req.file.data).toFile(`${appRootPath}/public/upload/category/${req.fileName}`)
       if (fs.existsSync(`${appRootPath}/public/upload/category/${category.imageUrl}`))
@@ -38,7 +38,7 @@ function AdminController() {
 
   this.deleteCategory = async (req, res) => {
     const category = await CategoryModel.findById(req.params.id);
-    if (!category) return res.status(400).send('این فایل از سرور حذف شده است')
+    if (!category) return res.status(400).send('این گزینه از سرور حذف شده است')
     await CategoryModel.findByIdAndRemove(req.params.id)
     if (fs.existsSync(`${appRootPath}/public/upload/category/${category.imageUrl}`))
       fs.unlinkSync(`${appRootPath}/public/upload/category/${category.imageUrl}`)
@@ -79,7 +79,7 @@ function AdminController() {
 
   this.editChildItem = async (req, res) => {
     const childItem = await ChildItemModel.findById(req.params.id)
-    if (!childItem) return res.status(400).send('مشکلی پیش آمده بعدا دوباره امتحان کنید')
+    if (!childItem) return res.status(400).send('این گزینه قبلا از سرور حذف شده')
     const { title, price, info, ram, cpuCore, camera, storage, warranty, color,
       display, fullSpecifications, meanStar, num, total, available, } = req.body
     if (req.files) {
@@ -114,7 +114,7 @@ function AdminController() {
 
   this.deleteChildItem = async (req, res) => {
     const childItem = await ChildItemModel.findById(req.params.id)
-    if (!childItem) return res.status(400).send('مشکلی پیش آمده بعدا دوباره امتحان کنید')
+    if (!childItem) return res.status(400).send('این گزینه قبلا از سرور حذف شده')
     if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl}`))
       fs.unlinkSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl}`)
     await ChildItemModel.findByIdAndRemove(req.params.id)
@@ -133,7 +133,7 @@ function AdminController() {
 
   this.changeAvailable = async (req, res) => {
     const childItem = await ChildItemModel.findById(req.params.id)
-    if (!childItem) return res.status(400).send('مشکلی پیش آمد بعدا دوباره امتحان کنید')
+    if (!childItem) return res.status(400).send('این گزینه قبلا از سرور حذف شده')
     childItem.available = req.body.available
     await childItem.save()
     res.status(200).json({ available: childItem.available })
@@ -155,12 +155,12 @@ function AdminController() {
 
   this.deleteAdmin = async (req, res) => {
     const user = await UserModel.findOne({ phone: req.query.phone });
-    if (!user) return res.status(400).json('کاربری با این شماره پیدا نشد');
-    if (user.isAdmin === 1) return res.status(400).json('نمیتوانید ادمین اصلی را حذف کنید');
-    if (user.isAdmin !== 2) return res.status(400).json('شماره ی وارد شده متعلق به هیچ ادمینی نیست');
+    if (!user) return res.status(400).send('کاربری با این شماره پیدا نشد');
+    if (user.isAdmin === 1) return res.status(400).send('نمیتوانید ادمین اصلی را حذف کنید');
+    if (user.isAdmin !== 2) return res.status(400).send('شماره ی وارد شده متعلق به هیچ ادمینی نیست');
     user.isAdmin = null;
     await user.save();
-    res.status(200).json('این شماره با موفقیت از گروه ادمین دوم حذف شد');
+    res.status(200).send('این شماره با موفقیت از گروه ادمین دوم حذف شد');
   }
 
 
@@ -195,7 +195,8 @@ function AdminController() {
 
 
   this.deleteMultiProposal = async (req, res) => {
-    let allId = JSON.parse(req.body.allId)
+    console.log(req.body.allId);
+    let allId = req.body.allId
     if (!allId.length) return res.status(400).send('حد اقل یک مورد را انتخاب کنید')
     for (let _id of allId) { await proposalModel.deleteMany({ _id }) }
     if (allId.length === 1) res.status(200).send('با موفقیت حذف شد')
@@ -206,24 +207,30 @@ function AdminController() {
   this.createNotification = async (req, res) => {
     await NotifeeModel.deleteMany()
     await new NotifeeModel({ title: req.body.title, message: req.body.message }).save()
-    setTimeout(async () => { await NotifeeModel.deleteMany() }, 60 * 1000 * 60 * 24 * 3)
-    res.json('با موفقیت ساخته شد')
+    if (interval) clearInterval(interval)
+    interval = setTimeout(async () => { await NotifeeModel.deleteMany() }, 60 * 1000 * 60 * 24 * 5)
+    res.send('با موفقیت ساخته شد')
+  }
+
+
+  this.deleteNotification = async (req, res) => {
+    await NotifeeModel.deleteMany()
+    res.send('با موفقیت حذف شد')
   }
 
 
   this.getAllAddress = async (req, res) => {
     const allAddress = await AddressVoucherModel.find().sort({ createdAt: -1 });
-    if (!req.user || !req.user.payload.isAdmin) return res.status(400).send('نمایش فقط برای ادمین مجاز')
     res.json({ allAddress })
   }
 
 
   this.deleteAddressForOneAdmin = async (req, res) => {
     let address = await AddressVoucherModel.findById(req.params.id)
-    if (!address) return res.status(400).send('برای حذف این فیش از صفحه خارج شده و دوباره وارد شوید')
+    if (!address) return res.status(400).send('این گزینه قبلا از سرور حذف شده')
     address.deleteForUser = req.user.payload.userId
     await address.save()
-    res.send("با موفقیت حذف شد")
+    res.send("با موفقیت برای شما موفقیت حذف شد")
   }
 
 
@@ -244,6 +251,7 @@ function AdminController() {
 
 
   this.sendPostPrice = async (req, res) => {
+    await PostPriceModel.deleteMany()
     await new PostPriceModel({ price: req.body.price }).save()
     res.status(200).send('قیمت پست با موفقیت ثبت شد')
   }
@@ -251,9 +259,10 @@ function AdminController() {
 
 
   this.getPostPrice = async (req, res) => {
-    const postPrice = await PostPriceModel.find()
-    const price = postPrice.length ? postPrice[postPrice.length - 1].price : 20000
+    const postPrice = await PostPriceModel.findOne()
+    const price = postPrice ? postPrice : 20000
     res.status(200).json({ price })
+    // const price = postPrice.length ? postPrice[postPrice.length - 1].price : 20000
   }
 
 
