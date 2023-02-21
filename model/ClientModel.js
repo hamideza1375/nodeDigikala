@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 // regex 
 // const Comment = new Schema({
-//     age: { type: Number, min: 18, max : 25 , minLength: 3, maxLength: 3, match: /[a-z]/, match: '/^.{0,20}$/', index: true, require:true, default: 'hahaha' },
+//     age: { type: Number, min: 18, max : 25 , minlength: 3, maxlength: 3, match: /[a-z]/, match: '/^.{0,20}$/', index: true, require:true, default: 'hahaha' },
 //     date: { type: Date, default: Date.now },
 //     // buff: Buffer
 //   });
@@ -71,31 +71,24 @@ exports.CategoryModel = mongoose.model("CategoryModel", CategoryModel);
 
 
 
-
-
-
 const PaymentModel = new mongoose.Schema({
-  phone : String ,
-  fullname: String,
-  price : Number,
-  title: String,
-  paymentCode : String,
-  refId : String,
-  floor: Number,
-  plaque: Number,
-  formattedAddress: String,
-  streetName:String,
-  origin:{type:Object},
-  foods:{type:Array},
-  foodTitle:{type:Array},
-  enablePayment:Number,
-  description:String,
-  success: { type: Boolean, default: false },
-  createdAt: { type: Date, default: new Date() },
-  user: { type : mongoose.Schema.Types.ObjectId, ref : "user" },
+    fullname: { type: String, require: true },
+    phone: { type: Number, require: true, minlength: 11, maxlength: 11 },
+    price: { type: Number, require: true },
+    title: { type: String, require: true },
+    childItemsId: { type: Array, require: true },
+    floor: { type: Number, require: true, min: 1 },
+    plaque: { type: Number, require: true, min: 1 },
+    address: { type: String, require: true, minlength: 1 },
+    description: { type: String },
+    enablePayment: { type: Number },
+    origin: { type: Object },
+    paymentCode: { type: String, require: true },
+    success: { type: Boolean, default: false },
+    refId: String,
+    date: { type: Date, default: Date.now },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
 });
-
-
 
 exports.PaymentModel = mongoose.model('PaymentModel', PaymentModel);;
 

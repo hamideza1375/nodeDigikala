@@ -2,16 +2,17 @@ const router = require('express').Router();
 const AdminController = require('../controllers/AdminController');
 const Auth = require('../middleware/Auth');
 const AuthAdmin = require('../middleware/AuthAdmin');
+const fileUpload = require('../middleware/fileUpload');
 
 
 //! get put post delete
 
-router.post('/createCategory', AuthAdmin, AdminController.createCategory);
-router.put('/editCategory/:id', AuthAdmin, AdminController.editCategory);
+router.post('/createCategory', [AuthAdmin, fileUpload], AdminController.createCategory);
+router.put('/editCategory/:id', [AuthAdmin, fileUpload], AdminController.editCategory);
 router.delete('/deleteCategory/:id', AuthAdmin, AdminController.deleteCategory);
 
-router.post('/createChildItem/:id', AuthAdmin, AdminController.createChildItem);
-router.put('/editChildItem/:id', AuthAdmin, AdminController.editChildItem);
+router.post('/createChildItem/:id', [AuthAdmin, fileUpload], AdminController.createChildItem);
+router.put('/editChildItem/:id', [AuthAdmin, fileUpload], AdminController.editChildItem);
 router.delete('/deleteChildItem/:id', AuthAdmin, AdminController.deleteChildItem);
 
 router.get('/listUnAvailable', AuthAdmin, AdminController.listUnAvailable);
@@ -34,7 +35,7 @@ router.delete('/deleteAllAddress', AuthAdmin, AdminController.deleteAllAddress);
 router.post('/sendDisablePost', Auth, AdminController.sendDisablePost);
 
 // priceForPost
-router.post('/sendPostPrice',AuthAdmin, AdminController.sendPostPrice);
+router.post('/sendPostPrice', AuthAdmin, AdminController.sendPostPrice);
 router.get('/getPostPrice', AuthAdmin, AdminController.getPostPrice);
 // priceForPost
 

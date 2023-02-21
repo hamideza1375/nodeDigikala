@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 
 const UserModel = new mongoose.Schema({
-  fullname: { type: String, required: true, minLength: 2, trim: true },
+  fullname: { type: String, required: true, minlength: 2 /* , trim: true */ },
   phone: { type: String, required: true, minlength: 11, maxlength: 11, unique: true, },
   password: { type: String, required: true, minlength: 4, maxlength: 100 },
   isAdmin: { type: Number, default: '' },
@@ -38,8 +38,8 @@ exports.proposalModel = mongoose.model("proposalModel", proposalModel);
 
 
 const imageProfile = new mongoose.Schema({
-    uri: String,
-    user: { type : mongoose.Schema.Types.ObjectId, ref : "profile" },
+  uri: String,
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "profile" },
 })
 
 exports.imageProfile = mongoose.model('imageProfile', imageProfile)

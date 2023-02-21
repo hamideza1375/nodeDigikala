@@ -10,12 +10,9 @@ const { UserModel, proposalModel } = require("../model/UserModel");
 function AdminController() {
 
   this.createCategory = async (req, res) => {
-    const image = req.files.imageUrl;
-    if (image.size > 5000000) return res.status(400).send('حجم فایل نباید بزرگ تر از 5 مگابایت باشد')
-    if (image.mimetype !== 'image/jpeg' && image.mimetype !== 'image/jpg' && image.mimetype !== 'image/png') return res.status(400).send('یک عکس انتخاب کنید')
-    const fileName = `${shortid.generate()}_${image.name}`;
-    await sharp(image.data).toFile(`${appRootPath}/public/upload/category/${fileName}`)
-    const category = await new CategoryModel({ title: req.body.title, imageUrl: fileName }).save();
+    if (!req.files) return res.status(400).send('لطفا یک فایل انتخاب کنید')
+    await sharp(req.file.data).toFile(`${appRootPath}/public/upload/category/${req.fileName}`)
+    const category = await new CategoryModel({ title: req.body.title, imageUrl: req.fileName }).save();
     res.status(200).json({ category })
     // res.status(200).send('با موفقیت ساخته شد')
   }
@@ -23,19 +20,16 @@ function AdminController() {
 
   this.editCategory = async (req, res) => {
     const category = await CategoryModel.findById(req.params.id);
-    console.log('category', category);
-    let fileName = ""
+    if (!category) return res.status(400).send('این فایل از سرور حذف شده است')
     if (req.files) {
-      const image = req.files.imageUrl;
-      fileName = `${shortid.generate()}_${image.name}`;
-      await sharp(image.data).toFile(`${appRootPath}/public/upload/category/${fileName}`)
+      await sharp(req.file.data).toFile(`${appRootPath}/public/upload/category/${req.fileName}`)
       if (fs.existsSync(`${appRootPath}/public/upload/category/${category.imageUrl}`))
         fs.unlinkSync(`${appRootPath}/public/upload/category/${category.imageUrl}`)
     } else {
-      fileName = category.imageUrl
+      req.fileName = category.imageUrl
     }
     category.title = req.body.title;
-    category.imageUrl = fileName;
+    category.imageUrl = req.fileName;
     await category.save();
     res.status(200).json({ category })
     // res.status(200).send('با موفقیت ویرایش شد')
@@ -44,6 +38,7 @@ function AdminController() {
 
   this.deleteCategory = async (req, res) => {
     const category = await CategoryModel.findById(req.params.id);
+    if (!category) return res.status(400).send('این فایل از سرور حذف شده است')
     await CategoryModel.findByIdAndRemove(req.params.id)
     if (fs.existsSync(`${appRootPath}/public/upload/category/${category.imageUrl}`))
       fs.unlinkSync(`${appRootPath}/public/upload/category/${category.imageUrl}`)
@@ -56,9 +51,7 @@ function AdminController() {
     const { title, price, info, ram, cpuCore, camera, storage, warranty, color,
       display, fullSpecifications, meanStar, num, total, available, } = req.body
     if (!req.files) return res.status(400).send('لطفا یک عکس انتخاب کنید')
-    const image = req.files.imageUrl;
-    const fileName = `${shortid.generate()}_${image.name}`;
-    await sharp(image.data).toFile(`${appRootPath}/public/upload/category/${fileName}`)
+    await sharp(req.file.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName}`)
     const childItem = await new ChildItemModel({
       title,
       price,
@@ -75,7 +68,7 @@ function AdminController() {
       num,
       total,
       available,
-      imageUrl: fileName,
+      imageUrl: req.fileName,
       refId: req.params.id
     }).save()
     res.status(200).json({ childItem })
@@ -86,17 +79,15 @@ function AdminController() {
 
   this.editChildItem = async (req, res) => {
     const childItem = await ChildItemModel.findById(req.params.id)
+    if (!childItem) return res.status(400).send('مشکلی پیش آمده بعدا دوباره امتحان کنید')
     const { title, price, info, ram, cpuCore, camera, storage, warranty, color,
       display, fullSpecifications, meanStar, num, total, available, } = req.body
-    let fileName = ""
     if (req.files) {
-      const image = req.files.imageUrl;
-      fileName = `${shortid.generate()}_${image.name}`;
-      await sharp(image.data).toFile(`${appRootPath}/public/upload/childItem/${fileName}`)
+      await sharp(req.file.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName}`)
       if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl}`))
         fs.unlinkSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl}`)
     } else {
-      fileName = childItem.imageUrl
+      req.fileName = childItem.imageUrl
     }
     childItem.title = title
     childItem.price = price
@@ -113,7 +104,7 @@ function AdminController() {
     childItem.num = num
     childItem.total = total
     childItem.available = available
-    childItem.imageUrl = fileName;
+    childItem.imageUrl = req.fileName;
     await childItem.save();
     res.status(200).json({ childItem })
     // res.status(200).send('باموفقیت ویرایش شد')
@@ -123,7 +114,7 @@ function AdminController() {
 
   this.deleteChildItem = async (req, res) => {
     const childItem = await ChildItemModel.findById(req.params.id)
-    console.log(childItem);
+    if (!childItem) return res.status(400).send('مشکلی پیش آمده بعدا دوباره امتحان کنید')
     if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl}`))
       fs.unlinkSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl}`)
     await ChildItemModel.findByIdAndRemove(req.params.id)
@@ -142,7 +133,7 @@ function AdminController() {
 
   this.changeAvailable = async (req, res) => {
     const childItem = await ChildItemModel.findById(req.params.id)
-    if (!childItem) return res.status(400).send('err')
+    if (!childItem) return res.status(400).send('مشکلی پیش آمد بعدا دوباره امتحان کنید')
     childItem.available = req.body.available
     await childItem.save()
     res.status(200).json({ available: childItem.available })
@@ -153,7 +144,6 @@ function AdminController() {
 
   this.setAdmin = async (req, res) => {
     const user = await UserModel.findOne({ phone: req.body.phone });
-    console.log(user.isAdmin);
     if (!user) return res.status(400).send('کاربری با این شماره پیدا نشد');
     if (user.isAdmin === 1) return res.status(400).send('این شماره متعلق به ادمین اصلی هست');
     if (user.isAdmin === 2) return res.status(400).send('این شماره را قبلا به عنوان ادمین گروه دوم انتخاب کردین');
@@ -186,7 +176,7 @@ function AdminController() {
     const Admin = await UserModel.findOne({ phone: req.body.adminPhone });
     const newAdmin = await UserModel.findOne({ phone: req.body.newAdminPhone });
     if (!Admin || Admin.isAdmin !== 1) return res.status(400).send('شماره ی ادمین اصلی را اشتباه وارد کردین');
-    if (!newAdmin) return res.status(400).send('شماره ی کادر ادمین جدید قبلا ثبت نشده');
+    if (!newAdmin) return res.status(400).send('شماره ی کادر ادمین جدید قبلا ثبت نام نشده');
     if (req.body.adminPhone === req.body.newAdminPhone) return res.status(400).send('کادر اول و دوم نباید با هم برابر باشد');
     Admin.isAdmin = null;
     newAdmin.isAdmin = 1;
@@ -206,7 +196,7 @@ function AdminController() {
 
   this.deleteMultiProposal = async (req, res) => {
     let allId = JSON.parse(req.body.allId)
-    if (!allId.length) res.status(400).send('حد اقل یک مورد را انتخاب کنید')
+    if (!allId.length) return res.status(400).send('حد اقل یک مورد را انتخاب کنید')
     for (let _id of allId) { await proposalModel.deleteMany({ _id }) }
     if (allId.length === 1) res.status(200).send('با موفقیت حذف شد')
     else res.status(200).send('با موفقیت حذف شدند')

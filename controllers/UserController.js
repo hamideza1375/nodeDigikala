@@ -18,24 +18,22 @@ function UserController() {
 
 
   this.sendCodeRegister = async (req, res) => {
+    // await UserModel.deleteMany()
     let userPhone = await UserModel.findOne({ phone: req.body.phone });
     if (userPhone) return res.status(400).json(" شماره از قبل موجود هست")
-    // const random = Math.floor(Math.random() * 90000 + 10000)
-    // myCache.set("code", random)
-    // api.Send({
-    //   message: `ارسال کد از رستوران 
-    //   Code: ${random}`,
-    //   sender: "2000500666",
-    //   receptor: req.body.phone,
-    // },
-    //   function (response, status) {
-    //     if (!status || !response) return res.status(400).json('مشکلی پیش آمد بعدا دوباره امتحان کنید')
-    //     console.log('response',response)
-    //     res.status(status).json(response)
-    //   });
-    //  console.log(random)
-    myCache.set("code", 12345)
-    res.status(200).send('کد دریافت شده را وارد کنید')
+    const random = Math.floor(Math.random() * 90000 + 10000)
+    myCache.set("code", random)
+    return api.Send({
+      message: `ارسال کد از دیجی کالا 
+      Code: ${random}`,
+      sender: "2000500666",
+      receptor: req.body.phone,
+    },
+      function (response, status) {
+        if (!status || !response) return res.status(400).json('مشکلی پیش آمد بعدا دوباره امتحان کنید')
+        console.log('response', response)
+        res.status(200).send('کد دریافتی را وارد کنید')
+      });
   }
 
 
@@ -49,33 +47,9 @@ function UserController() {
       await user[0].save()
     }
     // res.status(201).json('ثبت نام موفقیت آمیز بود')
+    myCache.del("code")
     res.status(201).json({ user })
   }
-
-
-
-  // this.login = async (req, res) => {
-  //   const user = await UserModel.findOne({ phone: req.body.phone });
-  //   if (!user) return res.status(400).json('مشخصات اشتباه هست')
-  //   const pass = await bcrypt.compare(req.body.password, user.password);
-  //   if (!pass) return res.status(400).json('مشخصات اشتباه هست')
-
-  //   const tokenUser = {
-  //     isAdmin: user.isAdmin,
-  //     userId: user._id.toString(),
-  //     phone: user.phone,
-  //     fullname: user.fullname,
-  //   }
-  //   const token = jwt.sign(tokenUser, "secret", { expiresIn: req.body.remember });
-  //   // if (parseInt(req.body.captcha) == CAPTCHA_NUM) {
-  //   res.status(200).header(token).json({ token });
-  //   // }
-  //   // else {
-  //   //   return res.status(400).send('کد وارد شده اشتباه هست')
-  //   //   // throw new TypeError('مساوی نیست')
-  //   // }
-  // }
-
 
 
 
@@ -101,21 +75,19 @@ function UserController() {
       // }
       // else { res.status(400).send('کد وارد شده اشتباه هست') }
     } else {
-      // const random = Math.floor(Math.random() * 90000 + 10000)
-      // myCache.set("code", random)
-      // api.Send({
-      //   message: `ارسال کد از رستوران 
-      // Code: ${random}`,
-      //   sender: "2000500666",
-      //   receptor: req.body.phone,
-      // },
-      //   function (response, status) {
-      //     if (!status || !response) return res.status(400).json('مشکلی پیش آمد بعدا دوباره امتحان کنید')
-      //     console.log('response', response)
-      //     res.status(status).json(response)
-      //   });
-      myCache.set("code", 12345)
-      res.send('کد پیامک شده را وارد کنید')
+      const random = Math.floor(Math.random() * 90000 + 10000)
+      myCache.set("code", random)
+      return api.Send({
+        message: `ارسال کد از رستوران 
+        Code: ${random}`,
+        sender: "2000500666",
+        receptor: req.body.phone,
+      },
+        function (response, status) {
+          if (!status || !response) return res.status(400).json('مشکلی پیش آمد بعدا دوباره امتحان کنید')
+          console.log('response', response)
+          res.status(200).send('کد دریافتی را وارد کنید')
+        });
     }
   }
 
@@ -137,6 +109,7 @@ function UserController() {
     }
     const token = jwt.sign(tokenUser, "secret", { expiresIn: req.body.remember });
     // if (parseInt(req.body.captcha) == CAPTCHA_NUM) {
+    myCache.del("code")
     res.status(200).header(token).json({ token });
     // }
     // else {
@@ -154,20 +127,18 @@ function UserController() {
     if (!user) return res.status(400).send('شما قبلا ثبت نام نکردین')
     const random = Math.floor(Math.random() * 90000 + 10000)
     myCache.set("phone", req.body.phone)
-    // myCache.set("code", random)
-    // api.Send({
-    //   message: `ارسال کد از رستوران 
-    //   Code: ${random}`,
-    //   sender: "2000500666",
-    //   receptor: req.body.phone,
-    // },
-    //   function (response, status) {
-    //     if (!status || !response) return res.status(400).json('err')
-    //     console.log('response', response)
-    //     res.status(status).json(response)
-    //   });
-    myCache.set("code", 12345)
-    res.status(200).send('کد دریافتی را وارد کنید')
+    myCache.set("code", random)
+    return api.Send({
+      message: `ارسال کد از رستوران 
+      Code: ${random}`,
+      sender: "2000500666",
+      receptor: req.body.phone,
+    },
+      function (response, status) {
+        if (!status || !response) return res.status(400).json('مشکلی پیش آمد بعدا دوباره امتحان کنید')
+        console.log('response', response)
+        res.status(200).send('کد دریافتی را وارد کنید')
+      });
   }
 
 
@@ -176,6 +147,7 @@ function UserController() {
     if (req.body.code != myCache.get("code")) return res.status(400).send("کد وارد شده اشتباه هست")
     else {
       const user = await UserModel.findOne({ phone: myCache.get("phone") })
+      myCache.del("code")
       res.status(200).json({ userId: user._id })
     }
   }
