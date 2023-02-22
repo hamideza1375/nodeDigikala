@@ -185,3 +185,23 @@
 {"level":"error","message":"Cannot set properties of undefined (setting 'message')"}
 {"level":"error","message":"Cannot set properties of undefined (setting 'message')"}
 {"level":"error","message":"Cannot set properties of null (setting 'message')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'data')"}
+{"level":"error","message":"sharp(...).toFile(...).jpeg is not a function"}
+{"level":"error","message":"sharp(...).toFile(...).jpeg is not a function"}
+{"level":"error","message":"sharp(...).toFile(...).jpeg is not a function"}
+{"level":"error","message":"sharp(...).toFile(...).toFormat is not a function"}
+{"level":"error","message":"sharp(...).toFile(...).toFormat is not a function"}
+{"level":"error","message":"sharp(...).toFile(...).toFormat is not a function"}
+{"level":"error","message":"sharp(...).toFile(...).resize is not a function"}
+{"level":"error","message":"fs is not defined"}
+{"level":"error","message":"Cannot set headers after they are sent to the client"}
+{"level":"error","message":"Cannot set headers after they are sent to the client"}
+{"level":"error","message":"Input buffer contains unsupported image format"}
+{"level":"error","message":"Input buffer contains unsupported image format"}
+{"level":"error","message":"Input buffer contains unsupported image format"}
+{"level":"error","message":"sharp(...).toFile(...).jpeg is not a function"}
+{"level":"error","message":"sharp(...).toFile(...).jpeg is not a function"}
+{"level":"error","message":"sharp(...).toFile(...).jpeg is not a function"}
+{"level":"error","message":"sharp(...).toFile(...).jpeg is not a function"}
+{"level":"error","message":"sharp(...).toFile(...).jpeg is not a function"}
+{"level":"error","message":"sharp(...).toFile(...).toFormat is not a function"}
