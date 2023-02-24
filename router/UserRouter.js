@@ -1,13 +1,15 @@
 const router = require('express').Router();
 const UserController = require('../controllers/UserController');
 const Auth = require('../middleware/Auth');
+const user = require('../middleware/user');
 const fileUpload = require('../middleware/fileUpload');
 
 //! get put post delete
 
-router.post('/sendCodeRegister', UserController.sendCodeRegister);
+router.post('/getCodeForRegister', user, UserController.getCodeForRegister);
+router.post('/getNewCode', UserController.getNewCode);
 router.post("/verifycodeRegister", UserController.verifycodeRegister);
-router.post('/login', UserController.login);
+router.post('/login', user, UserController.login);
 router.post('/verifyCodeLoginForAdmin', UserController.verifyCodeLoginForAdmin);
 router.post('/sendCodeForgetPass', UserController.sendCodeForgetPass);
 router.post("/verifycodeForgetPass", UserController.verifycodeForgetPass);

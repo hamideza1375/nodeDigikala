@@ -154,7 +154,7 @@ function AdminController() {
 
 
   this.deleteAdmin = async (req, res) => {
-    const user = await UserModel.findOne({ phone: req.query.phone });
+    const user = await UserModel.findOne({ phone: req.body.phone });
     if (!user) return res.status(400).send('کاربری با این شماره پیدا نشد');
     if (user.isAdmin === 1) return res.status(400).send('نمیتوانید ادمین اصلی را حذف کنید');
     if (user.isAdmin !== 2) return res.status(400).send('شماره ی وارد شده متعلق به هیچ ادمینی نیست');
@@ -241,7 +241,7 @@ function AdminController() {
 
 
   this.sendDisablePost = async (req, res) => {
-    const Address = await AddressVoucherModel.findById(req.body._id);
+    const Address = await AddressVoucherModel.findById(req.params.id);
     if (!Address) return res.status(400).send('این سفارش فعال نیست')
     Address.enablePost = 0
     await Address.save()

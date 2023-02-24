@@ -205,3 +205,24 @@
 {"level":"error","message":"sharp(...).toFile(...).jpeg is not a function"}
 {"level":"error","message":"sharp(...).toFile(...).jpeg is not a function"}
 {"level":"error","message":"sharp(...).toFile(...).toFormat is not a function"}
+{"level":"error","message":"jjj is not defined"}
+{"level":"error","message":"UserModel validation failed: password: Path `password` is required."}
+{"level":"error","message":"UserModel validation failed: password: Path `password` is required."}
+{"level":"error","message":"Invalid status code: 12345"}
+{"level":"error","message":"Cannot set headers after they are sent to the client"}
+{"level":"error","message":"Invalid status code: http://localhost:3000/register"}
+{"level":"error","message":"Invalid status code: http://localhost:3000"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'send')"}
+{"level":"error","message":"UserModel validation failed: password: Path `password` is required."}
+{"level":"error","message":"UserModel validation failed: password: Path `password` is required."}
+{"level":"error","message":"UserModel validation failed: password: Path `password` is required."}
+{"level":"error","message":"UserModel validation failed: password: Path `password` is required."}
+{"level":"error","message":"UserModel validation failed: password: Path `password` is required."}
+{"level":"error","message":"UserModel validation failed: fullname: Path `fullname` is required., password: Path `password` is required., phone: Path `phone` is required."}
+{"level":"error","message":"UserModel validation failed: fullname: Path `fullname` is required., password: Path `password` is required., phone: Path `phone` is required."}
+{"level":"error","message":"UserModel validation failed: password: Path `password` is required."}
+{"level":"error","message":"UserModel validation failed: password: Path `password` is required."}
+{"level":"error","message":"UserModel validation failed: password: Path `password` is required."}
+{"level":"error","message":"res.location.assign is not a function"}
+{"level":"error","message":"res is not defined"}
+{"level":"error","message":"res is not defined"}

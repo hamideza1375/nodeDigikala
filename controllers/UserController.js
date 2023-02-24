@@ -5,50 +5,57 @@ const { UserModel, proposalModel, imageProfileModel } = require('../model/UserMo
 const { AddressVoucherModel } = require('../model/AdminModel');
 const captchapng = require("captchapng");
 const nodeCache = require("node-cache");
+var nodemailer = require('nodemailer');
 var Kavenegar = require('kavenegar');
 const appRootPath = require('app-root-path');
 const sharp = require('sharp');
 const { ChildItemModel } = require('../model/ClientModel');
+const sendCode = require('../middleware/sendCode');
 
 var api = Kavenegar.KavenegarApi({ apikey: process.env.SECRET_KEY });
-const myCache = new nodeCache({ stdTTL: 120, checkperiod: 150 })
+const myCacheCode = new nodeCache({ stdTTL: 120, checkperiod: 120 })
+const myCacheSpecification = new nodeCache({ stdTTL: 60 * 20, checkperiod: 60 * 20 })
 var CAPTCHA_NUM = null;
 
 
 function UserController() {
 
 
-  this.sendCodeRegister = async (req, res) => {
+  this.getCodeForRegister = async (req, res) => {
     // await UserModel.deleteMany()
+    if (req.user?.payload?.fullname) return res.send('شما در حال حاظر یک حساب فعال دارین')
     let userPhone = await UserModel.findOne({ phone: req.body.phone });
     if (userPhone) return res.status(400).json(" شماره از قبل موجود هست")
-    const random = Math.floor(Math.random() * 90000 + 10000)
-    myCache.set("code", random)
-    return api.Send({
-      message: `ارسال کد از دیجی کالا 
-      Code: ${random}`,
-      sender: "2000500666",
-      receptor: req.body.phone,
-    },
-      function (response, status) {
-        if (!status || !response) return res.status(400).send('مشکلی پیش آمد بعدا دوباره امتحان کنید')
-        console.log('response', response)
-        res.status(200).send('کد دریافتی را وارد کنید')
-      });
+    myCacheSpecification.set("phone", req.body.phone)
+    myCacheSpecification.set("fullname", req.body.fullname)
+    myCacheSpecification.set("password", req.body.password)
+    sendCode(req, res, myCacheCode)
+  }
+
+
+  this.getNewCode = async (req, res) => {
+    if (myCacheSpecification.get("phone")) sendCode(req, res, myCacheCode)
+    else res.status(400).send("زمان زیادی گذشت لطفا برگردین و مشخصاتتان را دوباره ارسال وارد کنید")
   }
 
 
   this.verifycodeRegister = async (req, res) => {
-    if (req.body.code != myCache.get("code")) return res.status(400).send("کد وارد شده اشتباه هست")
-    await UserModel.create({ fullname: req.body.fullname, password: req.body.password, phone: req.body.phone });
+    let userPhone = await UserModel.findOne({ phone: req.body.phone });
+    if (userPhone) return res.status(400).json(" شماره از قبل موجود هست")
+    if (req.body.code != myCacheCode.get("code")) return res.status(400).send("کد وارد شده اشتباه هست")
+    if (!myCacheSpecification.get("fullname") || !myCacheSpecification.get("password") || !myCacheSpecification.get("phone")) return res.status(400).send("زمان زیادی گذشت لطفا برگردین و مشخصاتتان را دوباره ارسال وارد کنید")
+
+    await UserModel.create({ fullname: myCacheSpecification.get("fullname"), password: myCacheSpecification.get("password"), phone: myCacheSpecification.get("phone") });
     let user = await UserModel.find();
     if (user.length === 1) {
       user[0].isAdmin = 1
       await user[0].save()
     }
-    // res.status(201).json('ثبت نام موفقیت آمیز بود')
-    myCache.del("code")
-    res.status(201).json({ user })
+    myCacheCode.del("code")
+    myCacheSpecification.del("fullname")
+    myCacheSpecification.del("password")
+    myCacheSpecification.del("phone")
+    res.status(201).send('ثبت نام موفقیت آمیز بود')
   }
 
 
@@ -56,6 +63,8 @@ function UserController() {
 
 
   this.login = async (req, res) => {
+    // if (parseInt(req.body.captcha) == CAPTCHA_NUM) {
+    if (req.user?.payload?.fullname) return res.send('شما در حال حاظر یک حساب فعال دارین')
     const user = await UserModel.findOne({ phone: req.body.phone });
     if (!user) return res.status(400).send('مشخصات اشتباه هست')
     const pass = await bcrypt.compare(req.body.password, user.password);
@@ -70,25 +79,16 @@ function UserController() {
         fullname: user.fullname,
       }
       const token = jwt.sign(tokenUser, "secret", { expiresIn: req.body.remember });
-      // if (parseInt(req.body.captcha) == CAPTCHA_NUM) {
       res.status(200).header(token).json({ token });
-      // }
-      // else { res.status(400).send('کد وارد شده اشتباه هست') }
-    } else {
-      const random = Math.floor(Math.random() * 90000 + 10000)
-      myCache.set("code", random)
-      return api.Send({
-        message: `ارسال کد از رستوران 
-        Code: ${random}`,
-        sender: "2000500666",
-        receptor: req.body.phone,
-      },
-        function (response, status) {
-          if (!status || !response) return res.status(400).json('مشکلی پیش آمد بعدا دوباره امتحان کنید')
-          console.log('response', response)
-          res.status(200).send('کد دریافتی را وارد کنید')
-        });
     }
+    else {
+      myCacheSpecification.set("phone", req.body.phone)
+      myCacheSpecification.set("fullname", req.body.fullname)
+      myCacheSpecification.set("password", req.body.password)
+      myCacheSpecification.set("remember", req.body.remember)
+      sendCode(req, res, myCacheCode)
+    }
+    // }  else { return res.status(400).send('کد وارد شده اشتباه هست') }
   }
 
 
@@ -97,9 +97,9 @@ function UserController() {
 
 
   this.verifyCodeLoginForAdmin = async (req, res) => {
-    if (req.body.code != myCache.get("code")) return res.status(400).send("کد وارد شده اشتباه هست")
-    const user = await UserModel.findOne({ phone: req.body.phone });
-    const pass = await bcrypt.compare(req.body.password, user.password);
+    if (req.body.code != myCacheCode.get("code")) return res.status(400).send("کد وارد شده اشتباه هست")
+    const user = await UserModel.findOne({ phone: myCacheSpecification.get("phone") });
+    const pass = await bcrypt.compare(myCacheSpecification.get("password"), user.password);
     if (!pass) return res.status(400).send('مشخصات اشتباه هست')
     const tokenUser = {
       isAdmin: user.isAdmin,
@@ -107,15 +107,13 @@ function UserController() {
       phone: user.phone,
       fullname: user.fullname,
     }
-    const token = jwt.sign(tokenUser, "secret", { expiresIn: req.body.remember });
-    // if (parseInt(req.body.captcha) == CAPTCHA_NUM) {
-    myCache.del("code")
+    const token = jwt.sign(tokenUser, "secret", { expiresIn: myCacheSpecification.get("remember") ? myCacheSpecification.get("remember") : '24h' });
+    myCacheSpecification.del("phone")
+    myCacheSpecification.del("fullname")
+    myCacheSpecification.del("password")
+    myCacheSpecification.del("remember")
+    myCacheCode.del("code")
     res.status(200).header(token).json({ token });
-    // }
-    // else {
-    //   return res.status(400).send('کد وارد شده اشتباه هست')
-    //   // throw new TypeError('مساوی نیست')
-    // }
   }
 
 
@@ -126,8 +124,8 @@ function UserController() {
     const user = await UserModel.findOne({ phone: req.body.phone });
     if (!user) return res.status(400).send('شما قبلا ثبت نام نکردین')
     const random = Math.floor(Math.random() * 90000 + 10000)
-    myCache.set("phone", req.body.phone)
-    myCache.set("code", random)
+    myCacheCode.set("phone", req.body.phone)
+    myCacheCode.set("code", random)
     return api.Send({
       message: `ارسال کد از رستوران 
       Code: ${random}`,
@@ -137,17 +135,17 @@ function UserController() {
       function (response, status) {
         if (!status || !response) return res.status(400).send('مشکلی پیش آمد بعدا دوباره امتحان کنید')
         console.log('response', response)
-        res.status(200).send('کد دریافتی را وارد کنید')
+        return res.status(200).send('کد دریافتی را وارد کنید')
       });
   }
 
 
 
   this.verifycodeForgetPass = async (req, res) => {
-    if (req.body.code != myCache.get("code")) return res.status(400).send("کد وارد شده اشتباه هست")
+    if (req.body.code != myCacheCode.get("code")) return res.status(400).send("کد وارد شده اشتباه هست")
     else {
-      const user = await UserModel.findOne({ phone: myCache.get("phone") })
-      myCache.del("code")
+      const user = await UserModel.findOne({ phone: myCacheCode.get("phone") })
+      myCacheCode.del("code")
       res.status(200).json({ userId: user._id })
     }
   }
