@@ -226,3 +226,5 @@
 {"level":"error","message":"res.location.assign is not a function"}
 {"level":"error","message":"res is not defined"}
 {"level":"error","message":"res is not defined"}
+{"level":"error","message":"res.ststus is not a function"}
+{"level":"error","message":"phone is not defined"}

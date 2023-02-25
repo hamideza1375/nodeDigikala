@@ -7,11 +7,11 @@ const fileUpload = require('../middleware/fileUpload');
 //! get put post delete
 
 router.post('/getCodeForRegister', user, UserController.getCodeForRegister);
-router.post('/getNewCode', UserController.getNewCode);
+router.post('/getNewCode', user, UserController.getNewCode);
 router.post("/verifycodeRegister", UserController.verifycodeRegister);
 router.post('/login', user, UserController.login);
 router.post('/verifyCodeLoginForAdmin', UserController.verifyCodeLoginForAdmin);
-router.post('/sendCodeForgetPass', UserController.sendCodeForgetPass);
+router.post('/getCodeForgetPass', user, UserController.getCodeForgetPass);
 router.post("/verifycodeForgetPass", UserController.verifycodeForgetPass);
 router.post('/resetPassword', UserController.resetPassword);
 router.post('/sendImageProfile', [Auth, fileUpload], UserController.sendImageProfile);

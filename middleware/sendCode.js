@@ -1,15 +1,15 @@
 
-  // const transporter = nodemailer.createTransport({
-  //   service: 'yahoo',
-  //   auth: {
-  //     user: 'reza.attar1375@yahoo.com',
-  //     pass: 'reza1375'
-  //   }
-  // });
+// const transporter = nodemailer.createTransport({
+//   service: 'yahoo',
+//   auth: {
+//     user: 'reza.attar1375@yahoo.com',
+//     pass: 'reza1375'
+//   }
+// });
 
 
 
-module.exports = (reg, res, myCache) => {
+module.exports = (reg, res, myCache, cacheSetTimeForSendNewCode) => {
   //! email
   // const random = Math.floor(Math.random() * 90000 + 10000)
   // myCache.set("code", random)
@@ -33,7 +33,11 @@ module.exports = (reg, res, myCache) => {
   //            Code: ${random}`,
   // }, (err, info) => {
   //   console.log(err);
-  //   if (err) return res.status(400).send('مشکلی پیش آمد بعدا دوباره امتحان کنید')
+  //   if (err) {
+  // myCache.del("code")
+  // return res.status(400).send('مشکلی پیش آمد بعدا دوباره امتحان کنید')
+  // }
+  // cacheSetTimeForSendNewCode.set('newTime', true)
   //   else return res.status(200).send('کد دریافتی را وارد کنید')
   // });
   //! email
@@ -48,12 +52,18 @@ module.exports = (reg, res, myCache) => {
   //   receptor: req.body.phone,
   // },
   //   function (response, status) {
-  //     if (!status || !response) return res.status(400).send('مشکلی پیش آمد بعدا دوباره امتحان کنید')
+  //     if (!status || !response) {
+  // myCache.del("code")
+  // return res.status(400).send('مشکلی پیش آمد بعدا دوباره امتحان کنید')
+  // }
+
   //     console.log('response', response)
+  //  cacheSetTimeForSendNewCode.set('newTime', true)
   //     return res.status(200).send('کد دریافتی را وارد کنید')
   //   });
   //! sms 
 
   myCache.set("code", 12345)
-  res.status(200).send('کد دریافتی را وارد کنید 12345')
+  cacheSetTimeForSendNewCode.set('newTime', true)
+ return res.status(200).send('کد دریافتی را وارد کنید 12345')
 }

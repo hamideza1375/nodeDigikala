@@ -23,7 +23,7 @@ const AddressVoucherModel = new mongoose.Schema({
   enablePost: Number,
   id: { type: Number, default: 1, require: true },
   date: { type: Date, default: Date.now },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "address" },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "address" },
   deleteForUser: { type: mongoose.Schema.Types.ObjectId, ref: "delete" },
 });
 

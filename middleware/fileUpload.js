@@ -1,5 +1,12 @@
 const shortid = require("shortid");
 
+  // .jpeg({ quality: 80 })
+  // .resize({width: 150,height: 150})
+  // .extract({ width: 500, height: 330, left: 120, top: 70  })
+  // .extract({ width: 500, height: 330, left: 120, top: 70  })
+  // .toFormat("jpeg", { mozjpeg: true })
+  // .png()
+  // .toFile(`${appRootPath}/public/upload/profile/${filename}`)
 
 module.exports = (req, res, next) => {
   if (req.files) {
