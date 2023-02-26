@@ -18,6 +18,13 @@ router.post('/sendImageProfile', [Auth, fileUpload], UserController.sendImagePro
 router.get('/getImageProfile', Auth, UserController.getImageProfile);
 router.post("/sendProposal", Auth, UserController.sendProposal);
 router.get("/getLastPayment", Auth, UserController.getLastPayment);
+router.post("/sendNewTicket", [Auth, fileUpload], UserController.sendNewTicket);
+router.get("/ticketBox", Auth, UserController.ticketBox);
+router.get("/singleTicket/:id", Auth, UserController.singleTicket);
+router.post("/ticketAnswer/:id", Auth, UserController.ticketAnswer);
+router.post("/savedItem/:id", Auth, UserController.savedItem);
+router.get("/savedItemBox", Auth, UserController.savedItemBox);
+router.post("/removeSavedItem/:id", Auth, UserController.removeSavedItem);
 router.get("/captcha.png/:id", UserController.captcha);
 
 module.exports = router;

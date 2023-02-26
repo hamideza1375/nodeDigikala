@@ -1,7 +1,7 @@
 const fs = require('fs');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { UserModel, proposalModel, imageProfileModel } = require('../model/UserModel');
+const { UserModel, ProposalModel, ImageProfileModel, TicketModel, SavedItemModel } = require('../model/UserModel');
 const { AddressVoucherModel } = require('../model/AdminModel');
 const captchapng = require("captchapng");
 const nodeCache = require("node-cache");
@@ -9,6 +9,7 @@ const appRootPath = require('app-root-path');
 const sharp = require('sharp');
 const { ChildItemModel } = require('../model/ClientModel');
 const sendCode = require('../middleware/sendCode');
+const shortid = require('shortid');
 
 const cacheCode = new nodeCache({ stdTTL: 120, checkperiod: 120 })
 const cacheSpecification = new nodeCache({ stdTTL: 60 * 12, checkperiod: 60 * 12 })
@@ -153,18 +154,18 @@ function UserController() {
 
   this.sendImageProfile = async (req, res) => {
     if (!req.files) return res.status(400).json('بعدا دوباره امتحان کنید')
-    let imageProfile = await imageProfileModel.findOne({ userId: req.user.payload.userId })
+    let imageProfile = await ImageProfileModel.findOne({ userId: req.user.payload.userId })
     if (imageProfile) {
       if (fs.existsSync(`${appRootPath}/public/upload/profile/${imageProfile.imageUrl}`))
         fs.unlinkSync(`${appRootPath}/public/upload/profile/${imageProfile.imageUrl}`)
     }
-    await imageProfileModel.deleteMany({ userId: req.user.payload.userId })
+    await ImageProfileModel.deleteMany({ userId: req.user.payload.userId })
     sharp(req.file.data)
       .jpeg({ quality: 85 })
       .toFile(`${appRootPath}/public/upload/profile/${req.fileName}`)
       .then(data => { })
       .catch(err => { })
-    await new imageProfileModel({ imageUrl: req.fileName, userId: req.user.payload.userId }).save()
+    await new ImageProfileModel({ imageUrl: req.fileName, userId: req.user.payload.userId }).save()
     res.status(200).send('موفق آمیز')
   }
 
@@ -194,14 +195,14 @@ function UserController() {
 
 
   this.getImageProfile = async (req, res, next) => {
-    const imageProfile = await imageProfileModel.findOne({ userId: req.user.payload.userId })
+    const imageProfile = await ImageProfileModel.findOne({ userId: req.user.payload.userId })
     if (imageProfile) res.status(200).json({ imageUrl: imageProfile.imageUrl })
     else next()
   }
 
 
   this.sendProposal = async (req, res) => {
-    const proposal = await proposalModel.create({ message: req.body.message });
+    const proposal = await ProposalModel.create({ message: req.body.message });
     res.json({ proposal })
     // res.send('پیام شما با موفقیت ارسال شد')
   }
@@ -216,21 +217,65 @@ function UserController() {
   }
 
 
-  // this.sendTicket = async (req, res) => {
-  //   let fileName
-  //   if (req.files) fileName = req.fileName
-  //   else fileName = ''
-  //   await sendTicketModel.create({ title: req.body.title, message: req.body.message, imageUrl: fileName, userId: req.user.payload.userId })
-  // }
+  this.sendNewTicket = async (req, res) => {
+    let fileName
+    if (req.files) fileName = req.fileName
+    else fileName = ''
+    const newTicket = await TicketModel.create({ title: req.body.title, message: req.body.message, imageUrl: fileName, userId: req.user.payload.userId })
+    res.json({ newTicket })
+  }
+
+
+  this.ticketAnswer = async (req, res) => {
+    const ticket = await TicketModel.findById(req.params.id)
+    ticket.answer.push({ message: req.body.message, imageUrl: req.body.imageUrl, userId: req.params.userId })
+    await ticket.save()
+    res.json({ ticket })
+  }
+
+
+  this.ticketBox = async (req, res) => {
+    const tickets = await TicketModel.find({userId: req.user.payload.userId})
+    res.json({ tickets })
+  }
+
+
+  this.singleTicket = async (req, res) => {
+    const singleTicket = await TicketModel.findById(req.params.id)
+    res.json({ singleTicket })
+  }
+
+
+  this.savedItem = async (req, res) => {
+    const childItem = await ChildItemModel.findById(req.params.id)
+    if (!childItem) return res.status(400).send('مشکلی پیش آمد بعدا دوباره امتحان کنید')
+    const savedIte = await SavedItemModel.findOne({ itemId: req.params.id })
+    if (savedIte) return res.status(400).send('این محصول از قبل ذخیره شده هست')
+    const savedItem = await SavedItemModel.create({ itemId: req.params.id, userId: req.user.payload.userId })
+    res.json({ savedItem })
+  }
+
+
+  this.savedItemBox = async (req, res) => {
+    const savedItem = await SavedItemModel.find({ userId: req.user.payload.userId })
+    res.json({ savedItem })
+  }
+
+
+  this.removeSavedItem = async (req, res) => {
+    const savedItem = await SavedItemModel.findOne({userId: req.user.payload.userId, itemId: req.params.id })
+    if (!savedItem) return res.status(400).send('این محصول از ذخیره های شما حذف شده')
+    await SavedItemModel.deleteOne({ itemId: req.params.id })
+    res.send('با موفقیت از ذخیره ها حذف شد')
+  }
 
   
-
 
   // this.activeOrder = async (req, res) => {
   //   let fileName
   //   if (req.files) fileName = req.fileName
   //   else fileName = ''
-  //   await sendTicketModel.create({ title: req.body.title, message: req.body.message, imageUrl: fileName, userId: req.user.payload.userId })
+  //   await TicketModel.create({ title: req.body.title, message: req.body.message, imageUrl: fileName, userId: req.user.payload.userId })
   // }
 
 

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "inspect": "nodemon --inspect server.js"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +26,7 @@
     "nodemailer": "^6.9.1",
     "sharp": "^0.31.2",
     "shortid": "^2.2.16",
+    "socket.io": "^4.1.3",
     "winston": "^3.8.2",
     "yup": "^0.32.11",
     "zarinpal-checkout": "^0.2.7"

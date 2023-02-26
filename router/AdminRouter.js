@@ -40,4 +40,6 @@ router.post('/sendPostPrice', AuthMainAdmin, AdminController.sendPostPrice);
 router.get('/getPostPrice', AuthMainAdmin, AdminController.getPostPrice);
 // priceForPost
 
+router.get('/adminTicketBox' , AuthMainAdmin, AdminController.adminTicketBox)
+
 module.exports = router

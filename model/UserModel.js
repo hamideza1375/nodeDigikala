@@ -28,18 +28,48 @@ exports.UserModel = mongoose.model("UserModel", UserModel);
 
 
 
-const proposalModel = new mongoose.Schema({
-  message: { type: String, required: true }
+const ProposalModel = new mongoose.Schema({
+  message: { type: String, required: true, minlength: 1 }
 });
 
-exports.proposalModel = mongoose.model("proposalModel", proposalModel);
+exports.ProposalModel = mongoose.model("ProposalModel", ProposalModel);
 
 
 
 
-const imageProfileModel = new mongoose.Schema({
+const ImageProfileModel = new mongoose.Schema({
   imageUrl: String,
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "profile" },
 })
 
-exports.imageProfileModel = mongoose.model('imageProfileModel', imageProfileModel)
+exports.ImageProfileModel = mongoose.model('ImageProfileModel', ImageProfileModel)
+
+
+
+const AnswerTicketModel = new mongoose.Schema({
+  message: { type: String, require: true, minlength: 1 },
+  imageUrl: { type: String },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "ticketAnswerUserId" },
+  date: { type: Date, default: Date.now() }
+})
+
+
+
+const TicketModel = new mongoose.Schema({
+  title: { type: String, require: true, minlength: 1 },
+  message: { type: String, require: true, minlength: 1 },
+  imageUrl: { type: String },
+  answer: [AnswerTicketModel],
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "ticketUserId" },
+  date: { type: Date, default: Date.now() }
+})
+
+exports.TicketModel = mongoose.model('TicketModel', TicketModel)
+
+
+const SavedItemModel = new mongoose.Schema({
+  itemId: { type: mongoose.Schema.Types.ObjectId, ref: "savedItem" },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "savedItemUserId" },
+})
+
+exports.SavedItemModel = mongoose.model('SavedItemModel', SavedItemModel)

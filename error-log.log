@@ -228,3 +228,39 @@
 {"level":"error","message":"res is not defined"}
 {"level":"error","message":"res.ststus is not a function"}
 {"level":"error","message":"phone is not defined"}
+{"level":"error","message":"Cannot access 'ticket' before initialization"}
+{"level":"error","message":"Cannot read properties of null (reading 'ticketId')"}
+{"level":"error","message":"Cannot read properties of null (reading 'ticketId')"}
+{"level":"error","message":"ticket.ticketId.split is not a function"}
+{"level":"error","message":"SavedItemModel is not defined"}
+{"level":"error","message":"Cast to ObjectId failed for value \"63f4d600a6335311882baab\" at path \"_id\" for model \"SavedItemModel\""}
+{"level":"error","message":"router is not defined"}
+{"level":"error","message":"router is not defined"}
+{"level":"error","message":"SavedItemMode is not defined"}
+{"level":"error","message":"Parameter \"filter\" to find() must be an object, got 63fb78b83beda52bb476a753"}
+{"level":"error","message":"Parameter \"filter\" to find() must be an object, got 63fb78b83beda52bb476a753"}
+{"level":"error","message":"Parameter \"filter\" to find() must be an object, got 63fb7a0f689c1f15a85c1795"}
+{"level":"error","message":"Cannot find module 'socket.io'\nRequire stack:\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\server.js"}
+{"level":"error","message":"Cannot find module './model/PvMessageModels'\nRequire stack:\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\server.js"}
+{"level":"error","message":"socketIo is not defined"}
+{"level":"error","message":"socketIo is not defined"}
+{"level":"error","message":"socketIo is not defined"}
+{"level":"error","message":"Cannot find module './model/PvMessageModels'\nRequire stack:\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\socketIo\\socketIo.js\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\server.js"}
+{"level":"error","message":"Cannot find module './model/PvMessageModels'\nRequire stack:\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\socketIo\\socketIo.js\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\server.js"}
+{"level":"error","message":"Cannot find module './model/PvMessageModels'\nRequire stack:\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\socketIo\\socketIo.js\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\server.js"}
+{"level":"error","message":"Cannot find module './model/PvMessageModels'\nRequire stack:\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\socketIo\\socketIo.js\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\server.js"}
+{"level":"error","message":"Cannot find module './model/PvMessageModels'\nRequire stack:\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\socketIo\\socketIo.js\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\server.js"}
+{"level":"error","message":"Cannot find module './model/PvMessageModels'\nRequire stack:\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\socketIo\\socketIo.js\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\server.js"}
+{"level":"error","message":"Cannot find module './model/PvMessageModels'\nRequire stack:\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\socketIo\\socketIo.js\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\server.js"}
+{"level":"error","message":"Cannot find module './model/PvMessageModels'\nRequire stack:\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\socketIo\\socketIo.js\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\server.js"}
+{"level":"error","message":"Cannot find module './model/PvMessageModels'\nRequire stack:\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\socketIo\\socketIo.js\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\server.js"}
+{"level":"error","message":"Cannot find module './model/PvMessageModels'\nRequire stack:\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\socketIo\\socketIo.js\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\server.js"}
+{"level":"error","message":"Cannot find module './model/PvMessageModels'\nRequire stack:\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\socketIo\\socketIo.js\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\server.js"}
+{"level":"error","message":"Cannot find module './model/PvMessageModels'\nRequire stack:\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\socketIo\\socketIo.js\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\server.js"}
+{"level":"error","message":"Cannot find module './model/PvMessageModels'\nRequire stack:\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\socketIo\\socketIo.js\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\server.js"}
+{"level":"error","message":"Cannot find module './model/PvMessageModels'\nRequire stack:\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\socketIo\\socketIo.js\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\server.js"}
+{"level":"error","message":"Cannot find module './model/PvMessageModels'\nRequire stack:\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\socketIo\\socketIo.js\n- C:\\Users\\rezaa\\Desktop\\nodeDgkala\\server.js"}
+{"level":"error","message":"server.use is not a function"}
+{"level":"error","message":"server.use is not a function"}
+{"level":"error","message":"server.use is not a function"}
+{"level":"error","message":"server.use is not a function"}

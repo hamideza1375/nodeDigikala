@@ -3,7 +3,7 @@ const appRootPath = require("app-root-path");
 const sharp = require("sharp");
 const { CategoryModel, ChildItemModel } = require("../model/ClientModel");
 const { NotifeeModel, AddressVoucherModel, PostPriceModel } = require("../model/AdminModel");
-const { UserModel, proposalModel } = require("../model/UserModel");
+const { UserModel, proposalModel, TicketModel } = require("../model/UserModel");
 
 var interval
 
@@ -265,6 +265,28 @@ function AdminController() {
     // const price = postPrice.length ? postPrice[postPrice.length - 1].price : 20000
   }
 
+
+  this.adminTicketBox = async (req, res) => {
+    const ticket = await TicketModel.find();
+    res.status(200).json({ ticket })
+  }
+
+
+
+  this.socketIoMessageBox = async (req, res) => {
+    let fileName
+    if (req.files) fileName = req.fileName
+    else fileName = ''
+    await TicketModel.create({ title: req.body.title, message: req.body.message, imageUrl: fileName, userId: req.user.payload.userId })
+  }
+
+
+  // this.seller = async (req, res) => {
+  //   let fileName
+  //   if (req.files) fileName = req.fileName
+  //   else fileName = ''
+  //   await TicketModel.create({ title: req.body.title, message: req.body.message, imageUrl: fileName, userId: req.user.payload.userId })
+  // }
 
 }
 
