@@ -7,7 +7,7 @@ const captchapng = require("captchapng");
 const nodeCache = require("node-cache");
 const appRootPath = require('app-root-path');
 const sharp = require('sharp');
-const { ChildItemModel, PaymentModel } = require('../model/ClientModel');
+const { ChildItemModel } = require('../model/ClientModel');
 const sendCode = require('../middleware/sendCode');
 const shortid = require('shortid');
 
@@ -208,72 +208,13 @@ function UserController() {
   }
 
 
-  // this.getLastPayment2 = async (req, res) => {
-  //   // const AddressVoucher = await AddressVoucherModel.findOne({ user: req.user.payload.userId }).sort({ createdAt: -1 });
-  //   // const AddressVoucher = await AddressVoucherModel.find({ comment: [_id: 10] })
-
-  //   // const AddressVoucher = await AddressVoucherModel.find({ userId: req.user.payload.userId })
-  //   // const addressSlice = AddressVoucher.slice(AddressVoucher.length - 5, AddressVoucher.length)
-  //   // res.json({ AddressVoucher: addressSlice })
-
-
-  //   // const lastPayment = await PaymentModel.find({_id:'63fde81ad779c22f80c9aa3a', childItemsId:{_id:'63fde81ad779c22f80c9aa3d' })
-  //   // .select({childItemsId: {name:1}})
-
-
-  //   // const lastPayment = await PaymentModel.find({ childItemsId:{_id:'a'}})
-  //   //   .sort({date: -1})
-  //   //   .limit(5)
-
-  //   // .select({childItemsId: {name:1}}) از توی چیلد ایتم فقط مقدار نامش رو برمیگردونه
-  //   // .select({childItemsId: 1})
-  //   // lastPayment.childItemsId.id('63fde81ad779c22f80c9aa3d')
-  //   // .find({ childItemsId:{_id:'a'}})
-  //   // .find({ childItemsId:'222'}) تو آرایرو میگرده و اونی که توش این مقدار رو داررو برمیگردونه
-  //   // .find({ childItemsId:/'2'/})  تو آرایرو میگرده و اونی که هرجاش این مقدار پیدا بشرو برمیگردونه و بدون نماد آزایه دورش بنویسش همینجوری که نوشته شده 
-  //   // .find({ childItemsId:/['2']/}) تو آرایرو میگرده و اونی که هرجاش این مقدار پیدا بشرو برمیگردونه
-  //   // .find({ childItemsId:['111', '222']})
-  //   // .find({ childItemsId:[]})
-  //   // .find({ childItemsTitle: /.*le12.*/ })
-  //   // .find({ childItemsTitle: /title1/ }) اینکلود میکنه و اونایی که توشون این مقدار پیدا بشرو برمیگردونه
-  //   // .count() = بجای مقدار تعداد رو بر میگردونه و من الان گفتم پنج تای آخر رو میخوام ولی اگه فقط 3 تا تو دیتابیس موجود باشه تعداد رو 3 نشون میده
-
-  //   // .select({fullname:1, phone:1}) = فقط مقدار نام و شماره تلفن رو برمیگردونه به اضافه ی ایدی
-
-  //   const lastPayment = await PaymentModel.find()
-  //   res.json({ lastPayment })
-
-  // }
-
-
-
-
   this.getLastPayment = async (req, res) => {
-    // const lastPayment = await PaymentModel.find({ description: { $eq: '' } }) اونایی که مقدار دسکریپشنشون خالی باشرو فقط نمایش میده
-    // const lastPayment = await PaymentModel.find({ description: { $ne: '' } }) اونایی که مقدار دسکریپشنشون خالی نباشرو فقط نمایش میده
-   
-    /* onst lastPayment = await PaymentModel.find()
-    .or([{ description: { $ne: '' }, floor: { $gt: 8 }}]) = اونایی که دسکزیپشنشون خالی نباشه و فلورشون بزرگ تر از هشت باشزو برمیگردونه  */
-   
-    // or([{ description: { $ne: '' }, floor: { $gt: 8 }}]) = وقتی دوتا شرت رو داخل یک ابجکت بنویشی یعنی 1&1
-    // or([{ description: { $ne: '' }},  {floor: { $gt: 8 }}]) وقتی شزت هارو داخل ابجکت های جدا بنویسی یعنی 1|1
-
-    // $eq: 8 = فقط باید مقدار 8 باشه تابرگردونه
-    // $ne: 8 = اونایی که مقدارشون برابر نباشه با 8 رو برمیگردونه
-    // $gt:8 = بزرگ تر از 8 رو برمیگزدونه
-    // $gte:8 = بزرگ تر یابرابر 8 رو برمیگزدونه
-    // $lt:8 = کوچکتر تر از 8 رو برمیگزدونه
-    // $lte:8 = کوچکتر تر یا برابر 8 رو برمیگزدونه
-    // $in:[6, 7, 2] = اگه مقدار برابر با یکی از مقادیر داخل آرایه بود اونارو برمیگردونه
-    // $nin:[1, 7, 9] اگه مقدار برابر یکی از مقادیر داخل آرایه بود اونارو برنمیگردونه
-    // .or([{plaque:6},{floor:9}]) هر کدوم اگه مقدار فلورشون برابر 9 یا مقدار پلاکشون برابر 6 باشرو برمیگردونه
-
-    const lastPayment = await PaymentModel.find()
-    .or([{ description: { $ne: '' }},  {floor: { $gt: 8 }}])
-    res.json({ lastPayment })
+    // const AddressVoucher = await AddressVoucherModel.findOne({ user: req.user.payload.userId }).sort({ createdAt: -1 });
+    // const AddressVoucher = await AddressVoucherModel.find({ comment: [_id: 10] })
+    const AddressVoucher = await AddressVoucherModel.find({ userId: req.user.payload.userId })
+    const addressSlice = AddressVoucher.slice(AddressVoucher.length - 5, AddressVoucher.length)
+    res.json({ AddressVoucher: addressSlice })
   }
-
-
 
 
   this.sendNewTicket = async (req, res) => {
@@ -294,7 +235,7 @@ function UserController() {
 
 
   this.ticketBox = async (req, res) => {
-    const tickets = await TicketModel.find({ userId: req.user.payload.userId })
+    const tickets = await TicketModel.find({userId: req.user.payload.userId})
     res.json({ tickets })
   }
 
@@ -322,13 +263,13 @@ function UserController() {
 
 
   this.removeSavedItem = async (req, res) => {
-    const savedItem = await SavedItemModel.findOne({ userId: req.user.payload.userId, itemId: req.params.id })
+    const savedItem = await SavedItemModel.findOne({userId: req.user.payload.userId, itemId: req.params.id })
     if (!savedItem) return res.status(400).send('این محصول از ذخیره های شما حذف شده')
     await SavedItemModel.deleteOne({ itemId: req.params.id })
     res.send('با موفقیت از ذخیره ها حذف شد')
   }
 
-
+  
 
   // this.activeOrder = async (req, res) => {
   //   let fileName

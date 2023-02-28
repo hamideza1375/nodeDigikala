@@ -13,8 +13,6 @@ module.exports = (req, res, next) => {
     let file;
     if (req.files.imageUrl) file = req.files.imageUrl;
     else if (req.files.videoUrl) file = req.files.videoUrl;
-    else if (req.files.uri) file = req.files.uri;
-    else if (req.files.url) file = req.files.url;
 
     if (file.mimetype.split('/')[0] === 'image') {
       if (file.size > 5000000) return res.status(400).send('حجم عکس نباید بزرگ تر از 5 مگابایت باشد')

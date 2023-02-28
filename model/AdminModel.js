@@ -39,3 +39,9 @@ const PostPriceModel = new mongoose.Schema({
 exports.PostPriceModel = mongoose.model("PostPriceModel", PostPriceModel);
 
 
+const SellerModel = mongoose.Schema({
+    brand : {type : String},
+    star : {type : String},
+})
+exports.SellerModel =  mongoose.model( 'SellerModel' , SellerModel)
+

@@ -42,4 +42,6 @@ router.get('/getPostPrice', AuthMainAdmin, AdminController.getPostPrice);
 
 router.get('/adminTicketBox' , AuthMainAdmin, AdminController.adminTicketBox)
 
+router.post('/createSeller' , AuthMainAdmin, AdminController.createSeller)
+
 module.exports = router

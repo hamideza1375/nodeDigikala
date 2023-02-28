@@ -112,8 +112,8 @@ function ClientController() {
       userId: req.user.payload.userId,
       fullname: req.user.payload.fullname,
       phone: req.user.payload.phone,
-      title: req.body.childItemsTitle,
-      childItemsId: req.body.allchildItemsId,
+      childItemsId: [{name:'n122', test:'t122'},{name:'n222', test:'t222'},{name:'n222', test:'t222'},],
+      childItemsTitle: req.body.childItemsTitle,
       floor: req.body.floor,
       plaque: req.body.plaque,
       address: req.body.address,
@@ -148,7 +148,7 @@ function ClientController() {
         plaque: payment.plaque,
         origin: payment.origin,
         price: payment.price,
-        title: payment.title,
+        childItemsTitle: payment.childItemsTitle,
         id: allAddress.length ? allAddress[allAddress.length - 1].id + 1 : 1,
         address: payment.address,
         description: payment.description,
@@ -164,7 +164,7 @@ function ClientController() {
         floor: payment.floor,
         plaque: payment.plaque,
         address: payment.address,
-        title: payment.title,
+        childItemsTitle: payment.childItemsTitle,
       })
 
     } else {

@@ -8,8 +8,7 @@ module.exports = (server) => {
   io.on("connection", (socket) => {
 
     socket.on("online", async (data) => {
-      // console.log(socket.id);
-
+      console.log(data);
       socket.join('1');
       users.push({ user: data.user, userId: data.userId, socketId: socket.id })
       io.sockets.emit("online", users);
@@ -23,7 +22,6 @@ module.exports = (server) => {
           }
         });
       }
-
       io.sockets.emit("mongoMsg", msgModel);
     });
 

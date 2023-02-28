@@ -2,7 +2,7 @@ const fs = require("fs");
 const appRootPath = require("app-root-path");
 const sharp = require("sharp");
 const { CategoryModel, ChildItemModel } = require("../model/ClientModel");
-const { NotifeeModel, AddressVoucherModel, PostPriceModel } = require("../model/AdminModel");
+const { NotifeeModel, AddressVoucherModel, PostPriceModel, SellerModel } = require("../model/AdminModel");
 const { UserModel, proposalModel, TicketModel } = require("../model/UserModel");
 
 var interval
@@ -257,12 +257,10 @@ function AdminController() {
   }
 
 
-
   this.getPostPrice = async (req, res) => {
     const postPrice = await PostPriceModel.findOne()
     const price = postPrice ? postPrice : 20000
     res.status(200).json({ price })
-    // const price = postPrice.length ? postPrice[postPrice.length - 1].price : 20000
   }
 
 
@@ -272,21 +270,13 @@ function AdminController() {
   }
 
 
-
-  this.socketIoMessageBox = async (req, res) => {
-    let fileName
-    if (req.files) fileName = req.fileName
-    else fileName = ''
-    await TicketModel.create({ title: req.body.title, message: req.body.message, imageUrl: fileName, userId: req.user.payload.userId })
+  this.createSeller = async (req, res) => {
+    // if(!req.files) return res.status(400).send('یک عکس انتخاب کنید')
+    // const seller = await SellerModel.create({brand:req.body.brand, phone:req.body.phone });
+    throw new TypeError('aaaa')
+    
+    res.status(200).json('{seller}')
   }
-
-
-  // this.seller = async (req, res) => {
-  //   let fileName
-  //   if (req.files) fileName = req.fileName
-  //   else fileName = ''
-  //   await TicketModel.create({ title: req.body.title, message: req.body.message, imageUrl: fileName, userId: req.user.payload.userId })
-  // }
 
 }
 
