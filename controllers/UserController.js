@@ -209,36 +209,32 @@ function UserController() {
 
 
   // this.getLastPayment2 = async (req, res) => {
-  //   // const AddressVoucher = await AddressVoucherModel.findOne({ user: req.user.payload.userId }).sort({ createdAt: -1 });
-  //   // const AddressVoucher = await AddressVoucherModel.find({ comment: [_id: 10] })
+  // const AddressVoucher = await AddressVoucherModel.findOne({ user: req.user.payload.userId }).sort({ createdAt: -1 });
+  // const AddressVoucher = await AddressVoucherModel.find({ comment: [_id: 10] })
 
-  //   // const AddressVoucher = await AddressVoucherModel.find({ userId: req.user.payload.userId })
-  //   // const addressSlice = AddressVoucher.slice(AddressVoucher.length - 5, AddressVoucher.length)
-  //   // res.json({ AddressVoucher: addressSlice })
-
-
-  //   // const lastPayment = await PaymentModel.find({_id:'63fde81ad779c22f80c9aa3a', childItemsId:{_id:'63fde81ad779c22f80c9aa3d' })
-  //   // .select({childItemsId: {name:1}})
+  // const AddressVoucher = await AddressVoucherModel.find({ userId: req.user.payload.userId })
+  // const addressSlice = AddressVoucher.slice(AddressVoucher.length - 5, AddressVoucher.length)
+  // res.json({ AddressVoucher: addressSlice })
 
 
-  //   // const lastPayment = await PaymentModel.find({ childItemsId:{_id:'a'}})
-  //   //   .sort({date: -1})
-  //   //   .limit(5)
 
-  //   // .select({childItemsId: {name:1}}) از توی چیلد ایتم فقط مقدار نامش رو برمیگردونه
-  //   // .select({childItemsId: 1})
-  //   // lastPayment.childItemsId.id('63fde81ad779c22f80c9aa3d')
-  //   // .find({ childItemsId:{_id:'a'}})
-  //   // .find({ childItemsId:'222'}) تو آرایرو میگرده و اونی که توش این مقدار رو داررو برمیگردونه
-  //   // .find({ childItemsId:/'2'/})  تو آرایرو میگرده و اونی که هرجاش این مقدار پیدا بشرو برمیگردونه و بدون نماد آزایه دورش بنویسش همینجوری که نوشته شده 
-  //   // .find({ childItemsId:/['2']/}) تو آرایرو میگرده و اونی که هرجاش این مقدار پیدا بشرو برمیگردونه
-  //   // .find({ childItemsId:['111', '222']})
-  //   // .find({ childItemsId:[]})
-  //   // .find({ childItemsTitle: /.*le12.*/ })
-  //   // .find({ childItemsTitle: /title1/ }) اینکلود میکنه و اونایی که توشون این مقدار پیدا بشرو برمیگردونه
-  //   // .count() = بجای مقدار تعداد رو بر میگردونه و من الان گفتم پنج تای آخر رو میخوام ولی اگه فقط 3 تا تو دیتابیس موجود باشه تعداد رو 3 نشون میده
+  // const lastPayment = await PaymentModel.find({ childItemsId:{_id:'a'}})
+  //   .sort({date: -1})
 
-  //   // .select({fullname:1, phone:1}) = فقط مقدار نام و شماره تلفن رو برمیگردونه به اضافه ی ایدی
+
+  // .select({fullname:1, phone:1}) = فقط مقدار نام و شماره تلفن رو برمیگردونه به اضافه ی ایدی
+  // .select({childItemsId: {name:1}}) از توی چیلد ایتم فقط مقدار نامش رو برمیگردونه
+  // .select({childItemsId: 1})
+  // .count() = بجای مقدار تعداد رو بر میگردونه و من الان گفتم پنج تای آخر رو میخوام ولی اگه فقط 3 تا تو دیتابیس موجود باشه تعداد رو 3 نشون میده
+  // .limit(5) فقط پنج تای اول رو برمیگردونه
+  // lastPayment.childItemsId.id('63fde81ad779c22f80c9aa3d')
+  // .find({ childItemsId:{_id:'a'}})
+  // .find({ childItemsId:/^ماشین/})  اونایی که اولش ماشین داشته باشرو برمیگردونه
+  // .find({childItemsTitle: /قرمز$/}) اونایی که اخرشون با قرمز تموم بشرو برمیگردونه
+  // .find({ childItemsTitle: /.*title1.*/ }) اینکلود میکنه و اونایی که توشون این مقدار پیدا بشرو برمیگردونه
+  // .find({ childItemsTitle: /title1/ }) اینکلود میکنه و اونایی که توشون این مقدار پیدا بشرو برمیگردونه
+  // .find({ childItemsId:['111', '222']})
+  // .find({ childItemsId:[]})
 
   //   const lastPayment = await PaymentModel.find()
   //   res.json({ lastPayment })
@@ -251,12 +247,13 @@ function UserController() {
   this.getLastPayment = async (req, res) => {
     // const lastPayment = await PaymentModel.find({ description: { $eq: '' } }) اونایی که مقدار دسکریپشنشون خالی باشرو فقط نمایش میده
     // const lastPayment = await PaymentModel.find({ description: { $ne: '' } }) اونایی که مقدار دسکریپشنشون خالی نباشرو فقط نمایش میده
-   
+
     /* onst lastPayment = await PaymentModel.find()
     .or([{ description: { $ne: '' }, floor: { $gt: 8 }}]) = اونایی که دسکزیپشنشون خالی نباشه و فلورشون بزرگ تر از هشت باشزو برمیگردونه  */
-   
-    // or([{ description: { $ne: '' }, floor: { $gt: 8 }}]) = وقتی دوتا شرت رو داخل یک ابجکت بنویشی یعنی 1&1
-    // or([{ description: { $ne: '' }},  {floor: { $gt: 8 }}]) وقتی شزت هارو داخل ابجکت های جدا بنویسی یعنی 1|1
+
+    // .or([{ description: { $ne: '' }, floor: { $gt: 8 }}]) = وقتی دوتا شرت رو داخل یک ابجکت بنویشی یعنی 1&1
+    // .and([{ description: { $ne: '' }},  {floor: { $gt: 8 }}])  خود اند رو هم داریم
+    // .or([{ description: { $ne: '' }},  {floor: { $gt: 8 }}]) وقتی شزت هارو داخل ابجکت های جدا بنویسی یعنی 1|1
 
     // $eq: 8 = فقط باید مقدار 8 باشه تابرگردونه
     // $ne: 8 = اونایی که مقدارشون برابر نباشه با 8 رو برمیگردونه
@@ -268,9 +265,62 @@ function UserController() {
     // $nin:[1, 7, 9] اگه مقدار برابر یکی از مقادیر داخل آرایه بود اونارو برنمیگردونه
     // .or([{plaque:6},{floor:9}]) هر کدوم اگه مقدار فلورشون برابر 9 یا مقدار پلاکشون برابر 6 باشرو برمیگردونه
 
-    const lastPayment = await PaymentModel.find()
-    .or([{ description: { $ne: '' }},  {floor: { $gt: 8 }}])
-    res.json({ lastPayment })
+    //! const lastPayment = await PaymentModel.findByIdAndUpdate(
+    //   { _id: '63fe054d2b67d226ac46bb32' },
+    //   { $set: { floor: 1 } },
+    //   { new: true }) // نتیجرو تو متغیر همونجا آپدیت میکنه و برمیگزدونه
+    // res.json({ lastPayment })
+
+    // const lastPayment = await PaymentModel.findByIdAndUpdate(
+    //   { _id: '63fe054d2b67d226ac46bb32' },
+    //   { $set: { "childItemsId.text": "newText" } },
+    //   )
+    // res.json({ lastPayment })
+
+    // const lastPayment = await PaymentModel.findOneAndUpdate(
+    //   {
+    //     _id: "63fe054d2b67d226ac46bb32",
+    //     childItemsId: { $elemMatch: { _id: "63fe054d2b67d226ac46bb35" } }
+    //   },
+    //   { $set: { "childItemsId.$.test": "newtest2" } },
+    //   { new: true }
+    // )
+    // res.json({ lastPayment })
+
+    //! updateOne =مقدار رو برنمیگزدونه و فقط بروز میکنه 
+    //! findOneAndUpdate = هم بروز میکنه و هم مقدار رو برمیگردونه
+    //! findByIdAndUpdate = هم بروز میکنه و هم مقدار رو برمیگردون
+    //! updateMany
+    //! deleteOne
+    //! findOneAndDelete
+    //! findByIdAndDelete
+    //! deleteMany
+
+    //! edit child
+    // const lastPayment = await PaymentModel.findOne({_id: "63fdf2798705f42c9cbd8655"})
+    // const child = lastPayment.childItemsId.id('63fdf2798705f42c9cbd8658')
+    // child.test = '111'
+    // await lastPayment.save()
+    // res.json({ lastPayment })
+    //!
+    // const lastPayment = await PaymentModel.findOneAndUpdate(
+    //   {
+    //     _id: "63fe054d2b67d226ac46bb32",
+    //     childItemsId: { $elemMatch: { _id: "63fe054d2b67d226ac46bb35" } }
+    //   },
+    //   { $set: { "childItemsId.$.test": "newtest2" } },
+    //   { new: true }
+    // )
+    //! edit child
+    
+    //! delete child
+    // const lastPayment = await PaymentModel.findOne({ _id: "63fdf2798705f42c9cbd8655" })
+    // const child = lastPayment.childItemsId.id('63fdf2798705f42c9cbd8658')
+    // if (!child) throw new Error()
+    // await child.remove()
+    // await lastPayment.save()
+    // res.json({ lastPayment })
+    //! delete child
   }
 
 

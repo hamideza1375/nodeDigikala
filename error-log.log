@@ -26,3 +26,19 @@
 {"level":"error","message":"Can't use $set with Array."}
 {"level":"error","message":"Can't use $set with Array."}
 {"level":"error"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'id')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'id')"}
+{"level":"error","message":"Plan executor error during findAndModify :: caused by :: Cannot create field 'name' in element {childItemsId: [ { _id: ObjectId('63fe054d2b67d226ac46bb35'), name: \"n122\", test: \"t122\" }, { _id: ObjectId('63fe054d2b67d226ac46bb34'), name: \"n222\", test: \"t222\" }, { _id: ObjectId('63fe054d2b67d226ac46bb33'), name: \"n222\", test: \"t222\" } ]}"}
+{"level":"error","message":"Plan executor error during findAndModify :: caused by :: Cannot create field 'name' in element {childItemsId: [ { _id: ObjectId('63fe054d2b67d226ac46bb35'), name: \"n122\", test: \"t122\" }, { _id: ObjectId('63fe054d2b67d226ac46bb34'), name: \"n222\", test: \"t222\" }, { _id: ObjectId('63fe054d2b67d226ac46bb33'), name: \"n222\", test: \"t222\" } ]}"}
+{"level":"error","message":"PaymentModel.findAndUpdate is not a function"}
+{"level":"error","message":"PaymentModel.findOneAndِRemove is not a function"}
+{"level":"error","message":"PaymentModel.findOneAndِDelete is not a function"}
+{"level":"error","message":"PaymentModel.findOneAndِDelete is not a function"}
+{"level":"error","message":"Cannot specify both new=true and remove=true; 'remove' always returns the deleted document"}
+{"level":"error","message":"Cannot specify both new=true and remove=true; 'remove' always returns the deleted document"}
+{"level":"error","message":"Cannot specify both new=true and remove=true; 'remove' always returns the deleted document"}
+{"level":"error","message":"Plan executor error during findAndModify :: caused by :: The positional operator did not find the match needed from the query."}
+{"level":"error","message":"FieldPath field names may not start with '$'. Consider using $getField or $setField."}
+{"level":"error","message":"Plan executor error during findAndModify :: caused by :: The positional operator did not find the match needed from the query."}
+{"level":"error","message":"Cannot read properties of undefined (reading 'id')"}
+{"level":"error","message":"Cannot read properties of null (reading 'remove')"}
