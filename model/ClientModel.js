@@ -1,3 +1,4 @@
+// appmodel
 const mongoose = require('mongoose');
 
 // regex 
@@ -69,16 +70,13 @@ const CategoryModel = new mongoose.Schema({
 
 exports.CategoryModel = mongoose.model("CategoryModel", CategoryModel);
 
-const TestModel = new mongoose.Schema({
-    test : String,
-    name : String,
-})
+
 
 const PaymentModel = new mongoose.Schema({
     fullname: { type: String, require: true },
     phone: { type: Number, require: true, minlength: 11, maxlength: 11 },
     price: { type: Number, require: true },
-    childItemsId: [TestModel],
+    childItemsId: { type: Array, require: true },
     childItemsTitle: { type: String, require: true },
     floor: { type: Number, require: true, min: 1 },
     plaque: { type: Number, require: true, min: 1 },

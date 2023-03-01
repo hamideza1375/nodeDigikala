@@ -1,3 +1,7 @@
+// appcontas
+// spfa
+// app200
+// apprenderparams
 const fs = require("fs");
 const appRootPath = require("app-root-path");
 const sharp = require("sharp");
@@ -271,12 +275,23 @@ function AdminController() {
 
 
   this.createSeller = async (req, res) => {
-    // if(!req.files) return res.status(400).send('یک عکس انتخاب کنید')
-    // const seller = await SellerModel.create({brand:req.body.brand, phone:req.body.phone });
-    throw new TypeError('aaaa')
-    
-    res.status(200).json('{seller}')
+    await SellerModel.create({ brand: req.body.brand, phone: req.body.phone });
+    res.status(200).json('با موفقیت ساخته شد')
   }
+
+
+  this.deleteSeller = async (req, res) => {
+    await SellerModel.deleteOne({ phone: req.body.phone });
+    res.status(200).send('با موفقیت حذف شد')
+  }
+
+
+  this.getAllSellers = async (req, res) => {
+    const seller = await SellerModel.find();
+    res.status(200).json({ seller })
+  }
+
+  // قسمت ورود فروشندگان رو جدا درست کن و اگه بخوان وارد بشن شماره تماس میخواد
 
 }
 

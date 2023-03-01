@@ -42,3 +42,21 @@
 {"level":"error","message":"Plan executor error during findAndModify :: caused by :: The positional operator did not find the match needed from the query."}
 {"level":"error","message":"Cannot read properties of undefined (reading 'id')"}
 {"level":"error","message":"Cannot read properties of null (reading 'remove')"}
+{"level":"error","message":"Cast to ObjectId failed for value \"9\" at path \"_id\" for model \"PaymentModel\""}
+{"level":"error","message":"Schema hasn't been registered for model \"user\".\nUse mongoose.model(name, schema)"}
+{"level":"error","message":"Schema hasn't been registered for model \"user\".\nUse mongoose.model(name, schema)"}
+{"level":"error","message":"Schema hasn't been registered for model \"user\".\nUse mongoose.model(name, schema)"}
+{"level":"error","message":"Schema hasn't been registered for model \"user\".\nUse mongoose.model(name, schema)"}
+{"level":"error","message":"res is not defined"}
+{"level":"error","message":"The positional operator did not find the match needed from the query."}
+{"level":"error","message":"PaymentModel.delete is not a function"}
+{"level":"error","message":"PaymentModel.delete is not a function"}
+{"level":"error","message":"PaymentModel.delete is not a function"}
+{"level":"error","message":"The positional operator did not find the match needed from the query."}
+{"level":"error","message":"Can't use $elemMatchs with Array."}
+{"level":"error","message":"$all needs an array"}
+{"level":"error","message":"Query filter must be an object, got an array "}
+{"level":"error","message":"Cannot read properties of undefined (reading 'find')"}
+{"level":"error","message":""}
+{"level":"error"}
+{"level":"error","message":"path must be a string to res.sendFile"}

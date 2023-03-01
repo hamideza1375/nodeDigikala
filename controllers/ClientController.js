@@ -1,3 +1,6 @@
+// appcontas
+// spfa
+// app200
 const node_geocoder = require('node-geocoder');
 const { CategoryModel, ChildItemModel, PaymentModel } = require('../model/ClientModel')
 const { NotifeeModel, AddressVoucherModel } = require('../model/AdminModel')
@@ -112,7 +115,7 @@ function ClientController() {
       userId: req.user.payload.userId,
       fullname: req.user.payload.fullname,
       phone: req.user.payload.phone,
-      childItemsId: [{name:'n122', test:'t122'},{name:'n222', test:'t222'},{name:'n222', test:'t222'},],
+      childItemsId: req.params.childItemsId,
       childItemsTitle: req.body.childItemsTitle,
       floor: req.body.floor,
       plaque: req.body.plaque,

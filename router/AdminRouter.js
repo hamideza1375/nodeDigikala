@@ -1,3 +1,4 @@
+// sprouter
 const router = require('express').Router();
 const AdminController = require('../controllers/AdminController');
 const Auth = require('../middleware/Auth');
@@ -43,5 +44,7 @@ router.get('/getPostPrice', AuthMainAdmin, AdminController.getPostPrice);
 router.get('/adminTicketBox' , AuthMainAdmin, AdminController.adminTicketBox)
 
 router.post('/createSeller' , AuthMainAdmin, AdminController.createSeller)
+router.delete('/deleteSeller/:id' , AuthMainAdmin, AdminController.deleteSeller)
+router.get('/getAllSellers' , AuthMainAdmin, AdminController.getAllSellers)
 
 module.exports = router

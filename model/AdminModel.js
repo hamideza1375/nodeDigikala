@@ -1,3 +1,4 @@
+// appmodel
 const mongoose = require('mongoose');
 
 
@@ -40,8 +41,12 @@ exports.PostPriceModel = mongoose.model("PostPriceModel", PostPriceModel);
 
 
 const SellerModel = mongoose.Schema({
-    brand : {type : String},
+    brand : {type : String, require:true, minlength:1},
+    phone : {type : Number, require:true, minlength:11, maxlength:11},
     star : {type : String},
 })
 exports.SellerModel =  mongoose.model( 'SellerModel' , SellerModel)
+
+
+// appmodel
 
