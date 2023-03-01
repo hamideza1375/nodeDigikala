@@ -43,7 +43,7 @@ socketIo(server)
 app.use(Client)
 app.use(User)
 app.use(Admin)
-app.use('/download',fileDownload);
+// app.use('/download',fileDownload);
 app.use(_404);
 
 const port = process.env.PORT || 4000

@@ -176,3 +176,153 @@ fruit10.splice(1);
 console.log(fruit10); Banana
 //* splice !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //! Array
+
+//! Number
+const _number1 = 15.095
+(_number1).toFixed() = 15; type='string'
+(_number1).toPrecision() = 15.095; type='string'
+isNaN(_number1) = false
+Number(_number1) = 15.095; type = 'number'
+parseInt(_number1) = 151; type = 'number'
+parseFloat(_number1) = 15.095; type = 'number'
+//! Number
+
+
+
+//! arguments
+const numberArray = [{ id: 1, price: 50 }, { id: 2, price: 70 }, { id: 3, price: 50 }]
+function sum() {
+  var number = 0
+  for (let i = 0; i < arguments.length; i++) number += arguments[i].price
+  console.log(number)
+}
+sum(...numberArray)
+//! arguments
+
+
+
+
+//! generator 
+function* generator() {
+  yield 1;
+  yield 2;
+}
+const gen = generator()
+console.log(gen.next().value); // 1
+console.log(gen.next().value); // 2
+console.log(gen.next().value); // 3
+/////////////////////////////////////////////////
+function* infinite() {
+  let index = 0;
+  while (index <= 10){
+     index++;
+     yield new Date()
+  }
+}
+const generator = infinite();
+
+setInterval(() => {
+  console.log(generator.next().value);
+}, 5000);
+//! generator
+
+
+
+
+//! Mongoose
+  // this.getLastPayment2 = async (req, res) => {
+
+  //!slice
+  // const AddressVoucher = await AddressVoucherModel.find({ userId: req.user.payload.userId })
+  // const addressSlice = AddressVoucher.slice(AddressVoucher.length - 5, AddressVoucher.length)
+
+
+
+  // lastPayment.childItemsId.id('63fde81ad779c22f80c9aa3d')
+  // .find({ childItemsId:{_id:'a'}})
+  // .find({ childItemsId:/^ماشین/})  اونایی که اولش ماشین داشته باشرو برمیگردونه
+  // .find({childItemsTitle: /قرمز$/}) اونایی که اخرشون با قرمز تموم بشرو برمیگردونه
+  // .find({ childItemsTitle: /.*title1.*/ }) اینکلود میکنه و اونایی که توشون این مقدار پیدا بشرو برمیگردونه
+  // .find({ childItemsTitle: /title1/ }) اینکلود میکنه و اونایی که توشون این مقدار پیدا بشرو برمیگردونه
+  // .find({ childItemsId:['111', '222']})
+  // .find({ childItemsId:[]})
+
+  // }
+
+
+
+
+  // this.getLastPayment3 = async (req, res) => {
+  //! updateOne =مقدار رو برنمیگزدونه و فقط بروز میکنه 
+  //! findOneAndUpdate = هم بروز میکنه و هم مقدار رو برمیگردونه
+  //! findByIdAndUpdate = هم بروز میکنه و هم مقدار رو برمیگردون
+  //! updateMany
+  //! deleteOne
+  //! findOneAndDelete
+  //! findByIdAndDelete
+  //! deleteMany
+
+
+  // .select({fullname:1, phone:1}) = فقط مقدار نام و شماره تلفن رو برمیگردونه به اضافه ی ایدی
+  // .select({childItemsId: {name:1}}) از توی چیلد ایتم فقط مقدار نامش رو برمیگردونه
+  // .select({childItemsId: 1})
+  // .count() = بجای مقدار تعداد رو بر میگردونه و من الان گفتم پنج تای آخر رو میخوام ولی اگه فقط 3 تا تو دیتابیس موجود باشه تعداد رو 3 نشون میده
+  // .limit(5) فقط پنج تای اول رو برمیگردونه
+  // .or([{ description: { $ne: '' }, floor: { $gt: 8 }}]) = وقتی دوتا شرت رو داخل یک ابجکت بنویشی یعنی 1&1
+  // .and([{ description: { $ne: '' }},  {floor: { $gt: 8 }}])  خود اند رو هم داریم
+  // .or([{ description: { $ne: '' }},  {floor: { $gt: 8 }}]) وقتی شزت هارو داخل ابجکت های جدا بنویسی یعنی 1|1
+  // populate
+
+  // await PaymentModel.find({ description: { $eq: '' } }) اونایی که مقدار دسکریپشنشون خالی باشرو فقط نمایش میده
+  // $eq: 8 = فقط باید مقدار 8 باشه تابرگردونه
+  // $ne: 8 = اونایی که مقدارشون برابر نباشه با 8 رو برمیگردونه
+  // $gt:8 = بزرگ تر از 8 رو برمیگزدونه
+  // $gte:8 = بزرگ تر یابرابر 8 رو برمیگزدونه
+  // $lt:8 = کوچکتر تر از 8 رو برمیگزدونه
+  // $lte:8 = کوچکتر تر یا برابر 8 رو برمیگزدونه
+  // $in:[6, 7, 2] = اگه مقدار برابر با یکی از مقادیر داخل آرایه بود اونارو برمیگردونه
+  // $nin:[1, 7, 9] اگه مقدار برابر یکی از مقادیر داخل آرایه بود اونارو برنمیگردونه
+
+
+  //! edit
+  // const lastPayment = await PaymentModel.findByIdAndUpdate(
+  //   { _id: '63fe054d2b67d226ac46bb32' },
+  //   { $set: { "childItemsId.text": "newText" } },
+  //   )
+  // res.json({ lastPayment })
+  //! edit
+  //! edit child
+  // const lastPayment = await PaymentModel.findOne({_id: "63fdf2798705f42c9cbd8655"})
+  // const child = lastPayment.childItemsId.id('63fdf2798705f42c9cbd8658')
+  // child.test = '111'
+  // await lastPayment.save()
+  //!
+  // const lastPayment = await PaymentModel.findOneAndUpdate(
+  //   {_id: "63fe054d2b67d226ac46bb32",
+  //    childItemsId: { $elemMatch: { _id: "63fe054d2b67d226ac46bb35" } }},
+  //   { $set: { "childItemsId.$.test": "newtest2" } },
+  //   { new: true }
+  // )
+  //!
+  // const lastPayment = await PaymentModel.findOneAndUpdate(
+  //   {childItemsId: { $elemMatch: { _id: "63fdf2798705f42c9cbd8657" } }},
+  //   { $set: { "childItemsId.$.test": "newte22s" } },
+  //   { new: true }
+  // )
+  //! edit child
+
+  //! delete child
+  // const lastPayment = await PaymentModel.findOne({ _id: "63fdf2798705f42c9cbd8655" })
+  // const child = lastPayment.childItemsId.id('63fdf2798705f42c9cbd8658')
+  // if (!child) throw new Error()
+  // await child.remove()
+  // await lastPayment.save()
+  //! delete child
+
+
+
+  //   const lastPayment = await PaymentModel.findOne()
+  //   res.json({ lastPayment })
+
+  // }
+//! Mongoose
