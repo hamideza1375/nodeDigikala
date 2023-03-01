@@ -15,6 +15,7 @@ dotEnv.config({ path: "./.env" }); // process.env.SECRET
 const setHeaders = require("./middleware/headers");
 const errorHandler = require("./middleware/errorHandler");
 const _404 = require("./middleware/404");
+const fileDownload = require("./middleware/fileDownload");
 
 const Client = require("./router/ClientRouter");
 const User = require("./router/UserRouter");
@@ -42,6 +43,7 @@ socketIo(server)
 app.use(Client)
 app.use(User)
 app.use(Admin)
+app.use('/download',fileDownload);
 app.use(_404);
 
 const port = process.env.PORT || 4000
