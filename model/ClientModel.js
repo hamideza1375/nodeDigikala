@@ -9,20 +9,16 @@ const mongoose = require('mongoose');
 //   });
 
 const AnswerModel = new mongoose.Schema({
-    fullname: { type: String, required: true },
     imageUrl: String,
     message: { type: String, required: true },
     like: Boolean,
     disLike: Boolean,
     answer: { type: String, required: true },
-    answerToFullname: { type: String, required: true },
-    commentId: { type: mongoose.Schema.Types.ObjectId, ref: "ChildItemModel" },
     date: { type: Date, default: Date.now },
 });
 
 
 const CommenteModel = new mongoose.Schema({
-    fullname: { type: String, required: true },
     imageUrl: String,
     message: { type: String, required: true },
     like: Boolean,
@@ -30,7 +26,7 @@ const CommenteModel = new mongoose.Schema({
     answer: [AnswerModel],
     allStar: { type: Number, required: true },
     starId: { type: mongoose.Schema.Types.ObjectId, ref: "starId" },
-    commentId: { type: mongoose.Schema.Types.ObjectId, ref: "ChildItemModel2" },
+    commentId: { type: mongoose.Schema.Types.ObjectId, ref: "ChildItem" },
     date: { type: Date, default: Date.now },
 });
 
@@ -55,7 +51,7 @@ const ChildItemModel = new mongoose.Schema({
     total: { type: Number, default: 0 },
     available: Boolean,
     comment: [CommenteModel],
-    refId: { type: mongoose.Schema.Types.ObjectId, ref: "category" }
+    categoryId: { type: mongoose.Schema.Types.ObjectId, ref: "category" }
 });
 
 exports.ChildItemModel = mongoose.model("ChildItemModel", ChildItemModel);
@@ -65,7 +61,7 @@ exports.ChildItemModel = mongoose.model("ChildItemModel", ChildItemModel);
 const CategoryModel = new mongoose.Schema({
     title: { type: String, required: true },
     imageUrl: String,
-    // userId: { type: mongoose.Schema.Types.ObjectId, default: req.user.payload._id, ref: "userId"}
+    sellerId: { type: mongoose.Schema.Types.ObjectId, ref: "seller"}
 });
 
 exports.CategoryModel = mongoose.model("CategoryModel", CategoryModel);
@@ -73,22 +69,28 @@ exports.CategoryModel = mongoose.model("CategoryModel", CategoryModel);
 
 
 const PaymentModel = new mongoose.Schema({
-    fullname: { type: String, require: true },
-    phone: { type: Number, require: true, minlength: 11, maxlength: 11 },
+    fullname: { type: String, require: true, minlength: 3 },
+    phoneOrEmail: { type: String, require: true, minlength: 5 },
     price: { type: Number, require: true },
     childItemsId: { type: Array, require: true },
-    childItemsTitle: { type: String, require: true },
+    titles: { type: String, require: true },
     floor: { type: Number, require: true, min: 1 },
     plaque: { type: Number, require: true, min: 1 },
     address: { type: String, require: true, minlength: 1 },
     description: { type: String },
-    enablePayment: { type: Number },
     origin: { type: Object },
     paymentCode: { type: String, require: true },
     success: { type: Boolean, default: false },
     refId: String,
     date: { type: Date, default: Date.now },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+    id: { type: Number, default: 1 },
+    enablePosted: { type: Number, default: 0 },
+    deleteForUser: { type: mongoose.Schema.Types.ObjectId, ref: "delete" },
+
+    checkSend: { type: Number, default: 0 },
+    queueSend: { type: Number, default: 0 },
+    send: { type: Number, default: 0 },
 });
 
 exports.PaymentModel = mongoose.model('PaymentModel', PaymentModel);;

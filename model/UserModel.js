@@ -5,11 +5,12 @@ const bcrypt = require('bcrypt');
 
 
 const UserModel = new mongoose.Schema({
-  fullname: { type: String, required: true, minlength: 2 /* , trim: true */ },
-  phone: { type: String, required: true, minlength: 11, maxlength: 11, unique: true, },
+  fullname: { type: String, required: true, minlength: 3 },
+  phoneOrEmail: { type: String, required: true, unique: true, minlength: 5 },
   password: { type: String, required: true, minlength: 4, maxlength: 100 },
-  isAdmin: { type: Number, default: '' },
+  isAdmin: { type: Number, default: 0 },
   CommentPermission: { type: Array, default: [] },
+  date: { type: Date, default: Date.now }
 });
 
 
@@ -48,9 +49,10 @@ exports.ImageProfileModel = mongoose.model('ImageProfileModel', ImageProfileMode
 
 
 const AnswerTicketModel = new mongoose.Schema({
-  message: { type: String, require: true, minlength: 1 },
+  message: { type: String },
   imageUrl: { type: String },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "ticketAnswerUserId" },
+  seenDate: { type: Date, default: Date.now() },
   date: { type: Date, default: Date.now() }
 })
 
@@ -62,6 +64,8 @@ const TicketModel = new mongoose.Schema({
   imageUrl: { type: String },
   answer: [AnswerTicketModel],
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "ticketUserId" },
+  userSeen: { type: Number, default: 0 },
+  adminSeen: { type: Number, default: 0 },
   date: { type: Date, default: Date.now() }
 })
 

@@ -12,7 +12,6 @@ exports.NotifeeModel = mongoose.model("NotifeeModel", NotifeeModel);
 
 
 const AddressVoucherModel = new mongoose.Schema({
-  fullname: { type: String, require: true },
   phone: { type: Number, require: true },
   price: { type: Number, require: true },
   floor: { type: Number, require: true },

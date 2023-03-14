@@ -4,10 +4,11 @@ const mongoose = require('mongoose');
 
 
 const SocketMessageModel = new mongoose.Schema({
-    message: String,
+    message: {type:String, require:true, minlength:1},
     id: String,
     to: String,
     userId: String,
+    isAdmin: { type: Number },
     date: { type: Date, default: Date.now },
     getTime: { type: Number },
     expTime: { type: Number }

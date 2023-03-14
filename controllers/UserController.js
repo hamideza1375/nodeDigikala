@@ -5,43 +5,41 @@ const fs = require('fs');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { UserModel, ProposalModel, ImageProfileModel, TicketModel, SavedItemModel } = require('../model/UserModel');
-const { AddressVoucherModel } = require('../model/AdminModel');
 const captchapng = require("captchapng");
 const nodeCache = require("node-cache");
 const appRootPath = require('app-root-path');
 const sharp = require('sharp');
 const { ChildItemModel, PaymentModel } = require('../model/ClientModel');
 const sendCode = require('../middleware/sendCode');
-const shortid = require('shortid');
-
-const cacheCode = new nodeCache({ stdTTL: 120, checkperiod: 120 })
+const cacheCode = new nodeCache({ stdTTL: 60 * 3, checkperiod: 60 * 3 })
 const cacheSpecification = new nodeCache({ stdTTL: 60 * 12, checkperiod: 60 * 12 })
-const cacheSetTimeForSendNewCode = new nodeCache({ stdTTL: 120, checkperiod: 120 })
+const cacheSetTimeForSendNewCode = new nodeCache({ stdTTL: 60 * 3, checkperiod: 60 * 3 })
 var CAPTCHA_NUM = null;
 
 
 function UserController() {
 
-
   this.getCodeForRegister = async (req, res) => {
-    // await UserModel.deleteMany()
-    if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان دودقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
-    else if (req.user?.payload?.fullname) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
-    let userPhone = await UserModel.findOne({ phone: req.body.phone });
-    if (userPhone) return res.status(400).json(" شماره از قبل موجود هست")
-    cacheSpecification.set("phone", req.body.phone)
-    cacheSpecification.set("fullname", req.body.fullname)
-    cacheSpecification.set("password", req.body.password)
-    sendCode(req, res, cacheCode, cacheSetTimeForSendNewCode)
+    if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
+    if (req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
+    let usrPhoneOrEmail = await UserModel.findOne({ phoneOrEmail: req.body.phoneOrEmail });
+    if (usrPhoneOrEmail) {
+      if (usrPhoneOrEmail.phoneOrEmail.includes('@')) { return res.status(400).send('حسابی با این ایمیل قبلا ثبت شده هست') }
+      else if (usrPhoneOrEmail.phoneOrEmail.length === 11) { return res.status(400).send('حسابی با این شماره قبلا ثبت شده هست') }
+    }
+    else {
+      cacheSpecification.set("fullname", req.body.fullname)
+      cacheSpecification.set("phoneOrEmail", req.body.phoneOrEmail)
+      cacheSpecification.set("password", req.body.password)
+      sendCode(req, res, cacheCode, cacheSetTimeForSendNewCode, cacheSpecification)
+    }
   }
 
 
   this.verifycodeRegister = async (req, res) => {
-    let userPhone = await UserModel.findOne({ phone: req.body.phone });
-    if (userPhone) return res.status(400).json(" شماره از قبل موجود هست")
-    else if (req.body.code != cacheCode.get("code")) return res.status(400).send("کد وارد شده منقضی شده یا اشتباه هست")
-    else if (!cacheSpecification.get("fullname") || !cacheSpecification.get("password") || !cacheSpecification.get("phone")) return res.status(400).send("لطفا برگردین و مشخصاتتان را دوباره ارسال وارد کنید")
-    await UserModel.create({ fullname: cacheSpecification.get("fullname"), password: cacheSpecification.get("password"), phone: cacheSpecification.get("phone") });
+    if (req.body.code != cacheCode.get("code")) return res.status(400).send("کد وارد شده منقضی شده یا اشتباه هست")
+    else if (!cacheSpecification.get("password") || !cacheSpecification.get("fullname") || !cacheSpecification.get("phoneOrEmail")) return res.status(400).send("لطفا برگردین و مشخصاتتان را دوباره ارسال وارد کنید")
+    await UserModel.create({ fullname: cacheSpecification.get("fullname"), password: cacheSpecification.get("password"), phoneOrEmail: cacheSpecification.get("phoneOrEmail") });
     let user = await UserModel.find();
     if (user.length === 1) {
       user[0].isAdmin = 1
@@ -50,17 +48,17 @@ function UserController() {
     cacheCode.del("code")
     cacheSpecification.del("fullname")
     cacheSpecification.del("password")
-    cacheSpecification.del("phone")
+    cacheSpecification.del("phoneOrEmail")
     cacheSetTimeForSendNewCode.del("newTime")
     res.status(201).send('ثبت نام موفقیت آمیز بود')
   }
 
 
   this.login = async (req, res) => {
-    // if (parseInt(req.body.captcha) == CAPTCHA_NUM) {
-    if (req.user?.payload?.fullname) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
+    if (parseInt(req.body.captcha) != CAPTCHA_NUM) return res.status(400).send('اعداد کادر تایید صحت را اشتباه وارد کردین')
+    // if (req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
     const _users = await UserModel.find();
-    const user = await UserModel.findOne({ phone: req.body.phone });
+    const user = await UserModel.findOne({ phoneOrEmail: req.body.phoneOrEmail });
     if (!user) return res.status(400).send('مشخصات اشتباه هست')
     const pass = await bcrypt.compare(req.body.password, user.password);
     if (!pass) return res.status(400).send('مشخصات اشتباه هست')
@@ -68,37 +66,35 @@ function UserController() {
       const tokenUser = {
         isAdmin: user.isAdmin,
         userId: user._id.toString(),
-        phone: user.phone,
         fullname: user.fullname,
+        phoneOrEmail: user.phoneOrEmail,
       }
       const token = jwt.sign(tokenUser, "secret", { expiresIn: req.body.remember });
       res.status(200).header(token).json({ token });
     }
     else {
-      if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان دودقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
-      cacheSpecification.set("phone", req.body.phone)
+      if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
+      cacheSpecification.set("phoneOrEmail", req.body.phoneOrEmail)
       cacheSpecification.set("password", req.body.password)
       cacheSpecification.set("remember", req.body.remember)
-      sendCode(req, res, cacheCode, cacheSetTimeForSendNewCode)
+      sendCode(req, res, cacheCode, cacheSetTimeForSendNewCode, cacheSpecification)
     }
-    // }  else { return res.status(400).send('کد وارد شده منقضی شده یا اشتباه هست') }
   }
 
 
   this.verifyCodeLoginForAdmin = async (req, res) => {
     if (req.body.code != cacheCode.get("code")) return res.status(400).send("کد وارد شده منقضی شده یا اشتباه هست")
-    else if (!cacheSpecification.get("phone") || !cacheSpecification.get("password")) return res.status(400).send("لطفا برگردین و مشخصاتتان را دوباره ارسال وارد کنید")
-    const user = await UserModel.findOne({ phone: cacheSpecification.get("phone") });
+    else if (!cacheSpecification.get("phoneOrEmail") || !cacheSpecification.get("password")) return res.status(400).send("لطفا برگردین و مشخصاتتان را دوباره ارسال وارد کنید")
+    const user = await UserModel.findOne({ phoneOrEmail: cacheSpecification.get("phoneOrEmail") });
     const pass = await bcrypt.compare(cacheSpecification.get("password"), user.password);
     if (!pass) return res.status(400).send('مشخصات اشتباه هست')
     const tokenUser = {
       isAdmin: user.isAdmin,
       userId: user._id.toString(),
-      phone: user.phone,
-      fullname: user.fullname,
+      phoneOrEmail: user.phoneOrEmail,
     }
     const token = jwt.sign(tokenUser, "secret", { expiresIn: cacheSpecification.get("remember") ? cacheSpecification.get("remember") : '24h' });
-    cacheSpecification.del("phone")
+    cacheSpecification.del("phoneOrEmail")
     cacheSpecification.del("password")
     cacheSpecification.del("remember")
     cacheCode.del("code")
@@ -108,25 +104,23 @@ function UserController() {
 
 
   this.getCodeForgetPass = async (req, res) => {
-    if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان دودقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
-    else if (req.user?.payload?.fullname) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
-    const user = await UserModel.findOne({ phone: req.body.phone });
+    if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
+    else if (req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
+    const user = await UserModel.findOne({ phoneOrEmail: req.body.phoneOrEmail });
     if (!user) return res.status(400).send('شما قبلا ثبت نام نکردین')
-    cacheSpecification.set("phone", req.body.phone)
-    sendCode(req, res, cacheCode, cacheSetTimeForSendNewCode)
+    cacheSpecification.set("phoneOrEmail", req.body.phoneOrEmail)
+    sendCode(req, res, cacheCode, cacheSetTimeForSendNewCode, cacheSpecification)
   }
 
 
   this.verifycodeForgetPass = async (req, res) => {
     if (req.body.code != cacheCode.get("code")) return res.status(400).status(400).send("کد وارد شده منقضی شده یا اشتباه هست")
-    else if (!cacheSpecification.get("phone")) return res.status(400).status(400).send("لطفا برگردین و شماره یا ایمیلتان را دوباره ارسال وارد کنید")
+    else if (req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
+    else if (!cacheSpecification.get("phoneOrEmail")) return res.status(400).status(400).send("لطفا برگردین و شماره یا ایمیلتان را دوباره ارسال وارد کنید")
     else {
-      const user = await UserModel.findOne({ phone: cacheSpecification.get("phone") })
+      const user = await UserModel.findOne({ phoneOrEmail: cacheSpecification.get("phoneOrEmail") })
       cacheSpecification.set('userId', user._id)
-      cacheCode.del("code")
-      cacheSpecification.del("phone")
-      cacheSetTimeForSendNewCode.del("newTime")
-      res.status(200).json({ userId: user._id })
+      res.status(200).send('')
     }
   }
 
@@ -139,6 +133,8 @@ function UserController() {
       await user.save();
       cacheCode.del("code")
       cacheSpecification.del("userId")
+      cacheSpecification.del("phoneOrEmail")
+      cacheSetTimeForSendNewCode.del("newTime")
       return res.status(200).send("موفقیت بروزرسانی شد");
     }
     else {
@@ -148,10 +144,10 @@ function UserController() {
 
 
   this.getNewCode = async (req, res) => {
-    if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان دودقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
-    else if (req.user?.payload?.fullname) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
-    else if (!cacheSpecification.get("phone")) return res.status(400).send("لطفا برگردین و مشخصاتتان را دوباره ارسال وارد کنید")
-    else sendCode(req, res, cacheCode, cacheSetTimeForSendNewCode)
+    if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
+    else if (req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
+    else if (!cacheSpecification.get("phoneOrEmail")) return res.status(400).send("لطفا برگردین و مشخصاتتان را دوباره ارسال وارد کنید")
+    else sendCode(req, res, cacheCode, cacheSetTimeForSendNewCode, cacheSpecification)
   }
 
 
@@ -212,7 +208,6 @@ function UserController() {
 
 
 
-
   this.getLastPayment = async (req, res) => {
     const lastPayment = await PaymentModel.find({ success: true })
       .sort({ date: -1 })
@@ -222,32 +217,121 @@ function UserController() {
 
 
   this.sendNewTicket = async (req, res) => {
-    let fileName
-    if (req.files) fileName = req.fileName
-    else fileName = ''
-    const newTicket = await TicketModel.create({ title: req.body.title, message: req.body.message, imageUrl: fileName, userId: req.user.payload.userId })
-    res.json({ newTicket })
+    if (req.files) await sharp(req.file.data).toFile(`${appRootPath}/public/upload/ticket/${req.fileName}`)
+    const newTicket = await TicketModel.create({ date: new Date(), title: req.body.title, message: req.body.message, imageUrl: req.fileName, userId: req.user.payload.userId })
+    res.json(newTicket)
   }
 
 
-  this.ticketAnswer = async (req, res) => {
+  this.sendTicketAnswer = async (req, res) => {
+    if (req.files) await sharp(req.file.data).toFile(`${appRootPath}/public/upload/ticket/${req.fileName}`)
     const ticket = await TicketModel.findById(req.params.id)
-    ticket.answer.push({ message: req.body.message, imageUrl: req.body.imageUrl, userId: req.params.userId })
+    ticket.userSeen = 0
+    ticket.adminSeen = 0
+    ticket.date = new Date()
+    ticket.answer.push({ message: req.body.message, imageUrl: req.fileName, userId: req.user.payload.userId, date: new Date() })
     await ticket.save()
-    res.json({ ticket })
+    res.json(ticket.answer[ticket.answer.length - 1])
   }
+
+
+  this.getAnswersTicket = async (req, res) => {
+    const getAnswersTicket = await TicketModel.findById(req.params.id)
+    const answer = getAnswersTicket.answer.reverse()
+    res.json([...answer, getAnswersTicket])
+  }
+
+
+  this.deleteAnswerTicket = async (req, res) => {
+    const ticket = await TicketModel.findById(req.params.id)
+    const answer = ticket.answer.id(req.query.ticketid)
+
+    if (answer.imageUrl)
+      if (fs.existsSync(`${appRootPath}/public/upload/ticket/${answer.imageUrl}`))
+        fs.unlinkSync(`${appRootPath}/public/upload/ticket/${answer.imageUrl}`)
+
+    answer.remove()
+    await ticket.save()
+    res.send('با موفقیت حذف شد')
+  }
+
+
+  this.editAnswerTicket = async (req, res) => {
+    const ticket = await TicketModel.findById(req.params.id)
+    const answer = ticket.answer.id(req.query.ticketid)
+    if (req.files) {
+      if (answer.imageUrl) {
+        if (fs.existsSync(`${appRootPath}/public/upload/ticket/${answer.imageUrl}`))
+          fs.unlinkSync(`${appRootPath}/public/upload/ticket/${answer.imageUrl}`)
+      }
+      await sharp(req.file.data).toFile(`${appRootPath}/public/upload/ticket/${req.fileName}`)
+    }
+    if (req.body.message) answer.message = req.body.message
+    if (req.files) answer.imageUrl = req.fileName
+    ticket.date = new Date()
+    await ticket.save()
+    res.send(answer)
+  }
+
+
+  this.getSingleAnswerTicket = async (req, res) => {
+    const ticket = await TicketModel.findOne({ _id: req.params.id })
+    const answer = ticket.answer.id(req.query.ticketid)
+    res.json(answer)
+  }
+
+
+
+  this.deleteTicket = async (req, res) => {
+    const ticket = await TicketModel.findById(req.params.id)
+    if (ticket.imageUrl)
+      if (fs.existsSync(`${appRootPath}/public/upload/ticket/${ticket.imageUrl}`))
+        fs.unlinkSync(`${appRootPath}/public/upload/ticket/${ticket.imageUrl}`)
+    await TicketModel.findByIdAndDelete(req.params.id);
+    res.send('با موفقیت حذف شد')
+  }
+
+
+  // this.editTicket = async (req, res) => {
+  //   const lastPayment = await TicketModel.findOneAndUpdate(
+  //     {
+  //       _id: req.params.id,
+  //       answer: { $elemMatch: { _id: req.query.ticketId } }
+  //     },
+  //     { $set: { "answer.$.message": req.body.message } },
+  //     { new: true }
+  //     )
+  //     res.send('با موفقیت ویرایش شد')
+  //   }
+
 
 
   this.ticketBox = async (req, res) => {
-    const tickets = await TicketModel.find({ userId: req.user.payload.userId })
-    res.json({ tickets })
+    let tickets
+    if (!req.user.payload.isAdmin) {
+      tickets = await TicketModel.find({ userId: req.user.payload.userId }).sort({ date: -1 })
+    } else {
+      tickets = await TicketModel.find().sort({ date: -1 })
+
+    } res.json(tickets)
   }
 
 
-  this.singleTicket = async (req, res) => {
-    const singleTicket = await TicketModel.findById(req.params.id)
-    res.json({ singleTicket })
+
+  this.deleteMainItemTicketBox = async (req, res) => {
+    await TicketModel.findByIdAndDelete(req.params.id)
+    res.send('با موفقیت حذف شد')
   }
+
+
+  this.ticketSeen = async (req, res) => {
+    const ticket = await TicketModel.findOne({ _id: req.params.id })
+    if (!req.user.payload.isAdmin) ticket.userSeen = 1
+    if (req.user.payload.isAdmin) ticket.adminSeen = 1
+    ticket.save()
+    res.send('')
+  }
+
 
 
   this.savedItem = async (req, res) => {

@@ -5,8 +5,8 @@
 const fs = require("fs");
 const appRootPath = require("app-root-path");
 const sharp = require("sharp");
-const { CategoryModel, ChildItemModel } = require("../model/ClientModel");
-const { NotifeeModel, AddressVoucherModel, PostPriceModel, SellerModel } = require("../model/AdminModel");
+const { CategoryModel, ChildItemModel, PaymentModel } = require("../model/ClientModel");
+const { NotifeeModel, PostPriceModel, SellerModel } = require("../model/AdminModel");
 const { UserModel, proposalModel, TicketModel } = require("../model/UserModel");
 
 var interval
@@ -14,11 +14,17 @@ var interval
 function AdminController() {
 
   this.createCategory = async (req, res) => {
+    await CategoryModel.deleteMany()
     if (!req.files) return res.status(400).send('لطفا یک فایل انتخاب کنید')
     await sharp(req.file.data).toFile(`${appRootPath}/public/upload/category/${req.fileName}`)
-    const category = await new CategoryModel({ title: req.body.title, imageUrl: req.fileName }).save();
+    const category = await new CategoryModel({ title: req.body.title, imageUrl: req.fileName, sellerId: req.params.id }).save();
     res.status(200).json({ category })
     // res.status(200).send('با موفقیت ساخته شد')
+  }
+
+  this.getSinleCategory = async (req, res) => {
+    const category = await CategoryModel.findById(req.params.id);
+    res.status(200).json({ category })
   }
 
 
@@ -73,7 +79,7 @@ function AdminController() {
       total,
       available,
       imageUrl: req.fileName,
-      refId: req.params.id
+      categoryId: req.params.id
     }).save()
     res.status(200).json({ childItem })
     // res.status(200).send('با موفقیت ساخته شد')
@@ -224,31 +230,25 @@ function AdminController() {
 
 
   this.getAllAddress = async (req, res) => {
-    const allAddress = await AddressVoucherModel.find().sort({ createdAt: -1 });
-    res.json({ allAddress })
+    const payments = await PaymentModel.find({ success: true }).sort({ date: -1 });
+    res.json({ payments })
   }
 
 
   this.deleteAddressForOneAdmin = async (req, res) => {
-    let address = await AddressVoucherModel.findById(req.params.id)
-    if (!address) return res.status(400).send('این گزینه قبلا از سرور حذف شده')
-    address.deleteForUser = req.user.payload.userId
-    await address.save()
+    let payment = await PaymentModel.findById(req.params.id)
+    if (!payment) return res.status(400).send('این گزینه قبلا از سرور حذف شده')
+    payment.deleteForUser = req.user.payload.userId
+    await payment.save()
     res.send("با موفقیت برای شما موفقیت حذف شد")
   }
 
 
-  this.deleteAllAddress = async (req, res) => {
-    await AddressVoucherModel.deleteMany()
-    res.send("با موفقیت حذف شدن")
-  }
-
-
   this.sendDisablePost = async (req, res) => {
-    const Address = await AddressVoucherModel.findById(req.params.id);
-    if (!Address) return res.status(400).send('این سفارش فعال نیست')
-    Address.enablePost = 0
-    await Address.save()
+    const payment = await PaymentModel.findById(req.params.id);
+    if (!payment) return res.status(400).send('این سفارش فعال نیست')
+    payment.enablePosted = 1
+    await payment.save()
     res.send('حالت انتظار برای مشتری لغو شد')
   }
 
@@ -269,8 +269,8 @@ function AdminController() {
 
 
   this.adminTicketBox = async (req, res) => {
-    const ticket = await TicketModel.find();
-    res.status(200).json({ ticket })
+    const tickets = await TicketModel.find().sort({ date: -1 });
+    res.status(200).json({ tickets })
   }
 
 
@@ -291,8 +291,41 @@ function AdminController() {
     res.status(200).json({ seller })
   }
 
-  // قسمت ورود فروشندگان رو جدا درست کن و اگه بخوان وارد بشن شماره تماس میخواد
 
+
+  this.getAllUser = async (req, res) => {
+    const allUsers = await UserModel.find().select({ date: 1 }).sort({ date: -1 })
+    res.status(200).json({ allUsers })
+  }
+
+
+  // this.getUsersLength = async (req, res) => {
+  //   const userCount = await UserModel.find().count();
+  //   res.status(200).json({ userCount })
+  // }
+
+
+  // this.getChartLast7dayUserRegister = async (req, res) => {
+  //   const user = await UserModel.find();
+  //   const lastUserRegister = await UserModel.find({ getTime: { $gt: new Date(user[user.length - 1].date).getTime() - 6000 * 10 * 60 * 24 * 10 } });
+  //   res.status(200).json({ lastUserRegister })
+  // }
+
+
+  // this.getChartLast7dayUserBuy = async (req, res) => {
+  //   const user = await ClientModel.find();
+  //   const lastUserBuy = await ClientModel.find({ getTime: { $gt: new Date(user[user.length - 1].date).getTime() - 6000 * 10 * 60 * 24 * 10 } });
+  //   res.status(200).json({ lastUserBuy })
+  // }
+
+
+  // this.getChartsLastYearsUserBuy = async (req, res) => {
+  //   const user = await ClientModel.find({ getTime: { $gt: new Date(user[user.length - 1].date).getTime() - 6000 * 10 * 60 * 24 * (365 + 30) } });
+  //   const lastYearsBuy = await ClientModel.find({ getTime });
+  //   res.status(200).json({ lastUserBuy: lastYearsBuy })
+  // }
+
+  // قسمت ورود فروشندگان رو جدا درست کن و اگه بخوان وارد بشن شماره تماس میخواد
 }
 
 

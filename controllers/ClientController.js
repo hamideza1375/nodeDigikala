@@ -16,21 +16,36 @@ function ClientController() {
 
 
   this.getChildItems = async (req, res) => {
-    let childItems = await ChildItemModel.find({ refId: req.params.id })
+    let childItems = await ChildItemModel.find({ categoryId: req.params.id })
     res.status(200).json({ childItems });
   }
-
 
   this.getSingleItem = async (req, res) => {
     let singleItem = await ChildItemModel.findById(req.params.id)
     res.status(200).json({ singleItem });
   }
 
+  // this.populars = async (req, res) => {
+  //   let childItems = await ChildItemModel.find().sort({ fiveStar: -1 })
+  //   res.status(200).json({ childItems });
+  // }
+
+
+  // this.offers = async (req, res) => {
+  //   let childItems = await ChildItemModel.find({ offers: { $ne: '' } })
+  //   res.status(200).json({ childItems });
+  // }
+
+  // this.bestSeller = async (req, res) => {
+  //   let singleItem = await ChildItemModel.findById(req.params.id)
+  //   res.status(200).json({ singleItem });
+  // }
+
 
   this.createComment = async (req, res) => {
-    const { message, allStar, starId, fullname, imageUrl, id } = req.body;
+    const { message, allStar, starId, imageUrl, id } = req.body;
     const childItem = await ChildItemModel.findById({ _id: req.params.id })
-    childItem.comment.push({ message, allStar, starId, fullname, imageUrl })
+    childItem.comment.push({ message, allStar, starId, imageUrl })
     await childItem.save()
     res.status(200).json({ comment: childItem.comment })
   }
@@ -73,12 +88,12 @@ function ClientController() {
 
 
 
-  this.getNotification = async (req, res, next) => {
+  this.getNotification = async (req, res) => {
     let notifee = await NotifeeModel.findOne()
     notifee ?
       res.status(200).json({ title: notifee.title, message: notifee.message })
       :
-      next()
+      res.status(200).send('')
   }
 
 
@@ -92,7 +107,7 @@ function ClientController() {
   }
 
 
-  
+
   this.geocode = async (req, res) => {
     let geoCoder = node_geocoder({ provider: 'openstreetmap' });
     geoCoder.geocode(req.body.loc)
@@ -105,18 +120,24 @@ function ClientController() {
 
 
   this.confirmPayment = async (req, res) => {
+    // const array = []
+    // for (let i in childItemsId) {
+    //   array.push(await ChildItemModel.findOne({ _id: childItemsId[i] }).price())
+    // }
+    // const total = array.reduce()
     const response = await zarinpal.PaymentRequest({
       Amount: req.body.price,
       CallbackURL: 'http://localhost:4000/verifyPayment',
       Description: 'زستوران',
       Email: req.user.payload.email,
     });
+    const payments = await PaymentModel.find();
     await new PaymentModel({
       userId: req.user.payload.userId,
+      phoneOrEmail: req.user.payload.phoneOrEmail,
       fullname: req.user.payload.fullname,
-      phone: req.user.payload.phone,
       childItemsId: req.params.childItemsId,
-      childItemsTitle: req.body.childItemsTitle,
+      titles: req.body.titles,
       floor: req.body.floor,
       plaque: req.body.plaque,
       address: req.body.address,
@@ -124,6 +145,7 @@ function ClientController() {
       price: req.body.price,
       description: req.body.description,
       paymentCode: response.authority,
+      id: payments.length ? payments[payments.length - 1].id + 1 : 1,
     }).save();
     res.status(200).json(response.url);
   }
@@ -140,34 +162,19 @@ function ClientController() {
     if (req.query.Status === "OK") {
       payment.refId = response.RefID;
       payment.success = true;
-      payment.enablePayment = 1;
+      // payment.enablePosted = 0;
       await payment.save();
-      const allAddress = await AddressVoucherModel.find();
-      await new AddressVoucherModel({
-        userId: payment.userId,
-        fullname: payment.fullname,
-        phone: payment.phone,
-        floor: payment.floor,
-        plaque: payment.plaque,
-        origin: payment.origin,
-        price: payment.price,
-        childItemsTitle: payment.childItemsTitle,
-        id: allAddress.length ? allAddress[allAddress.length - 1].id + 1 : 1,
-        address: payment.address,
-        description: payment.description,
-        enablePayment: payment.enablePayment
-      }).save()
+
       res.render("./paymant", {
         pageTitle: "پرداخت",
         qualification: 'ok',
-        fullname: payment.fullname,
         phone: payment.phone,
         price: payment.price,
         refId: response.RefID,
         floor: payment.floor,
         plaque: payment.plaque,
         address: payment.address,
-        childItemsTitle: payment.childItemsTitle,
+        childItemsTitle: payment.titles,
       })
 
     } else {
@@ -177,6 +184,8 @@ function ClientController() {
       })
     }
   }
+  // res.redirect('mailo://reza@gmail.com')
+  // res.redirect('/lastPayment')
 
 
 }

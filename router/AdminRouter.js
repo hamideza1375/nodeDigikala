@@ -9,9 +9,11 @@ const fileUpload = require('../middleware/fileUpload');
 
 //! get put post delete
 
-router.post('/createCategory', [AuthMainAdmin, fileUpload], AdminController.createCategory);
+router.post('/createCategory/:id', [AuthMainAdmin, fileUpload], AdminController.createCategory);
 router.put('/editCategory/:id', [AuthMainAdmin, fileUpload], AdminController.editCategory);
 router.delete('/deleteCategory/:id', AuthMainAdmin, AdminController.deleteCategory);
+router.get('/getSinleCategory/:id', AdminController.getSinleCategory);
+
 
 router.post('/createChildItem/:id', [AuthMainAdmin, fileUpload], AdminController.createChildItem);
 router.put('/editChildItem/:id', [AuthMainAdmin, fileUpload], AdminController.editChildItem);
@@ -33,7 +35,6 @@ router.delete('/deleteMultiProposal', AuthMainAdmin, AdminController.deleteMulti
 
 router.get('/getAllAddress', Auth, AdminController.getAllAddress);
 router.delete('/deleteAddressForOneAdmin/:id', AuthAllAdmin, AdminController.deleteAddressForOneAdmin);
-router.delete('/deleteAllAddress', AuthMainAdmin, AdminController.deleteAllAddress);
 router.post('/sendDisablePost', AuthAllAdmin, AdminController.sendDisablePost);
 
 // priceForPost
@@ -41,10 +42,12 @@ router.post('/sendPostPrice', AuthMainAdmin, AdminController.sendPostPrice);
 router.get('/getPostPrice', AuthMainAdmin, AdminController.getPostPrice);
 // priceForPost
 
-router.get('/adminTicketBox' , AuthMainAdmin, AdminController.adminTicketBox)
+router.get('/adminTicketBox' , /* AuthMainAdmin, */ AdminController.adminTicketBox)
 
 router.post('/createSeller' , AuthMainAdmin, AdminController.createSeller)
 router.delete('/deleteSeller/:id' , AuthMainAdmin, AdminController.deleteSeller)
 router.get('/getAllSellers' , AuthMainAdmin, AdminController.getAllSellers)
+
+router.get('/getAllUser' , /* AuthMainAdmin , */ AdminController.getAllUser)
 
 module.exports = router

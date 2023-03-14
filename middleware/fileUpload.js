@@ -28,5 +28,7 @@ module.exports = (req, res, next) => {
     req.fileName = fileName
     req.file = file
   }
+  else 
+    req.fileName = ''
   next()
 };
