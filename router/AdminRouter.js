@@ -42,12 +42,14 @@ router.post('/sendPostPrice', AuthMainAdmin, AdminController.sendPostPrice);
 router.get('/getPostPrice', AuthMainAdmin, AdminController.getPostPrice);
 // priceForPost
 
-router.get('/adminTicketBox' , /* AuthMainAdmin, */ AdminController.adminTicketBox)
+router.get('/adminTicketBox' , AuthMainAdmin, AdminController.adminTicketBox)
 
 router.post('/createSeller' , AuthMainAdmin, AdminController.createSeller)
 router.delete('/deleteSeller/:id' , AuthMainAdmin, AdminController.deleteSeller)
 router.get('/getAllSellers' , AuthMainAdmin, AdminController.getAllSellers)
 
-router.get('/getAllUser' , /* AuthMainAdmin , */ AdminController.getAllUser)
+router.get('/getAllUser' , AuthMainAdmin , AdminController.getAllUser)
+
+router.get('/getSocketIoSeen' , AuthMainAdmin , AdminController.getSocketIoSeen)
 
 module.exports = router

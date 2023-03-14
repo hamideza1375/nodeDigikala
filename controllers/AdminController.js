@@ -8,6 +8,7 @@ const sharp = require("sharp");
 const { CategoryModel, ChildItemModel, PaymentModel } = require("../model/ClientModel");
 const { NotifeeModel, PostPriceModel, SellerModel } = require("../model/AdminModel");
 const { UserModel, proposalModel, TicketModel } = require("../model/UserModel");
+const { SocketMessageModel } = require("../socketIo/SocketMessageModel");
 
 var interval
 
@@ -153,31 +154,32 @@ function AdminController() {
 
 
   this.setAdmin = async (req, res) => {
-    const user = await UserModel.findOne({ phone: req.body.phone });
+    const user = await UserModel.findOne({ phoneOrEmail: req.body.phoneOrEmail });
     if (!user) return res.status(400).send('کاربری با این شماره پیدا نشد');
-    if (user.isAdmin === 1) return res.status(400).send('این شماره متعلق به ادمین اصلی هست');
-    if (user.isAdmin === 2) return res.status(400).send('این شماره را قبلا به عنوان ادمین گروه دوم انتخاب کردین');
+    if (user.isAdmin === 1) return res.status(400).send('این شماره یا ایمیل متعلق به ادمین اصلی هست');
+    if (user.isAdmin === 2) return res.status(400).send('این شماره یا ایمیل را قبلا به عنوان ادمین گروه دوم انتخاب کردین');
     user.isAdmin = 2;
     await user.save();
-    res.status(200).send('شماره ی مورد نظر به عنوان ادمین گروه دوم ثبت شد');
+    res.status(200).send('کاربر مورد نظر به عنوان ادمین گروه دوم ثبت شد');
   }
 
 
   this.deleteAdmin = async (req, res) => {
-    const user = await UserModel.findOne({ phone: req.body.phone });
-    if (!user) return res.status(400).send('کاربری با این شماره پیدا نشد');
+    console.log(req.query.phoneOrEmail);
+    const user = await UserModel.findOne({ phoneOrEmail: req.query.phoneOrEmail });
+    if (!user) return res.status(400).send('کاربری با این شماره یا ایمیل پیدا نشد');
     if (user.isAdmin === 1) return res.status(400).send('نمیتوانید ادمین اصلی را حذف کنید');
-    if (user.isAdmin !== 2) return res.status(400).send('شماره ی وارد شده متعلق به هیچ ادمینی نیست');
-    user.isAdmin = null;
+    if (user.isAdmin !== 2) return res.status(400).send('شماره یا ایمیل وارد شده متعلق به هیچ ادمینی نیست');
+    user.isAdmin = 0;
     await user.save();
-    res.status(200).send('این شماره با موفقیت از گروه ادمین دوم حذف شد');
+    res.status(200).send('این کاربر با موفقیت از گروه ادمین دوم حذف شد');
   }
 
 
   this.getAllAdmin = async (req, res) => {
     const user = await UserModel.find();
     const userAdmin = user.filter((user) => user.isAdmin === 2)
-    res.status(200).json({ userAdmin });
+    res.status(200).json(userAdmin);
   }
 
 
@@ -215,11 +217,17 @@ function AdminController() {
 
 
   this.createNotification = async (req, res) => {
-    await NotifeeModel.deleteMany()
-    await new NotifeeModel({ title: req.body.title, message: req.body.message }).save()
-    if (interval) clearInterval(interval)
-    interval = setTimeout(async () => { await NotifeeModel.deleteMany() }, 60 * 1000 * 60 * 24 * 5)
-    res.send('با موفقیت ساخته شد')
+    const notifee = await NotifeeModel.findOne()
+    if (notifee?.message !== req.body.message) {
+      await NotifeeModel.deleteMany()
+      await new NotifeeModel({ title: req.body.title, message: req.body.message }).save()
+      if (interval) clearInterval(interval)
+      interval = setTimeout(async () => { await NotifeeModel.deleteMany() }, 60 * 1000 * 60 * 24 * 5)
+      res.send('با موفقیت ساخته شد')
+    }
+    else
+      res.status(400).send('اعلانی با این پیام فعلا فعال هست')
+
   }
 
 
@@ -297,6 +305,17 @@ function AdminController() {
     const allUsers = await UserModel.find().select({ date: 1 }).sort({ date: -1 })
     res.status(200).json({ allUsers })
   }
+
+
+
+  this.getSocketIoSeen = async (req, res) => {
+    let socketSeen = await SocketMessageModel.find({seen:0}).count()
+    console.log(socketSeen);
+    res.json(socketSeen)
+  }
+
+
+
 
 
   // this.getUsersLength = async (req, res) => {

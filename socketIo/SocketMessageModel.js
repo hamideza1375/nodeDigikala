@@ -9,6 +9,7 @@ const SocketMessageModel = new mongoose.Schema({
     to: String,
     userId: String,
     isAdmin: { type: Number },
+    seen : { type: Number, default:1 },
     date: { type: Date, default: Date.now },
     getTime: { type: Number },
     expTime: { type: Number }

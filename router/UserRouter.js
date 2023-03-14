@@ -24,6 +24,7 @@ router.get("/getLastPayment", Auth, UserController.getLastPayment);
 router.post("/sendNewTicket", [Auth, fileUpload], UserController.sendNewTicket);
 router.get("/ticketBox", Auth, UserController.ticketBox);
 router.get("/getAnswersTicket/:id", Auth, UserController.getAnswersTicket);
+router.get("/getTicketSeen", Auth, UserController.getTicketSeen);
 router.post("/sendTicketAnswer/:id", [Auth, fileUpload], UserController.sendTicketAnswer);
 router.delete("/deleteAnswerTicket/:id", [Auth], UserController.deleteAnswerTicket);
 router.delete("/deleteTicket/:id", [Auth], UserController.deleteTicket);

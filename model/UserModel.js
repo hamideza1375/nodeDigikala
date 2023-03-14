@@ -64,7 +64,7 @@ const TicketModel = new mongoose.Schema({
   imageUrl: { type: String },
   answer: [AnswerTicketModel],
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "ticketUserId" },
-  userSeen: { type: Number, default: 0 },
+  userSeen: { type: Number, default: 1 },
   adminSeen: { type: Number, default: 0 },
   date: { type: Date, default: Date.now() }
 })

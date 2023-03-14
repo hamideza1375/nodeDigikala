@@ -242,6 +242,16 @@ function UserController() {
   }
 
 
+  this.getTicketSeen = async (req, res) => {
+    let ticketseen
+    if (req.user.payload.isAdmin)
+      ticketseen = await TicketModel.find({adminSeen : 0 }).count()
+    else
+      ticketseen = await TicketModel.find({userId:req.user.payload.userId ,userSeen: 0 }).count()
+    res.json(ticketseen)
+  }
+
+
   this.deleteAnswerTicket = async (req, res) => {
     const ticket = await TicketModel.findById(req.params.id)
     const answer = ticket.answer.id(req.query.ticketid)
