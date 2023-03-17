@@ -202,8 +202,8 @@ function UserController() {
 
   this.sendProposal = async (req, res) => {
     const proposal = await ProposalModel.create({ message: req.body.message });
-    res.json({ proposal })
-    // res.send('پیام شما با موفقیت ارسال شد')
+    // res.json({ proposal })
+    res.send('پیام شما با موفقیت ارسال شد')
   }
 
 
@@ -245,9 +245,9 @@ function UserController() {
   this.getTicketSeen = async (req, res) => {
     let ticketseen
     if (req.user.payload.isAdmin)
-      ticketseen = await TicketModel.find({adminSeen : 0 }).count()
+      ticketseen = await TicketModel.find({adminSeen : 0 }).countDocuments()
     else
-      ticketseen = await TicketModel.find({userId:req.user.payload.userId ,userSeen: 0 }).count()
+      ticketseen = await TicketModel.find({userId:req.user.payload.userId ,userSeen: 0 }).countDocuments()
     res.json(ticketseen)
   }
 

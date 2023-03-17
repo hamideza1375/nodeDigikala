@@ -3,7 +3,7 @@
 // app200
 const node_geocoder = require('node-geocoder');
 const { CategoryModel, ChildItemModel, PaymentModel } = require('../model/ClientModel')
-const { NotifeeModel, AddressVoucherModel } = require('../model/AdminModel')
+const { NotifeeModel, AddressVoucherModel, SliderModel } = require('../model/AdminModel')
 const ZarinpalCheckout = require('zarinpal-checkout');
 const zarinpal = ZarinpalCheckout.create('00000000-0000-0000-0000-000000000000', true);
 
@@ -15,15 +15,23 @@ function ClientController() {
   }
 
 
+  this.getSlider = async (req, res) => {
+    let slider = await SliderModel.findOne().select({_id: false})
+    res.status(200).json(slider);
+  }
+
+
   this.getChildItems = async (req, res) => {
     let childItems = await ChildItemModel.find({ categoryId: req.params.id })
     res.status(200).json({ childItems });
   }
 
+
   this.getSingleItem = async (req, res) => {
     let singleItem = await ChildItemModel.findById(req.params.id)
     res.status(200).json({ singleItem });
   }
+
 
   // this.populars = async (req, res) => {
   //   let childItems = await ChildItemModel.find().sort({ fiveStar: -1 })

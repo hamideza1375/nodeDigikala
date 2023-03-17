@@ -40,12 +40,21 @@ exports.PostPriceModel = mongoose.model("PostPriceModel", PostPriceModel);
 
 
 const SellerModel = mongoose.Schema({
-    brand : {type : String, require:true, minlength:1},
-    phone : {type : Number, require:true, minlength:11, maxlength:11},
-    star : {type : String},
+  brand: { type: String, require: true, minlength: 1 },
+  phone: { type: String, require: true, minlength: 11, maxlength: 11 },
+  available: { type: Number, default: 1 },
+  star: { type: String },
 })
-exports.SellerModel =  mongoose.model( 'SellerModel' , SellerModel)
+exports.SellerModel = mongoose.model('SellerModel', SellerModel)
 
 
-// appmodel
 
+const SliderModel = mongoose.Schema({
+    image1 : String,
+    image2 : String,
+    image3 : String,
+    image4 : String,
+    image5 : String,
+    image6 : String,
+})
+exports.SliderModel =  mongoose.model( 'SliderModel' , SliderModel)

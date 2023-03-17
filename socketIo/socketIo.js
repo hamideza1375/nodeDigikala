@@ -1,8 +1,17 @@
+const AuthMainAdmin = require("../middleware/AuthMainAdmin");
 
-module.exports = (server) => {
+module.exports = (server, app) => {
   const { Server } = require("socket.io");
   const io = new Server(server, { cors: { origin: "*" } });
   const { SocketMessageModel } = require('./SocketMessageModel');
+
+
+  app.get('/getSocketIoSeen',AuthMainAdmin, async (req, res) => {
+    let socketSeen = await SocketMessageModel.find({ seen: 0 }).countDocuments()
+    res.json(socketSeen)
+  }
+  )
+
 
   let users = []
   io.on("connection", (socket) => {

@@ -24,6 +24,8 @@ const http = require("http");
 const server = http.createServer(app)
 const socketIo = require('./socketIo/socketIo');
 const winston = require("winston");
+const AuthMainAdmin = require("./middleware/AuthMainAdmin");
+const { SocketMessageModel } = require("./socketIo/SocketMessageModel");
 
 
 
@@ -46,11 +48,11 @@ app.set('view engine', 'ejs');
 app.set('views', './views');
 
 
-socketIo(server)
+socketIo(server, app)
 app.use(Client)
 app.use(User)
 app.use(Admin)
-app.use((req, res) => res.status(500).send('مشکلی پیش آمده'));
+
 
 const port = process.env.PORT || 4000
 server.listen(port, (err) => { console.log(`App Listen to port ${port}`) })

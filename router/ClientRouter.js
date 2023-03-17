@@ -8,6 +8,7 @@ const user = require('../middleware/user');
 //! get put post delete
 
 // getItem
+router.get('/getSlider', ClientController.getSlider);
 router.get('/getCategory', ClientController.getCategory);
 router.get('/getChildItems/:id', ClientController.getChildItems);
 router.get('/getSingleItem/:id', ClientController.getSingleItem);

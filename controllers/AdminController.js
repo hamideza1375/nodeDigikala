@@ -6,16 +6,16 @@ const fs = require("fs");
 const appRootPath = require("app-root-path");
 const sharp = require("sharp");
 const { CategoryModel, ChildItemModel, PaymentModel } = require("../model/ClientModel");
-const { NotifeeModel, PostPriceModel, SellerModel } = require("../model/AdminModel");
-const { UserModel, proposalModel, TicketModel } = require("../model/UserModel");
+const { NotifeeModel, PostPriceModel, SellerModel, SliderModel } = require("../model/AdminModel");
+const { UserModel, ProposalModel, TicketModel } = require("../model/UserModel");
 const { SocketMessageModel } = require("../socketIo/SocketMessageModel");
+const shortid = require("shortid");
 
 var interval
 
 function AdminController() {
 
   this.createCategory = async (req, res) => {
-    await CategoryModel.deleteMany()
     if (!req.files) return res.status(400).send('لطفا یک فایل انتخاب کنید')
     await sharp(req.file.data).toFile(`${appRootPath}/public/upload/category/${req.fileName}`)
     const category = await new CategoryModel({ title: req.body.title, imageUrl: req.fileName, sellerId: req.params.id }).save();
@@ -25,7 +25,13 @@ function AdminController() {
 
   this.getSinleCategory = async (req, res) => {
     const category = await CategoryModel.findById(req.params.id);
-    res.status(200).json({ category })
+    res.status(200).json(category)
+  }
+
+
+  this.getCategory = async (req, res) => {
+    let category = await CategoryModel.find({ sellerId: req.params.id })
+    res.status(200).json({ category });
   }
 
 
@@ -60,7 +66,7 @@ function AdminController() {
 
   this.createChildItem = async (req, res) => {
     const { title, price, info, ram, cpuCore, camera, storage, warranty, color,
-      display, fullSpecifications, meanStar, num, total, available, } = req.body
+      display, fullSpecifications, meanStar, num, total, available, availableCount } = req.body
     if (!req.files) return res.status(400).send('لطفا یک عکس انتخاب کنید')
     await sharp(req.file.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName}`)
     const childItem = await new ChildItemModel({
@@ -79,8 +85,9 @@ function AdminController() {
       num,
       total,
       available,
+      availableCount: availableCount,
       imageUrl: req.fileName,
-      categoryId: req.params.id
+      categoryId: req.params.id,
     }).save()
     res.status(200).json({ childItem })
     // res.status(200).send('با موفقیت ساخته شد')
@@ -92,7 +99,7 @@ function AdminController() {
     const childItem = await ChildItemModel.findById(req.params.id)
     if (!childItem) return res.status(400).send('این گزینه قبلا از سرور حذف شده')
     const { title, price, info, ram, cpuCore, camera, storage, warranty, color,
-      display, fullSpecifications, meanStar, num, total, available, } = req.body
+      display, fullSpecifications, meanStar, num, total, available, availableCount } = req.body
     if (req.files) {
       await sharp(req.file.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName}`)
       if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl}`))
@@ -115,6 +122,7 @@ function AdminController() {
     childItem.num = num
     childItem.total = total
     childItem.available = available
+    childItem.availableCount = availableCount
     childItem.imageUrl = req.fileName;
     await childItem.save();
     res.status(200).json({ childItem })
@@ -136,18 +144,17 @@ function AdminController() {
 
 
   this.listUnAvailable = async (req, res) => {
-    const childItems = await ChildItemModel.find()
-    const unAvailable = childItems.filter((f) => (f.available == false))
-    res.status(200).json({ unAvailable })
+    const childItems = await ChildItemModel.find({ available: 0 })
+    res.status(200).json(childItems)
   }
 
 
   this.changeAvailable = async (req, res) => {
     const childItem = await ChildItemModel.findById(req.params.id)
     if (!childItem) return res.status(400).send('این گزینه قبلا از سرور حذف شده')
-    childItem.available = req.body.available
+    childItem.available = !childItem.available
     await childItem.save()
-    res.status(200).json({ available: childItem.available })
+    res.status(200).json(childItem.available)
   }
 
 
@@ -165,7 +172,6 @@ function AdminController() {
 
 
   this.deleteAdmin = async (req, res) => {
-    console.log(req.query.phoneOrEmail);
     const user = await UserModel.findOne({ phoneOrEmail: req.query.phoneOrEmail });
     if (!user) return res.status(400).send('کاربری با این شماره یا ایمیل پیدا نشد');
     if (user.isAdmin === 1) return res.status(400).send('نمیتوانید ادمین اصلی را حذف کنید');
@@ -201,16 +207,15 @@ function AdminController() {
 
 
   this.getProposal = async (req, res) => {
-    const allProposal = await proposalModel.find();
-    res.json({ allProposal })
+    const allProposal = await ProposalModel.find();
+    res.json(allProposal)
   }
 
 
   this.deleteMultiProposal = async (req, res) => {
-    console.log(req.body.allId);
-    let allId = req.body.allId
+    let allId = req.body.proposalId
     if (!allId.length) return res.status(400).send('حد اقل یک مورد را انتخاب کنید')
-    for (let _id of allId) { await proposalModel.deleteMany({ _id }) }
+    for (let _id of allId) { await ProposalModel.deleteMany({ _id }) }
     if (allId.length === 1) res.status(200).send('با موفقیت حذف شد')
     else res.status(200).send('با موفقیت حذف شدند')
   }
@@ -238,18 +243,52 @@ function AdminController() {
 
 
   this.getAllAddress = async (req, res) => {
-    const payments = await PaymentModel.find({ success: true }).sort({ date: -1 });
+    const payments = await PaymentModel.find().and([{ success: true }, { send: { $ne: 1 } }]).sort({ date: -1 });
     res.json({ payments })
   }
 
 
-  this.deleteAddressForOneAdmin = async (req, res) => {
-    let payment = await PaymentModel.findById(req.params.id)
-    if (!payment) return res.status(400).send('این گزینه قبلا از سرور حذف شده')
-    payment.deleteForUser = req.user.payload.userId
-    await payment.save()
-    res.send("با موفقیت برای شما موفقیت حذف شد")
+  this.getAllAddressForChart = async (req, res) => {
+    const getAllAddressForChart = await PaymentModel.find({ success: true }).sort({ date: -1 });
+    res.json(getAllAddressForChart)
   }
+
+
+
+  this.getAllPaymentSuccessFalseAndTrue = async (req, res) => {
+    const payments = await PaymentModel.find().sort({ date: -1 });
+    res.json({ payments })
+  }
+
+
+  this.postedOrder = async (req, res) => {
+    let payment = await PaymentModel.findById(req.params.id)
+    payment.checkSend = 0
+    payment.send = 1
+    await payment.save()
+    res.json(payment.send)
+  }
+
+  this.postQueue = async (req, res) => {
+    let payment = await PaymentModel.findById(req.params.id)
+    payment.checkSend = 0
+    payment.send = 0
+    payment.queueSend = !payment.queueSend
+    await payment.save()
+    res.json(payment.queueSend)
+  }
+
+
+  // this.deleteAddressForOneAdmin = async (req, res) => {
+  //   let payment = await PaymentModel.findById(req.params.id)
+  //   if (!payment) return res.status(400).send('این گزینه قبلا از سرور حذف شده')
+  //   payment.deleteForUser = req.user.payload.userId
+  //   payment.send = 1
+  //   await payment.save()
+  //   res.send("با موفقیت برای شما موفقیت حذف شد")
+  // }
+
+
 
 
   this.sendDisablePost = async (req, res) => {
@@ -263,7 +302,6 @@ function AdminController() {
 
 
   this.sendPostPrice = async (req, res) => {
-    await PostPriceModel.deleteMany()
     await new PostPriceModel({ price: req.body.price }).save()
     res.status(200).send('قیمت پست با موفقیت ثبت شد')
   }
@@ -283,22 +321,40 @@ function AdminController() {
 
 
   this.createSeller = async (req, res) => {
+    //  const seller = await SellerModel.findOne().or([{ phone: req.body.phone },{ brand: req.body.brand }]);
+    const user = await UserModel.findOne({ phoneOrEmail: req.body.phone });
+    if (!user) return res.send('کاربری با این شماره قبلا ثبت نام نکرده است')
+    const sellerPhone = await SellerModel.findOne({ phone: req.body.phone })
+    const sellerBrand = await SellerModel.findOne({ brand: req.body.brand })
+    if (sellerPhone) return res.status(400).send('این شماره را قبلا به فروشندگان اضاف کرده اید')
+    if (sellerBrand) return res.status(400).send('این برند را قبلا برای فروشنده ی دیگری انتخاب کزده اید')
     await SellerModel.create({ brand: req.body.brand, phone: req.body.phone });
+    user.isAdmin = 3
+    user.save()
     res.status(200).json('با موفقیت ساخته شد')
-  }
-
-
-  this.deleteSeller = async (req, res) => {
-    await SellerModel.deleteOne({ phone: req.body.phone });
-    res.status(200).send('با موفقیت حذف شد')
   }
 
 
   this.getAllSellers = async (req, res) => {
     const seller = await SellerModel.find();
-    res.status(200).json({ seller })
+    res.status(200).json(seller)
   }
 
+
+
+  this.deleteSeller = async (req, res) => {
+    await SellerModel.findByIdAndRemove(req.params.id);
+    res.status(200).send('با موفقیت حذف شد')
+  }
+
+
+
+  this.setSellerAvailable = async (req, res) => {
+    const seller = await SellerModel.findById(req.params.id);
+    seller.available = seller.available ? 0 : 1
+    await seller.save()
+    res.status(200).json(seller.available)
+  }
 
 
   this.getAllUser = async (req, res) => {
@@ -308,12 +364,42 @@ function AdminController() {
 
 
 
-  this.getSocketIoSeen = async (req, res) => {
-    let socketSeen = await SocketMessageModel.find({seen:0}).count()
-    console.log(socketSeen);
-    res.json(socketSeen)
-  }
 
+
+  this.createSlider = async (req, res) => {
+    await SliderModel.deleteMany()
+
+    if (!req.files?.sliderImage1) return res.status(400).send('لطفا همه ی کادر های تصاویر را انتخاب کنید')
+    if (!req.files?.sliderImage2) return res.status(400).send('لطفا همه ی کادر های تصاویر را انتخاب کنید')
+    if (!req.files?.sliderImage3) return res.status(400).send('لطفا همه ی کادر های تصاویر را انتخاب کنید')
+    if (!req.files?.sliderImage4) return res.status(400).send('لطفا همه ی کادر های تصاویر را انتخاب کنید')
+    if (!req.files?.sliderImage5) return res.status(400).send('لطفا همه ی کادر های تصاویر را انتخاب کنید')
+    if (!req.files?.sliderImage6) return res.status(400).send('لطفا همه ی کادر های تصاویر را انتخاب کنید')
+
+   const fileName1 = `${shortid.generate()}_${req.files.sliderImage1.name}`
+   const fileName2 = `${shortid.generate()}_${req.files.sliderImage2.name}`
+   const fileName3 = `${shortid.generate()}_${req.files.sliderImage3.name}`
+   const fileName4 = `${shortid.generate()}_${req.files.sliderImage4.name}`
+   const fileName5 = `${shortid.generate()}_${req.files.sliderImage5.name}`
+   const fileName6 = `${shortid.generate()}_${req.files.sliderImage6.name}`
+
+    await sharp(req.files.sliderImage1.data).toFile(`${appRootPath}/public/upload/slider/${fileName1}`)
+    await sharp(req.files.sliderImage2.data).toFile(`${appRootPath}/public/upload/slider/${fileName2}`)
+    await sharp(req.files.sliderImage3.data).toFile(`${appRootPath}/public/upload/slider/${fileName3}`)
+    await sharp(req.files.sliderImage4.data).toFile(`${appRootPath}/public/upload/slider/${fileName4}`)
+    await sharp(req.files.sliderImage5.data).toFile(`${appRootPath}/public/upload/slider/${fileName5}`)
+    await sharp(req.files.sliderImage6.data).toFile(`${appRootPath}/public/upload/slider/${fileName6}`)
+
+    let slider = await SliderModel.create({
+      image1: fileName1,
+      image2: fileName2,
+      image3: fileName3,
+      image4: fileName4,
+      image5: fileName5,
+      image6: fileName6,
+    })
+    res.json(slider)
+  }
 
 
 

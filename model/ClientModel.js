@@ -40,16 +40,16 @@ const ChildItemModel = new mongoose.Schema({
     cpuCore: { type: Number, required: true },
     camera: { type: Number, required: true },
     storage: { type: Number, required: true },
-    warranty: { type: String, required: true },
+    warranty: { type: Number, required: true },
     color: { type: Array, required: true },
     display: { type: Number, required: true },
-    fullSpecifications: { type: Array, required: true },
     info: { type: String, required: true },
     imageUrl: String,
-    meanStar: { type: Number, required: true, default: 0 },
+    meanStar: { type: Number, default: 0 },
     num: { type: Number, default: 0 },
     total: { type: Number, default: 0 },
-    available: Boolean,
+    available: { type: Number, default: 1 },
+    availableCount: { type: Number, require: true, min: 1 },
     comment: [CommenteModel],
     categoryId: { type: mongoose.Schema.Types.ObjectId, ref: "category" }
 });
@@ -61,7 +61,8 @@ exports.ChildItemModel = mongoose.model("ChildItemModel", ChildItemModel);
 const CategoryModel = new mongoose.Schema({
     title: { type: String, required: true },
     imageUrl: String,
-    sellerId: { type: mongoose.Schema.Types.ObjectId, ref: "seller"}
+    available: { type: Number, default: 1 },
+    sellerId: { type: mongoose.Schema.Types.ObjectId, ref: "seller" }
 });
 
 exports.CategoryModel = mongoose.model("CategoryModel", CategoryModel);
@@ -88,7 +89,7 @@ const PaymentModel = new mongoose.Schema({
     enablePosted: { type: Number, default: 0 },
     deleteForUser: { type: mongoose.Schema.Types.ObjectId, ref: "delete" },
 
-    checkSend: { type: Number, default: 0 },
+    checkSend: { type: Number, default: 1 },
     queueSend: { type: Number, default: 0 },
     send: { type: Number, default: 0 },
 });
