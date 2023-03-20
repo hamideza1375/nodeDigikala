@@ -2,4 +2,5 @@ node_modules/
 public/upload/category/*
 public/upload/childItem/*
 public/upload/profile/*
+public/upload/slider/*
 public/upload/ticket/*
