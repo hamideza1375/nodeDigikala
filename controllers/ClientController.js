@@ -2,7 +2,7 @@
 // spfa
 // app200
 const node_geocoder = require('node-geocoder');
-const { CategoryModel, ChildItemModel, PaymentModel } = require('../model/ClientModel')
+const { CategoryModel, ChildItemModel, PaymentModel, CommenteModel } = require('../model/ClientModel')
 const { NotifeeModel, AddressVoucherModel, SliderModel } = require('../model/AdminModel')
 const ZarinpalCheckout = require('zarinpal-checkout');
 const zarinpal = ZarinpalCheckout.create('00000000-0000-0000-0000-000000000000', true);
@@ -16,7 +16,7 @@ function ClientController() {
 
 
   this.getSlider = async (req, res) => {
-    let slider = await SliderModel.findOne().select({_id: false})
+    let slider = await SliderModel.findOne().select({ _id: false })
     res.status(200).json(slider);
   }
 
@@ -33,64 +33,142 @@ function ClientController() {
   }
 
 
-  // this.populars = async (req, res) => {
-  //   let childItems = await ChildItemModel.find().sort({ fiveStar: -1 })
-  //   res.status(200).json({ childItems });
-  // }
+
+  this.getOffers = async (req, res) => {
+    let offers = await ChildItemModel.find({ 'offerTime.exp': { $gt: new Date().getTime() } })
+    res.status(200).json(offers);
+  }
 
 
-  // this.offers = async (req, res) => {
-  //   let childItems = await ChildItemModel.find({ offers: { $ne: '' } })
-  //   res.status(200).json({ childItems });
-  // }
+  this.getPopulars = async (req, res) => {
+    let offers = await ChildItemModel.find({meanStar:{$gte:4}})
+    res.status(200).json(offers);
+  }
 
-  // this.bestSeller = async (req, res) => {
+
+  // this.getBestSeller = async (req, res) => {
   //   let singleItem = await ChildItemModel.findById(req.params.id)
   //   res.status(200).json({ singleItem });
   // }
 
 
-  this.createComment = async (req, res) => {
-    const { message, allStar, starId, imageUrl, id } = req.body;
-    const childItem = await ChildItemModel.findById({ _id: req.params.id })
-    childItem.comment.push({ message, allStar, starId, imageUrl })
-    await childItem.save()
-    res.status(200).json({ comment: childItem.comment })
+  this.setStar = async (req) => {
+    let singleItem = await ChildItemModel.findById(req.params.id)
+    let comment = await CommenteModel.find({ commentId: req.params.id }).select({ fiveStar: 1 })
+    let totalStar = 0
+    for (let i in comment) { totalStar += comment[i].fiveStar }
+    singleItem.meanStar = totalStar / comment.length
+    await singleItem.save()
   }
 
 
+  this.createComment = async (req, res) => {
+    const { message, fiveStar } = req.body;
+    var fullname
+    if (req.user.payload.isAdmin === 1 || req.user.payload.isAdmin === 2) fullname = 'مدیر'
+    else if (req.user.payload.isAdmin === 3) fullname = 'فروشندگان'
+    else fullname = 'کاربر'
+    const comment = await CommenteModel.create({ message, fiveStar, fullname, commentId: req.params.id, userId: req.user.payload.userId })
+    this.setStar(req)
+    res.status(200).json({ comment })
+  }
+
 
   this.editComment = async (req, res) => {
-    const { message, allStar } = req.body;
-    const childItem = await ChildItemModel.findById({ _id: req.params.id })
-    const comment = childItem.comment.id(req.query.commentid)
+    const { message, fiveStar } = req.body;
+    console.log(req.params.commentid);
+    const comment = await CommenteModel.findById(req.query.commentid)
     comment.message = message
-    comment.allStar = allStar
-    await childItem.save()
+    comment.fiveStar = fiveStar
+    await comment.save()
+    this.setStar(req)
     res.status(200).json({ comment })
   }
 
 
   this.deleteComment = async (req, res) => {
-    const childItem = await ChildItemModel.findById({ _id: req.params.id })
-    if (!childItem) return res.status(400).send('این نظر قبلا از سرور حذف شده')
-    childItem.comment.id(req.query.commentid).remove()
-    await childItem.save()
+    await CommenteModel.findByIdAndDelete({ _id: req.params.id })
     res.status(200).send('نظر شما حذف شد')
   }
 
 
 
+  this.commentLike = async (req, res) => {
+    const falseLike = await CommenteModel.findById({ _id: req.params.id })
+    const truLike = await CommenteModel.findOne({ _id: req.params.id, like: { $elemMatch: { userId: req.user.payload.userId } } })
+
+    const like = truLike?.like
+    const findLike = like?.length && like.find(l => l.userId == req.user.payload.userId)
+    const preLike = findLike ? !findLike.value : 0
+
+    if (truLike) {
+      await CommenteModel.findOneAndUpdate({ _id: req.params.id, like: { $elemMatch: { userId: req.user.payload.userId } } },
+        { $set: { "like.$.value": preLike } },
+        { new: true }
+      )
+      const comment = await CommenteModel.findOne({ _id: req.params.id })
+      const filterValueTrue = comment.like.filter(l => l.value === 1)
+      comment.likeCount = filterValueTrue.length
+      await comment.save()
+      res.status(200).json(filterValueTrue.length)
+    }
+
+    else if (falseLike) {
+      falseLike.like.push({ value: 1, userId: req.user.payload.userId })
+      await falseLike.save()
+      const comment = await CommenteModel.findOne({ _id: req.params.id })
+      const filterValueTrue = comment.like.filter(l => l.value === 1)
+      comment.likeCount = filterValueTrue.length
+      await comment.save()
+      res.status(200).json(filterValueTrue.length)
+    }
+  }
+
+
+
+  this.commentDisLike = async (req, res) => {
+    const falseDisLike = await CommenteModel.findById({ _id: req.params.id })
+    const truDisLike = await CommenteModel.findOne({ _id: req.params.id, disLike: { $elemMatch: { userId: req.user.payload.userId } } })
+
+    const disLike = truDisLike?.disLike
+    const findDisLike = disLike?.length && disLike.find(l => l.userId == req.user.payload.userId)
+    const preDisLike = findDisLike ? !findDisLike.value : 0
+
+    if (truDisLike) {
+      await CommenteModel.findOneAndUpdate({ _id: req.params.id, disLike: { $elemMatch: { userId: req.user.payload.userId } } },
+        { $set: { "disLike.$.value": preDisLike } },
+        { new: true }
+      )
+      const comment = await CommenteModel.findOne({ _id: req.params.id })
+      const filterValueTrue = comment.disLike.filter(l => l.value === 1)
+      comment.disLikeCount = filterValueTrue.length
+      await comment.save()
+      res.status(200).json(filterValueTrue.length)
+    }
+    else if (falseDisLike) {
+      falseDisLike.disLike.push({ value: 1, userId: req.user.payload.userId })
+      await falseDisLike.save()
+      const comment = await CommenteModel.findOne({ _id: req.params.id })
+      const filterValueTrue = comment.disLike.filter(l => l.value === 1)
+      comment.disLikeCount = filterValueTrue.length
+      await comment.save()
+      res.status(200).json(filterValueTrue.length)
+    }
+  }
+
+
+
+
   this.getChildItemComments = async (req, res) => {
-    const childItem = await ChildItemModel.findById(req.params.id)
-    res.status(200).json({ comment: childItem.comment })
+    const comment = await CommenteModel.find({ commentId: req.params.id }).sort({ date: -1 })
+    res.status(200).json({ comment })
   }
 
 
 
   this.getSingleComment = async (req, res) => {
-    const childItem = await ChildItemModel.findById(req.params.id)
-    res.status(200).json({ comment: childItem.comment.id(req.query.commentid) })
+    const comment = await CommenteModel.findById(req.params.id)
+    res.status(200).json({ comment })
   }
 
 
@@ -196,6 +274,14 @@ function ClientController() {
   // res.redirect('/lastPayment')
 
 
+  // this.commentLike = async (req, res) => {
+  //   const truLike = await CommenteModel.findOne({ _id: req.params.id, like: { $elemMatch: { userId: req.user.payload.userId } } })
+  //   await CommenteModel.update( 
+  //     { _id: req.params.id }, 
+  //     { $pull: { like: {userId: req.user.payload.userId} } } 
+  //   )
+  //   res.json(truLike)
+  // }
 }
 
 module.exports = new ClientController()

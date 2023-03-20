@@ -169,9 +169,9 @@ console.log(fruit9.sort()); 1, 2, 4, 6
 //* splice !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 const fruit10 = ["Banana", "Orange", "Apple", "Mango"];
 fruit10.splice(2, 0, "Lemon", "Kiwi");
-console.log(fruit10); Banana,Orange,Lemon,Kiwi,Apple,Mango
+console.log(fruit10); Banana, Orange, Lemon, Kiwi, Apple, Mango
 fruit10.splice(2, 1);
-console.log(fruit10); Banana,Orange,Mango
+console.log(fruit10); Banana, Orange, Mango
 fruit10.splice(1);
 console.log(fruit10); Banana
 //* splice !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -179,8 +179,8 @@ console.log(fruit10); Banana
 
 //! Number
 const _number1 = 15.095
-(_number1).toFixed() = 15; type='string'
-(_number1).toPrecision() = 15.095; type='string'
+  (_number1).toFixed() = 15; type = 'string'
+    (_number1).toPrecision() = 15.095; type = 'string'
 isNaN(_number1) = false
 Number(_number1) = 15.095; type = 'number'
 parseInt(_number1) = 151; type = 'number'
@@ -214,9 +214,9 @@ console.log(gen.next().value); // 3
 /////////////////////////////////////////////////
 function* infinite() {
   let index = 0;
-  while (index <= 10){
-     index++;
-     yield new Date()
+  while (index <= 10) {
+    index++;
+    yield new Date()
   }
 }
 const generator = infinite();
@@ -230,62 +230,112 @@ setInterval(() => {
 
 
 //! Mongoose
-  // this.getLastPayment2 = async (req, res) => {
+// this.getLastPayment2 = async (req, res) => {
 
-  //!slice
-  // const AddressVoucher = await AddressVoucherModel.find({ userId: req.user.payload.userId })
-  // const addressSlice = AddressVoucher.slice(AddressVoucher.length - 5, AddressVoucher.length)
-
-
-
-  // lastPayment.childItemsId.id('63fde81ad779c22f80c9aa3d')
-  // .find({ childItemsId:{_id:'a'}})
-  // .find({ childItemsId:/^ماشین/})  اونایی که اولش ماشین داشته باشرو برمیگردونه
-  // .find({childItemsTitle: /قرمز$/}) اونایی که اخرشون با قرمز تموم بشرو برمیگردونه
-  // .find({ childItemsTitle: /.*title1.*/ }) اینکلود میکنه و اونایی که توشون این مقدار پیدا بشرو برمیگردونه
-  // .find({ childItemsTitle: /title1/ }) اینکلود میکنه و اونایی که توشون این مقدار پیدا بشرو برمیگردونه
-  // .find({ childItemsId:['111', '222']})
-  // .find({ childItemsId:[]})
-
-  // }
+//!slice
+// const AddressVoucher = await AddressVoucherModel.find({ userId: req.user.payload.userId })
+// const addressSlice = AddressVoucher.slice(AddressVoucher.length - 5, AddressVoucher.length)
 
 
 
+// lastPayment.childItemsId.id('63fde81ad779c22f80c9aa3d')
+// .find({ childItemsId:{_id:'a'}})
+// .find({ childItemsId:/^ماشین/})  اونایی که اولش ماشین داشته باشرو برمیگردونه
+// .find({childItemsTitle: /قرمز$/}) اونایی که اخرشون با قرمز تموم بشرو برمیگردونه
+// .find({ childItemsTitle: /.*title1.*/ }) اینکلود میکنه و اونایی که توشون این مقدار پیدا بشرو برمیگردونه
+// .find({ childItemsTitle: /title1/ }) اینکلود میکنه و اونایی که توشون این مقدار پیدا بشرو برمیگردونه
+// .find({ childItemsId:['111', '222']})
+// .find({ childItemsId:[]})
 
-  // this.getLastPayment3 = async (req, res) => {
-  //! updateOne =مقدار رو برنمیگزدونه و فقط بروز میکنه 
-  //! findOneAndUpdate = هم بروز میکنه و هم مقدار رو برمیگردونه
-  //! findByIdAndUpdate = هم بروز میکنه و هم مقدار رو برمیگردون
-  //! updateMany
-  //! deleteOne
-  //! findOneAndDelete
-  //! findByIdAndDelete
-  //! deleteMany
+// }
 
 
-  // .select({fullname:1, phone:1}) = فقط مقدار نام و شماره تلفن رو برمیگردونه به اضافه ی ایدی
-  // .select({childItemsId: {name:1}}) از توی چیلد ایتم فقط مقدار نامش رو برمیگردونه
-  // .select({childItemsId: 1})
-  // .count() = بجای مقدار تعداد رو بر میگردونه و من الان گفتم پنج تای آخر رو میخوام ولی اگه فقط 3 تا تو دیتابیس موجود باشه تعداد رو 3 نشون میده
-  // .limit(5) فقط پنج تای اول رو برمیگردونه
-  // .or([{ description: { $ne: '' }, floor: { $gt: 8 }}]) = وقتی دوتا شرت رو داخل یک ابجکت بنویشی یعنی 1&1
-  // .and([{ description: { $ne: '' }},  {floor: { $gt: 8 }}])  خود اند رو هم داریم
-  // .or([{ description: { $ne: '' }},  {floor: { $gt: 8 }}]) وقتی شزت هارو داخل ابجکت های جدا بنویسی یعنی 1|1
-  // populate
 
-  // await PaymentModel.find({ description: { $eq: '' } }) اونایی که مقدار دسکریپشنشون خالی باشرو فقط نمایش میده
-  // $eq: 8 = فقط باید مقدار 8 باشه تابرگردونه
-  // $ne: 8 = اونایی که مقدارشون برابر نباشه با 8 رو برمیگردونه
-  // $gt:8 = بزرگ تر از 8 رو برمیگزدونه
-  // $gte:8 = بزرگ تر یابرابر 8 رو برمیگزدونه
-  // $lt:8 = کوچکتر تر از 8 رو برمیگزدونه
-  // $lte:8 = کوچکتر تر یا برابر 8 رو برمیگزدونه
-  // $in:[6, 7, 2] = اگه مقدار برابر با یکی از مقادیر داخل آرایه بود اونارو برمیگردونه
-  // $nin:[1, 7, 9] اگه مقدار برابر یکی از مقادیر داخل آرایه بود اونارو برنمیگردونه
+
+// this.getLastPayment3 = async (req, res) => {
+//! updateOne =مقدار رو برنمیگزدونه و فقط بروز میکنه 
+//! findOneAndUpdate = هم بروز میکنه و هم مقدار رو برمیگردونه
+//! findByIdAndUpdate = هم بروز میکنه و هم مقدار رو برمیگردون
+//! updateMany
+//! deleteOne
+//! findOneAndDelete
+//! findByIdAndDelete
+//! deleteMany
+
+//* const childItem = await ChildItemModel.findOne({ _id: req.params.id, like: { $elemMatch: { userId: req.user.payload.userId } } }) // find in child array
+//* const comment = childItem.comment.id(req.query.commentid) // getId
+//* comment?.remove()
+//* await childItem.save() 
+
+
+// .select({fullname:1, phone:1}) = فقط مقدار نام و شماره تلفن رو برمیگردونه به اضافه ی ایدی
+// .select({childItemsId: {name:1}}) از توی چیلد ایتم فقط مقدار نامش رو برمیگردونه
+// .select({childItemsId: 1})
+// .count() = بجای مقدار تعداد رو بر میگردونه و من الان گفتم پنج تای آخر رو میخوام ولی اگه فقط 3 تا تو دیتابیس موجود باشه تعداد رو 3 نشون میده
+// .limit(5) فقط پنج تای اول رو برمیگردونه
+// .or([{ description: { $ne: '' }, floor: { $gt: 8 }}]) = وقتی دوتا شرت رو داخل یک ابجکت بنویشی یعنی 1&1
+// .and([{ description: { $ne: '' }},  {floor: { $gt: 8 }}])  خود اند رو هم داریم
+// .or([{ description: { $ne: '' }},  {floor: { $gt: 8 }}]) وقتی شزت هارو داخل ابجکت های جدا بنویسی یعنی 1|1
+// populate
+
+// await PaymentModel.find({ description: { $eq: '' } }) اونایی که مقدار دسکریپشنشون خالی باشرو فقط نمایش میده
+// $eq: 8 = فقط باید مقدار 8 باشه تابرگردونه
+// $ne: 8 = اونایی که مقدارشون برابر نباشه با 8 رو برمیگردونه
+// $gt:8 = بزرگ تر از 8 رو برمیگزدونه
+// $gte:8 = بزرگ تر یابرابر 8 رو برمیگزدونه
+// $lt:8 = کوچکتر تر از 8 رو برمیگزدونه
+// $lte:8 = کوچکتر تر یا برابر 8 رو برمیگزدونه
+// $in:[6, 7, 2] = اگه مقدار برابر با یکی از مقادیر داخل آرایه بود اونارو برمیگردونه
+// $nin:[1, 7, 9] اگه مقدار برابر یکی از مقادیر داخل آرایه بود اونارو برنمیگردونه
+
+
+
+
+// $pull
+// $pullAll
+
+//! pull
+//*{ "_id" : 1, "bar" : [ 1, 7, 2, 3, 8, 7, 1 ] }
+db.products.update( 
+  { _id: 1 }, 
+  { $pull: { bar: 7 } } 
+)
+
+db.foo.update(
+  { _id: 1 },
+  { $pullAll: { bar: [7] } }
+)
+
+await CommenteModel.update( 
+  { _id: req.params.id }, 
+  { $pull: { like: {userId: req.user.payload.userId} } } //! delete width userId
+)
+//*
+this.commentLike = async (req, res) => {
+  const truLike = await CommenteModel.findOne({ _id: req.params.id, like: { $elemMatch: { userId: req.user.payload.userId } } })
+  await CommenteModel.update( 
+    { _id: req.params.id }, 
+    { $pull: { like: {userId: req.user.payload.userId} } } //! این تمام ابجکت هایی که مقدار که یوزر ایدیشون برابر هست رو پاک میکنه
+  )
+  res.json(truLike)
+}
+//! pull
+
+{
+//!
+await CommenteModel.updateOne({ _id: req.params.id }, {
+  $set: { like: [{ likeNumber: 1, userId: req.user.payload.userId }] },
+});
+//*
+await CommenteModel.findOneAndUpdate({ _id: req.params.id, like: { $elemMatch: { userId: req.user.payload.userId } } },
+  { $set: { "like.$.likeNumber": 0, "like.$.userId": req.user.payload.userId } },
+  { new: true }
+) //! فقط نامبر موجود باشه عددش رو صفر میکنه ولی توی اولی همرو پاک میکنه و از نو میسازش
+}
 
 
   //! edit
-  // const lastPayment = await PaymentModel.findByIdAndUpdate(
+  // const lastPayment = await PaymentModel.findOneAndUpdate(
   //   { _id: '63fe054d2b67d226ac46bb32' },
   //   { $set: { "childItemsId.text": "newText" } },
   //   )

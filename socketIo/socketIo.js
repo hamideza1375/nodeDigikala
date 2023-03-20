@@ -41,7 +41,7 @@ module.exports = (server, app) => {
 
     socket.on("pvChat", async (data) => {
       try {
-        const socketMsg = await new SocketMessageModel({ message: data.pvMessage, id: socket.id, to: data.to, userId: data.userId, getTime: new Date().getTime(), expTime: new Date().getTime() + (60 * 1000 * 60 * 24 * 30) })
+        const socketMsg = await new SocketMessageModel({ message: data.pvMessage, id: socket.id, to: data.to, userId: data.userId, getTime: new Date().getTime(), expTime: new Date().getTime() + (60 * 1000 * 60 * 24 * 7) })
         if (!data.isAdmin) socketMsg.seen = 0
         await socketMsg.save()
 

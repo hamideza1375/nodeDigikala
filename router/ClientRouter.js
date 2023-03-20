@@ -12,6 +12,8 @@ router.get('/getSlider', ClientController.getSlider);
 router.get('/getCategory', ClientController.getCategory);
 router.get('/getChildItems/:id', ClientController.getChildItems);
 router.get('/getSingleItem/:id', ClientController.getSingleItem);
+router.get('/getOffers', ClientController.getOffers);
+router.get('/getPopulars', ClientController.getPopulars);
 // getItem
 // comment 
 router.post('/createComment/:id', Auth, ClientController.createComment);
@@ -19,6 +21,9 @@ router.put('/editComment/:id', Auth, ClientController.editComment);
 router.delete('/deleteComment/:id', Auth, ClientController.deleteComment);
 router.get('/getChildItemComments/:id', user, ClientController.getChildItemComments);
 router.get('/getSingleComment/:id', user, ClientController.getSingleComment);
+router.post('/commentLike/:id', Auth, ClientController.commentLike);
+router.post('/commentDisLike/:id', Auth, ClientController.commentDisLike);
+
 // comment 
 // getNotification
 router.get('/getNotification', ClientController.getNotification);

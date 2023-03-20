@@ -5,6 +5,7 @@ const Auth = require('../middleware/Auth');
 const AuthMainAdmin = require('../middleware/AuthMainAdmin');
 const AuthAllAdmin = require('../middleware/AuthAllAdmin');
 const fileUpload = require('../middleware/fileUpload');
+const multiFileUpload = require('../middleware/multiFileUpload');
 
 
 //! get put post delete
@@ -16,8 +17,8 @@ router.delete('/deleteCategory/:id', AuthMainAdmin, AdminController.deleteCatego
 router.get('/getSinleCategory/:id', AdminController.getSinleCategory);
 
 
-router.post('/createChildItem/:id', [AuthMainAdmin, fileUpload], AdminController.createChildItem);
-router.put('/editChildItem/:id', [AuthMainAdmin, fileUpload], AdminController.editChildItem);
+router.post('/createChildItem/:id', [AuthMainAdmin, multiFileUpload], AdminController.createChildItem);
+router.put('/editChildItem/:id', [AuthMainAdmin, multiFileUpload], AdminController.editChildItem);
 router.delete('/deleteChildItem/:id', AuthMainAdmin, AdminController.deleteChildItem);
 
 router.get('/listUnAvailable', AuthMainAdmin, AdminController.listUnAvailable);

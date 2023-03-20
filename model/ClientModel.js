@@ -8,28 +8,43 @@ const mongoose = require('mongoose');
 //     // buff: Buffer
 //   });
 
+
+const LikeModel = new mongoose.Schema({
+    value: { type: Number,  max: 1, require: false },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "userLike", unique: true },
+});
+
+
+const DisLikeModel = new mongoose.Schema({
+    value: { type: Number,  max: 1, require: false },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "userDisLike", unique: true },
+});
+
+
 const AnswerModel = new mongoose.Schema({
-    imageUrl: String,
+    fullname: { type: String, required: true },
     message: { type: String, required: true },
-    like: Boolean,
-    disLike: Boolean,
-    answer: { type: String, required: true },
+    like: { type: Number, default: 0 },
+    disLike: { type: Number, default: 0 },
     date: { type: Date, default: Date.now },
 });
 
 
 const CommenteModel = new mongoose.Schema({
-    imageUrl: String,
+    fullname: { type: String, required: true },
     message: { type: String, required: true },
-    like: Boolean,
-    disLike: Boolean,
+    fiveStar: { type: Number, required: true, min: 1, max: 5 },
+    like: [LikeModel],
+    disLike: [DisLikeModel],
     answer: [AnswerModel],
-    allStar: { type: Number, required: true },
-    starId: { type: mongoose.Schema.Types.ObjectId, ref: "starId" },
+    likeCount: { type: Number, default:0 },
+    disLikeCount: { type: Number, default:0 },
     commentId: { type: mongoose.Schema.Types.ObjectId, ref: "ChildItem" },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "userIdComment" },
     date: { type: Date, default: Date.now },
 });
 
+exports.CommenteModel = mongoose.model("CommenteModel", CommenteModel);
 
 
 
@@ -44,13 +59,17 @@ const ChildItemModel = new mongoose.Schema({
     color: { type: Array, required: true },
     display: { type: Number, required: true },
     info: { type: String, required: true },
-    imageUrl: String,
+    imageUrl1: String,
+    imageUrl2: String,
+    imageUrl3: String,
+    imageUrl4: String,
     meanStar: { type: Number, default: 0 },
     num: { type: Number, default: 0 },
     total: { type: Number, default: 0 },
     available: { type: Number, default: 1 },
     availableCount: { type: Number, require: true, min: 1 },
-    comment: [CommenteModel],
+    offerTime: { type: Object },
+    offerValue: { type: Number, default: 0 },
     categoryId: { type: mongoose.Schema.Types.ObjectId, ref: "category" }
 });
 

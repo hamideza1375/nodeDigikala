@@ -66,9 +66,15 @@ function AdminController() {
 
   this.createChildItem = async (req, res) => {
     const { title, price, info, ram, cpuCore, camera, storage, warranty, color,
-      display, fullSpecifications, meanStar, num, total, available, availableCount } = req.body
-    if (!req.files) return res.status(400).send('لطفا یک عکس انتخاب کنید')
-    await sharp(req.file.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName}`)
+      display, fullSpecifications, meanStar, num, total, available, availableCount, offerTime, offerValue } = req.body
+    if (!req.fileName1 || !req.fileName2 || !req.fileName3 || !req.fileName4) return res.status(400).send('لطفا تمام کادر های تصاویر را پر کنید')
+    if ((offerTime > 0 && offerValue < 1) || (offerTime < 1 && offerValue > 0)) return res.status(400).send('نمیشود فقط یک کدام از مقادیر زمان یا درصد تخفیف را مشخص کنید')
+
+    await sharp(req.file1.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName1}`)
+    await sharp(req.file2.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName2}`)
+    await sharp(req.file3.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName3}`)
+    await sharp(req.file4.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName4}`)
+
     const childItem = await new ChildItemModel({
       title,
       price,
@@ -77,7 +83,7 @@ function AdminController() {
       camera,
       storage,
       warranty,
-      color,
+      color: JSON.parse(color),
       display,
       fullSpecifications,
       info,
@@ -86,7 +92,12 @@ function AdminController() {
       total,
       available,
       availableCount: availableCount,
-      imageUrl: req.fileName,
+      offerTime: (offerTime == 0 || offerValue == 0) ? ({ exp: 0, value: 0 }) : ({ exp: new Date().getTime() + (60000 * 60 * offerTime), value: offerTime }),
+      offerValue: (offerTime == 0 || offerValue == 0) ? 0 : offerValue,
+      imageUrl1: req.fileName1,
+      imageUrl2: req.fileName2,
+      imageUrl3: req.fileName3,
+      imageUrl4: req.fileName4,
       categoryId: req.params.id,
     }).save()
     res.status(200).json({ childItem })
@@ -99,14 +110,35 @@ function AdminController() {
     const childItem = await ChildItemModel.findById(req.params.id)
     if (!childItem) return res.status(400).send('این گزینه قبلا از سرور حذف شده')
     const { title, price, info, ram, cpuCore, camera, storage, warranty, color,
-      display, fullSpecifications, meanStar, num, total, available, availableCount } = req.body
-    if (req.files) {
-      await sharp(req.file.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName}`)
-      if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl}`))
-        fs.unlinkSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl}`)
-    } else {
-      req.fileName = childItem.imageUrl
+      display, fullSpecifications, meanStar, num, total, available, availableCount, offerTime, offerValue } = req.body
+
+    if ((offerTime > 0 && offerValue < 1) || (offerTime < 1 && offerValue > 0)) return res.status(400).send('نمیشود فقط یک کدام از مقادیر زمان یا درصد تخفیف را مشخص کنید')
+
+    if (req.fileName1) {
+      await sharp(req.file1.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName1}`)
+      if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl1}`))
+        fs.unlinkSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl1}`)
     }
+
+    if (req.fileName2) {
+      await sharp(req.file2.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName2}`)
+      if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl2}`))
+        fs.unlinkSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl2}`)
+    }
+
+    if (req.fileName3) {
+      await sharp(req.file3.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName3}`)
+      if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl3}`))
+        fs.unlinkSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl3}`)
+    }
+
+    if (req.fileName4) {
+      await sharp(req.file4.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName4}`)
+      if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl4}`))
+        fs.unlinkSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl4}`)
+    }
+
+
     childItem.title = title
     childItem.price = price
     childItem.ram = ram
@@ -114,7 +146,7 @@ function AdminController() {
     childItem.camera = camera
     childItem.storage = storage
     childItem.warranty = warranty
-    childItem.color = color
+    childItem.color = JSON.parse(color)
     childItem.display = display
     childItem.fullSpecifications = fullSpecifications
     childItem.info = info
@@ -123,7 +155,13 @@ function AdminController() {
     childItem.total = total
     childItem.available = available
     childItem.availableCount = availableCount
-    childItem.imageUrl = req.fileName;
+    childItem.offerTime = (offerTime == 0 || offerValue == 0 ) ? ({ exp: 0, value: 0 }) : ({ exp: new Date().getTime() + (60000 * 60 * offerTime), value: offerTime })
+    childItem.offerValue = (offerTime == 0 || offerValue == 0 ) ? 0 : offerValue
+    if (req.fileName1) childItem.imageUrl1 = req.fileName1;
+    if (req.fileName2) childItem.imageUrl2 = req.fileName2;
+    if (req.fileName3) childItem.imageUrl3 = req.fileName3;
+    if (req.fileName4) childItem.imageUrl4 = req.fileName4;
+
     await childItem.save();
     res.status(200).json({ childItem })
     // res.status(200).send('باموفقیت ویرایش شد')
@@ -156,7 +194,6 @@ function AdminController() {
     await childItem.save()
     res.status(200).json(childItem.available)
   }
-
 
 
 
@@ -367,7 +404,6 @@ function AdminController() {
 
 
   this.createSlider = async (req, res) => {
-    await SliderModel.deleteMany()
 
     if (!req.files?.sliderImage1) return res.status(400).send('لطفا همه ی کادر های تصاویر را انتخاب کنید')
     if (!req.files?.sliderImage2) return res.status(400).send('لطفا همه ی کادر های تصاویر را انتخاب کنید')
@@ -376,12 +412,33 @@ function AdminController() {
     if (!req.files?.sliderImage5) return res.status(400).send('لطفا همه ی کادر های تصاویر را انتخاب کنید')
     if (!req.files?.sliderImage6) return res.status(400).send('لطفا همه ی کادر های تصاویر را انتخاب کنید')
 
-   const fileName1 = `${shortid.generate()}_${req.files.sliderImage1.name}`
-   const fileName2 = `${shortid.generate()}_${req.files.sliderImage2.name}`
-   const fileName3 = `${shortid.generate()}_${req.files.sliderImage3.name}`
-   const fileName4 = `${shortid.generate()}_${req.files.sliderImage4.name}`
-   const fileName5 = `${shortid.generate()}_${req.files.sliderImage5.name}`
-   const fileName6 = `${shortid.generate()}_${req.files.sliderImage6.name}`
+    const slider = await SliderModel.findOne()
+
+    if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider?.image1}`))
+      fs.unlinkSync(`${appRootPath}/public/upload/slider/${slider?.image1}`)
+
+    if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider?.image2}`))
+      fs.unlinkSync(`${appRootPath}/public/upload/slider/${slider.image2}`)
+
+    if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider?.image3}`))
+      fs.unlinkSync(`${appRootPath}/public/upload/slider/${slider?.image3}`)
+
+    if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider?.image4}`))
+      fs.unlinkSync(`${appRootPath}/public/upload/slider/${slider?.image4}`)
+
+    if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider?.image5}`))
+      fs.unlinkSync(`${appRootPath}/public/upload/slider/${slider?.image5}`)
+
+    if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider?.image6}`))
+      fs.unlinkSync(`${appRootPath}/public/upload/slider/${slider?.image6}`)
+    await SliderModel.deleteMany()
+
+    const fileName1 = `${shortid.generate()}_${req.files.sliderImage1.name}`
+    const fileName2 = `${shortid.generate()}_${req.files.sliderImage2.name}`
+    const fileName3 = `${shortid.generate()}_${req.files.sliderImage3.name}`
+    const fileName4 = `${shortid.generate()}_${req.files.sliderImage4.name}`
+    const fileName5 = `${shortid.generate()}_${req.files.sliderImage5.name}`
+    const fileName6 = `${shortid.generate()}_${req.files.sliderImage6.name}`
 
     await sharp(req.files.sliderImage1.data).toFile(`${appRootPath}/public/upload/slider/${fileName1}`)
     await sharp(req.files.sliderImage2.data).toFile(`${appRootPath}/public/upload/slider/${fileName2}`)
@@ -390,7 +447,7 @@ function AdminController() {
     await sharp(req.files.sliderImage5.data).toFile(`${appRootPath}/public/upload/slider/${fileName5}`)
     await sharp(req.files.sliderImage6.data).toFile(`${appRootPath}/public/upload/slider/${fileName6}`)
 
-    let slider = await SliderModel.create({
+    let newSlider = await SliderModel.create({
       image1: fileName1,
       image2: fileName2,
       image3: fileName3,
@@ -398,7 +455,7 @@ function AdminController() {
       image5: fileName5,
       image6: fileName6,
     })
-    res.json(slider)
+    res.json(newSlider)
   }
 
 
