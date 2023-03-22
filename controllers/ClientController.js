@@ -22,7 +22,7 @@ function ClientController() {
 
 
   this.getChildItems = async (req, res) => {
-    let childItems = await ChildItemModel.find({ categoryId: req.params.id })
+    let childItems = await ChildItemModel.find({ categoryId: req.params.id }).sort({ data: -1 })
     res.status(200).json({ childItems });
   }
 
@@ -35,16 +35,27 @@ function ClientController() {
 
 
   this.getOffers = async (req, res) => {
-    let offers = await ChildItemModel.find({ 'offerTime.exp': { $gt: new Date().getTime() } })
+    let offers = await ChildItemModel.find({ 'offerTime.exp': { $gt: new Date().getTime() } }).sort({ data: -1 })
     res.status(200).json(offers);
   }
 
 
   this.getPopulars = async (req, res) => {
-    let offers = await ChildItemModel.find({meanStar:{$gte:4}})
-    res.status(200).json(offers);
+    let opulars = await ChildItemModel.find({ meanStar: { $gte: 4 } })
+    res.status(200).json(opulars);
   }
 
+
+  this.getSimilars = async (req, res) => {
+    let singleItem = await ChildItemModel.findById(req.params.id)
+    let similars = await ChildItemModel.find({ _id: { $ne: req.params.id } })
+      .and([{ price: { $gte: Number(singleItem.price) - 3000000 } }, { price: { $lte: Number(singleItem.price) + 3000000 } }])
+      .and([{ cpuCore: { $gte: singleItem.cpuCore - 4 } }, { cpuCore: { $lte: singleItem.cpuCore + 4 } }])
+      .and([{ ram: { $gte: singleItem.ram - 4 } }, { ram: { $lte: singleItem.ram + 4 } }])
+      .and([{ storage: { $gte: singleItem.storage - 32 } }, { storage: { $lte: singleItem.storage + 32 } }])
+      .and([{ camera: { $gte: singleItem.camera - 32 } }, { camera: { $lte: singleItem.camera + 32 } }])
+    res.status(200).json(similars);
+  }
 
   // this.getBestSeller = async (req, res) => {
   //   let singleItem = await ChildItemModel.findById(req.params.id)
@@ -155,8 +166,6 @@ function ClientController() {
       res.status(200).json(filterValueTrue.length)
     }
   }
-
-
 
 
   this.getChildItemComments = async (req, res) => {

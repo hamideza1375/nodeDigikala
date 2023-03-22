@@ -32,9 +32,11 @@ router.put("/editAnswerTicket/:id", [Auth, fileUpload], UserController.editAnswe
 router.get("/getSingleAnswerTicket/:id", [Auth, fileUpload], UserController.getSingleAnswerTicket);
 router.post("/ticketSeen/:id", [Auth], UserController.ticketSeen);
 router.delete("/deleteMainItemTicketBox/:id", Auth, UserController.deleteMainItemTicketBox);
+
 router.post("/savedItem/:id", Auth, UserController.savedItem);
-router.get("/savedItemBox", Auth, UserController.savedItemBox);
-router.post("/removeSavedItem/:id", Auth, UserController.removeSavedItem);
+router.delete("/removeSavedItem/:id", Auth, UserController.removeSavedItem);
+router.get("/getSavedItems", Auth, UserController.getSavedItems);
+
 router.get("/captcha.png/:id", UserController.captcha);
 
 module.exports = router;

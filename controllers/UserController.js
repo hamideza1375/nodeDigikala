@@ -245,9 +245,9 @@ function UserController() {
   this.getTicketSeen = async (req, res) => {
     let ticketseen
     if (req.user.payload.isAdmin)
-      ticketseen = await TicketModel.find({adminSeen : 0 }).countDocuments()
+      ticketseen = await TicketModel.find({ adminSeen: 0 }).countDocuments()
     else
-      ticketseen = await TicketModel.find({userId:req.user.payload.userId ,userSeen: 0 }).countDocuments()
+      ticketseen = await TicketModel.find({ userId: req.user.payload.userId, userSeen: 0 }).countDocuments()
     res.json(ticketseen)
   }
 
@@ -345,17 +345,19 @@ function UserController() {
 
 
   this.savedItem = async (req, res) => {
-    const childItem = await ChildItemModel.findById(req.params.id)
-    if (!childItem) return res.status(400).send('مشکلی پیش آمد بعدا دوباره امتحان کنید')
+    const ChildItem = await ChildItemModel.findOne({ _id: req.params.id })
     const savedIte = await SavedItemModel.findOne({ itemId: req.params.id })
     if (savedIte) return res.status(400).send('این محصول از قبل ذخیره شده هست')
-    const savedItem = await SavedItemModel.create({ itemId: req.params.id, userId: req.user.payload.userId })
-    res.json({ savedItem })
-  }
 
+    console.log('ChildItem.imageUrl',ChildItem.imageUrl);
 
-  this.savedItemBox = async (req, res) => {
-    const savedItem = await SavedItemModel.find({ userId: req.user.payload.userId })
+    const savedItem = await SavedItemModel.create({
+      itemId: req.params.id,
+      userId: req.user.payload.userId,
+      imageUrl: ChildItem.imageUrl1,
+      title: ChildItem.title,
+      price: ChildItem.price
+    })
     res.json({ savedItem })
   }
 
@@ -368,6 +370,10 @@ function UserController() {
   }
 
 
+  this.getSavedItems = async (req, res) => {
+    const savedItem = await SavedItemModel.find({ userId: req.user.payload.userId })
+    res.json(savedItem)
+  }
 
   // this.activeOrder = async (req, res) => {
   //   let fileName

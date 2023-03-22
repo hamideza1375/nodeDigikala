@@ -20,6 +20,7 @@ router.get('/getSinleCategory/:id', AdminController.getSinleCategory);
 router.post('/createChildItem/:id', [AuthMainAdmin, multiFileUpload], AdminController.createChildItem);
 router.put('/editChildItem/:id', [AuthMainAdmin, multiFileUpload], AdminController.editChildItem);
 router.delete('/deleteChildItem/:id', AuthMainAdmin, AdminController.deleteChildItem);
+router.post('/setOffer/:id', AuthMainAdmin, AdminController.setOffer);
 
 router.get('/listUnAvailable', AuthMainAdmin, AdminController.listUnAvailable);
 router.post('/changeAvailable/:id', AuthMainAdmin, AdminController.changeAvailable);

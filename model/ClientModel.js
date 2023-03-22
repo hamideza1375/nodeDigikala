@@ -10,14 +10,14 @@ const mongoose = require('mongoose');
 
 
 const LikeModel = new mongoose.Schema({
-    value: { type: Number,  max: 1, require: false },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "userLike", unique: true },
+    value: { type: Number, max: 1, require: false },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "userLike", },
 });
 
 
 const DisLikeModel = new mongoose.Schema({
-    value: { type: Number,  max: 1, require: false },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "userDisLike", unique: true },
+    value: { type: Number, max: 1, require: false },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "userDisLike", },
 });
 
 
@@ -34,11 +34,11 @@ const CommenteModel = new mongoose.Schema({
     fullname: { type: String, required: true },
     message: { type: String, required: true },
     fiveStar: { type: Number, required: true, min: 1, max: 5 },
-    like: [LikeModel],
-    disLike: [DisLikeModel],
-    answer: [AnswerModel],
-    likeCount: { type: Number, default:0 },
-    disLikeCount: { type: Number, default:0 },
+    like: [{type:LikeModel, require:false}],
+    disLike: [{type:DisLikeModel, require:false}],
+    answer: [{type:AnswerModel, require:false}],
+    likeCount: { type: Number, default: 0 },
+    disLikeCount: { type: Number, default: 0 },
     commentId: { type: mongoose.Schema.Types.ObjectId, ref: "ChildItem" },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "userIdComment" },
     date: { type: Date, default: Date.now },
@@ -68,7 +68,7 @@ const ChildItemModel = new mongoose.Schema({
     total: { type: Number, default: 0 },
     available: { type: Number, default: 1 },
     availableCount: { type: Number, require: true, min: 1 },
-    offerTime: { type: Object },
+    offerTime: { type: Object, default: {exp:0, value:0} },
     offerValue: { type: Number, default: 0 },
     categoryId: { type: mongoose.Schema.Types.ObjectId, ref: "category" }
 });
@@ -114,4 +114,3 @@ const PaymentModel = new mongoose.Schema({
 });
 
 exports.PaymentModel = mongoose.model('PaymentModel', PaymentModel);;
-

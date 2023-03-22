@@ -14,6 +14,7 @@ router.get('/getChildItems/:id', ClientController.getChildItems);
 router.get('/getSingleItem/:id', ClientController.getSingleItem);
 router.get('/getOffers', ClientController.getOffers);
 router.get('/getPopulars', ClientController.getPopulars);
+router.get('/getSimilars/:id', ClientController.getSimilars);
 // getItem
 // comment 
 router.post('/createComment/:id', Auth, ClientController.createComment);

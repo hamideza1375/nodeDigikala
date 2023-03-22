@@ -65,10 +65,8 @@ function AdminController() {
 
 
   this.createChildItem = async (req, res) => {
-    const { title, price, info, ram, cpuCore, camera, storage, warranty, color,
-      display, fullSpecifications, meanStar, num, total, available, availableCount, offerTime, offerValue } = req.body
+    const { title, price, info, ram, cpuCore, camera, storage, warranty, color, display, fullSpecifications, meanStar, num, total, available, availableCount } = req.body
     if (!req.fileName1 || !req.fileName2 || !req.fileName3 || !req.fileName4) return res.status(400).send('لطفا تمام کادر های تصاویر را پر کنید')
-    if ((offerTime > 0 && offerValue < 1) || (offerTime < 1 && offerValue > 0)) return res.status(400).send('نمیشود فقط یک کدام از مقادیر زمان یا درصد تخفیف را مشخص کنید')
 
     await sharp(req.file1.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName1}`)
     await sharp(req.file2.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName2}`)
@@ -92,8 +90,6 @@ function AdminController() {
       total,
       available,
       availableCount: availableCount,
-      offerTime: (offerTime == 0 || offerValue == 0) ? ({ exp: 0, value: 0 }) : ({ exp: new Date().getTime() + (60000 * 60 * offerTime), value: offerTime }),
-      offerValue: (offerTime == 0 || offerValue == 0) ? 0 : offerValue,
       imageUrl1: req.fileName1,
       imageUrl2: req.fileName2,
       imageUrl3: req.fileName3,
@@ -109,10 +105,8 @@ function AdminController() {
   this.editChildItem = async (req, res) => {
     const childItem = await ChildItemModel.findById(req.params.id)
     if (!childItem) return res.status(400).send('این گزینه قبلا از سرور حذف شده')
-    const { title, price, info, ram, cpuCore, camera, storage, warranty, color,
-      display, fullSpecifications, meanStar, num, total, available, availableCount, offerTime, offerValue } = req.body
+    const { title, price, info, ram, cpuCore, camera, storage, warranty, color, display, fullSpecifications, meanStar, num, total, available, availableCount } = req.body
 
-    if ((offerTime > 0 && offerValue < 1) || (offerTime < 1 && offerValue > 0)) return res.status(400).send('نمیشود فقط یک کدام از مقادیر زمان یا درصد تخفیف را مشخص کنید')
 
     if (req.fileName1) {
       await sharp(req.file1.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName1}`)
@@ -155,8 +149,6 @@ function AdminController() {
     childItem.total = total
     childItem.available = available
     childItem.availableCount = availableCount
-    childItem.offerTime = (offerTime == 0 || offerValue == 0 ) ? ({ exp: 0, value: 0 }) : ({ exp: new Date().getTime() + (60000 * 60 * offerTime), value: offerTime })
-    childItem.offerValue = (offerTime == 0 || offerValue == 0 ) ? 0 : offerValue
     if (req.fileName1) childItem.imageUrl1 = req.fileName1;
     if (req.fileName2) childItem.imageUrl2 = req.fileName2;
     if (req.fileName3) childItem.imageUrl3 = req.fileName3;
@@ -166,6 +158,23 @@ function AdminController() {
     res.status(200).json({ childItem })
     // res.status(200).send('باموفقیت ویرایش شد')
   }
+
+
+
+  
+  this.setOffer = async (req, res) => {
+    const childItem = await ChildItemModel.findById(req.params.id)
+    if (!childItem) return res.status(400).send('این گزینه قبلا از سرور حذف شده')
+    const {offerTime, offerValue } = req.body
+    console.log('offerTime, ',offerTime);
+    console.log('offerValue ',offerValue);
+    if ((offerTime > 0 && offerValue < 1) || (offerTime < 1 && offerValue > 0)) return res.status(400).send('نمیشود فقط یک کدام از مقادیر زمان یا درصد تخفیف را مشخص کنید')
+    childItem.offerTime = (offerTime == 0 || offerValue == 0 ) ? ({ exp: 0, value: 0 }) : ({ exp: new Date().getTime() + (60000 * 60 * offerTime), value: offerTime })
+    childItem.offerValue = (offerTime == 0 || offerValue == 0 ) ? 0 : offerValue
+    await childItem.save();
+    res.status(200).json({ childItem })
+  }
+
 
 
 

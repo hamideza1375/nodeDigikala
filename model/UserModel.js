@@ -73,6 +73,9 @@ exports.TicketModel = mongoose.model('TicketModel', TicketModel)
 
 
 const SavedItemModel = new mongoose.Schema({
+  imageUrl: { type: String },
+  title: { type: String, require: true },
+  price: { type: Number, require: true },
   itemId: { type: mongoose.Schema.Types.ObjectId, ref: "savedItem" },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "savedItemUserId" },
 })
