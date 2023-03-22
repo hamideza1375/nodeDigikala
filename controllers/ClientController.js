@@ -87,7 +87,6 @@ function ClientController() {
 
   this.editComment = async (req, res) => {
     const { message, fiveStar } = req.body;
-    console.log(req.params.commentid);
     const comment = await CommenteModel.findById(req.query.commentid)
     comment.message = message
     comment.fiveStar = fiveStar
@@ -212,14 +211,48 @@ function ClientController() {
 
 
 
+  // this.addBuyBasket = async (req, res) => {
+  //   var num = 0
+  //   Object.entries(req.body.productBasket).forEach(async (item, index) => {
+
+  //     const ChildItem = await ChildItemModel.findOne({ _id: item[0] })
+  //     if (item[1].number < 0 || typeof item[1].number !== 'number') return res.status(400).send('مقدار نامعتبر')
+  //     num += item[1].number * ChildItem.price
+
+  //     if (index === Object.entries(req.body.productBasket).length - 1) {
+  //       console.log(num);
+  //     }
+  //   }
+  //   )
+  //   res.status(200).json('')
+  // }
+
+
+
+
+  this.addBuyBasket = async (req, res) => {
+    var num = 0
+    Object.entries(req.body.productBasket).forEach(async (item, index) => {
+      const ChildItem = await ChildItemModel.findOne({ _id: item[0] })
+      if (item[1].number < 0 || typeof item[1].number !== 'number') return res.status(400).send('مقدار نامعتبر')
+      num += item[1].number * ChildItem.price
+
+      if (index === Object.entries(req.body.productBasket).length - 1) {
+        console.log(num);
+      }
+    }
+    )
+  }
+
+
 
 
   this.confirmPayment = async (req, res) => {
-    // const array = []
-    // for (let i in childItemsId) {
-    //   array.push(await ChildItemModel.findOne({ _id: childItemsId[i] }).price())
-    // }
-    // const total = array.reduce()
+
+    // برای اینکه مشخص بشه کاربر قبلا این محصول رو خرید کرده یا نه با فیند تو ارایه ی خرید های قبلش پیدا کن
+
+    this.addBuyBasket(req,res)
+    
     const response = await zarinpal.PaymentRequest({
       Amount: req.body.price,
       CallbackURL: 'http://localhost:4000/verifyPayment',

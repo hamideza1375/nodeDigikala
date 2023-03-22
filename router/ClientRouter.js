@@ -38,5 +38,7 @@ router.post('/confirmPayment', Auth, ClientController.confirmPayment);
 router.get('/verifyPayment', ClientController.verifyPayment);
 // Payment 
 
+router.post('/addBuyBasket/:id', ClientController.addBuyBasket);
+
 
 module.exports = router
