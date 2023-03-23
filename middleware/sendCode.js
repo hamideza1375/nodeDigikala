@@ -62,3 +62,21 @@ module.exports = (req, res, myCache, cacheSetTimeForSendNewCode, cacheSpecificat
 
   } else return res.status(400).send('کادر ایمیل یا تلفن نباید خالی باشد')
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// module.exports = (req, res, myCache, cacheSetTimeForSendNewCode, cacheSpecification) => {
+//   const code = myCache.set("code", random)
+// res.send(code)
+// }

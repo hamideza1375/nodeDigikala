@@ -94,7 +94,7 @@ const PaymentModel = new mongoose.Schema({
     price: { type: Number, require: true },
     childItemsId: { type: Array, require: true },
     titles: { type: String, require: true },
-    floor: { type: Number, require: true, min: 1 },
+    unit: { type: Number, require: true, min: 1 },
     plaque: { type: Number, require: true, min: 1 },
     address: { type: String, require: true, minlength: 1 },
     description: { type: String },

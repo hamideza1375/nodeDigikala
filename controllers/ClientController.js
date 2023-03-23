@@ -230,15 +230,19 @@ function ClientController() {
 
 
 
-  this.addBuyBasket = async (req, res) => {
-    var num = 0
-    Object.entries(req.body.productBasket).forEach(async (item, index) => {
+  this.addBuyBasket = async (productBasket, res, call) => {
+    var _totalPrice = 0,
+      _title = ''
+    _itemsId = []
+    Object.entries(productBasket).forEach(async (item, index) => {
       const ChildItem = await ChildItemModel.findOne({ _id: item[0] })
       if (item[1].number < 0 || typeof item[1].number !== 'number') return res.status(400).send('مقدار نامعتبر')
-      num += item[1].number * ChildItem.price
+      _totalPrice += item[1].number * ChildItem.price
+      _title += ChildItem.title + ','
+      _itemsId.push(ChildItem._id)
 
-      if (index === Object.entries(req.body.productBasket).length - 1) {
-        console.log(num);
+      if (index === Object.entries(productBasket).length - 1) {
+        call({ _totalPrice, _title, _itemsId })
       }
     }
     )
@@ -251,31 +255,39 @@ function ClientController() {
 
     // برای اینکه مشخص بشه کاربر قبلا این محصول رو خرید کرده یا نه با فیند تو ارایه ی خرید های قبلش پیدا کن
 
-    this.addBuyBasket(req,res)
-    
-    const response = await zarinpal.PaymentRequest({
-      Amount: req.body.price,
-      CallbackURL: 'http://localhost:4000/verifyPayment',
-      Description: 'زستوران',
-      Email: req.user.payload.email,
-    });
-    const payments = await PaymentModel.find();
-    await new PaymentModel({
-      userId: req.user.payload.userId,
-      phoneOrEmail: req.user.payload.phoneOrEmail,
-      fullname: req.user.payload.fullname,
-      childItemsId: req.params.childItemsId,
-      titles: req.body.titles,
-      floor: req.body.floor,
-      plaque: req.body.plaque,
-      address: req.body.address,
-      origin: req.body.origin,
-      price: req.body.price,
-      description: req.body.description,
-      paymentCode: response.authority,
-      id: payments.length ? payments[payments.length - 1].id + 1 : 1,
-    }).save();
-    res.status(200).json(response.url);
+    this.addBuyBasket(req.body.productBasket, res, async ({ _totalPrice, _title, _itemsId }) => {
+
+      // console.log('price', _totalPrice);
+      // console.log('title', _title);
+      // console.log('itemsId', _itemsId);
+
+      console.log(req.body);
+
+      const response = await zarinpal.PaymentRequest({
+        Amount: _totalPrice,
+        CallbackURL: 'http://localhost:4000/verifyPayment',
+        Description: 'زستوران',
+        Email: req.user.payload.email,
+      });
+      const payments = await PaymentModel.find();
+      await new PaymentModel({
+        userId: req.user.payload.userId,
+        phoneOrEmail: req.user.payload.phoneOrEmail,
+        fullname: req.user.payload.fullname,
+        price: _totalPrice,
+        childItemsId: _itemsId,
+        titles: _title,
+        unit: req.body.unit,
+        plaque: req.body.plaque,
+        address: req.body.address,
+        origin: req.body.origin,
+        description: req.body.description,
+        paymentCode: response.authority,
+        id: payments.length ? payments[payments.length - 1].id + 1 : 1,
+      }).save();
+      console.log(response.url);
+      res.status(200).json(response.url);
+    })
   }
 
 
