@@ -6,6 +6,8 @@ const { CategoryModel, ChildItemModel, PaymentModel, CommenteModel } = require('
 const { NotifeeModel, AddressVoucherModel, SliderModel } = require('../model/AdminModel')
 const ZarinpalCheckout = require('zarinpal-checkout');
 const zarinpal = ZarinpalCheckout.create('00000000-0000-0000-0000-000000000000', true);
+const nodeCache = require("node-cache");
+const cache = new nodeCache({ stdTTL: 60 * 30, checkperiod: 60 * 30 })
 
 function ClientController() {
 
@@ -77,7 +79,7 @@ function ClientController() {
     const { message, fiveStar } = req.body;
     var fullname
     if (req.user.payload.isAdmin === 1 || req.user.payload.isAdmin === 2) fullname = 'مدیر'
-    else if (req.user.payload.isAdmin === 3) fullname = 'فروشندگان'
+    else if (req.user.payload.seller === 1) fullname = 'فروشندگان'
     else fullname = 'کاربر'
     const comment = await CommenteModel.create({ message, fiveStar, fullname, commentId: req.params.id, userId: req.user.payload.userId })
     this.setStar(req)
@@ -196,7 +198,16 @@ function ClientController() {
   this.reverse = async (req, res) => {
     let geoCoder = node_geocoder({ provider: 'openstreetmap' });
     geoCoder.reverse({ lat: req.body.lat, lon: req.body.lng })
-      .then((_res) => { res.json(_res) })
+      .then((_res) => {
+
+        const one = (_res[0].streetName && _res[0].streetName !== _res[0].formattedAddress.split(",")[0]) ? _res[0].streetName : ''
+        const two = _res[0].formattedAddress.split(",")[0] ? _res[0].formattedAddress.split(",")[0] : ''
+        const three = _res[0].formattedAddress.split(",")[1] ? _res[0].formattedAddress.split(",")[1] : ''
+        const address = one + ' ' + two + ' ' + three
+        cache.set('address', address)
+
+        res.json(_res)
+      })
       .catch((err) => res.status(400).send(''));
   }
 
@@ -205,20 +216,31 @@ function ClientController() {
   this.geocode = async (req, res) => {
     let geoCoder = node_geocoder({ provider: 'openstreetmap' });
     geoCoder.geocode(req.body.loc)
-      .then((_res) => { res.json(_res) })
+      .then((_res) => {
+        console.log(_res);
+        const one = (_res[0].streetName && _res[0].streetName !== _res[0].formattedAddress.split(",")[0]) ? _res[0].streetName : ''
+        const two = _res[0].formattedAddress.split(",")[0] ? _res[0].formattedAddress.split(",")[0] : ''
+        const three = _res[0].formattedAddress.split(",")[1] ? _res[0].formattedAddress.split(",")[1] : ''
+        const address = one + ' ' + two + ' ' + three
+        cache.set('address', address)
+        
+        res.json(_res)
+      })
       .catch((err) => res.status(400).send(''));
   }
 
+
+  this.getAddress =(req,res)=>{
+    res.json(cache.get('address'))
+  }
 
 
   // this.addBuyBasket = async (req, res) => {
   //   var num = 0
   //   Object.entries(req.body.productBasket).forEach(async (item, index) => {
-
   //     const ChildItem = await ChildItemModel.findOne({ _id: item[0] })
   //     if (item[1].number < 0 || typeof item[1].number !== 'number') return res.status(400).send('مقدار نامعتبر')
   //     num += item[1].number * ChildItem.price
-
   //     if (index === Object.entries(req.body.productBasket).length - 1) {
   //       console.log(num);
   //     }
@@ -229,65 +251,53 @@ function ClientController() {
 
 
 
-
-  this.addBuyBasket = async (productBasket, res, call) => {
+  this.addBuyBasket = (productBasket, res) => new Promise(async (resolve, reject) => {
     var _totalPrice = 0,
       _title = ''
     _itemsId = []
     Object.entries(productBasket).forEach(async (item, index) => {
-      const ChildItem = await ChildItemModel.findOne({ _id: item[0] })
-      if (item[1].number < 0 || typeof item[1].number !== 'number') return res.status(400).send('مقدار نامعتبر')
+      const ChildItem = await ChildItemModel.findById(item[0])
+      if (item[1].number < 0) return res.status(400).send('مقدار نامعتبر')
       _totalPrice += item[1].number * ChildItem.price
-      _title += ChildItem.title + ','
+      _title += ChildItem.title + (index !== Object.entries(productBasket).length - 1 ? ',' : '')
       _itemsId.push(ChildItem._id)
-
       if (index === Object.entries(productBasket).length - 1) {
-        call({ _totalPrice, _title, _itemsId })
+        resolve({ _totalPrice, _title, _itemsId })
       }
     }
     )
-  }
+  })
 
 
 
 
   this.confirmPayment = async (req, res) => {
-
-    // برای اینکه مشخص بشه کاربر قبلا این محصول رو خرید کرده یا نه با فیند تو ارایه ی خرید های قبلش پیدا کن
-
-    this.addBuyBasket(req.body.productBasket, res, async ({ _totalPrice, _title, _itemsId }) => {
-
-      // console.log('price', _totalPrice);
-      // console.log('title', _title);
-      // console.log('itemsId', _itemsId);
-
-      console.log(req.body);
-
-      const response = await zarinpal.PaymentRequest({
-        Amount: _totalPrice,
-        CallbackURL: 'http://localhost:4000/verifyPayment',
-        Description: 'زستوران',
-        Email: req.user.payload.email,
-      });
-      const payments = await PaymentModel.find();
-      await new PaymentModel({
-        userId: req.user.payload.userId,
-        phoneOrEmail: req.user.payload.phoneOrEmail,
-        fullname: req.user.payload.fullname,
-        price: _totalPrice,
-        childItemsId: _itemsId,
-        titles: _title,
-        unit: req.body.unit,
-        plaque: req.body.plaque,
-        address: req.body.address,
-        origin: req.body.origin,
-        description: req.body.description,
-        paymentCode: response.authority,
-        id: payments.length ? payments[payments.length - 1].id + 1 : 1,
-      }).save();
-      console.log(response.url);
-      res.status(200).json(response.url);
-    })
+    //! yub
+    // include tostring برای اینکه مشخص بشه کاربر قبلا این محصول رو خرید کرده یا نه با فیند تو ارایه ی خرید های قبلش پیدا کن
+    const { _totalPrice, _title, _itemsId } = await this.addBuyBasket(req.body.productBasket, res)
+    const response = await zarinpal.PaymentRequest({
+      Amount: _totalPrice,
+      CallbackURL: 'http://localhost:4000/verifyPayment',
+      Description: _title,
+    });
+    const payments = await PaymentModel.find();
+    await new PaymentModel({
+      userId: req.user.payload.userId,
+      phone: req.body.phone,
+      fullname: req.user.payload.fullname,
+      price: _totalPrice,
+      childItemsId: _itemsId,
+      titles: _title,
+      unit: req.body.unit,
+      plaque: req.body.plaque,
+      postalCode: req.body.postalCode,
+      address: req.body.address,
+      origin: req.body.origin,
+      description: req.body.description,
+      paymentCode: response.authority,
+      id: payments.length ? payments[payments.length - 1].id + 1 : 1,
+    }).save();
+    res.status(200).json(response.url);
   }
 
 
@@ -305,16 +315,20 @@ function ClientController() {
       // payment.enablePosted = 0;
       await payment.save();
 
+      cache.del('address')
+
       res.render("./paymant", {
         pageTitle: "پرداخت",
         qualification: 'ok',
+        fullname: payment.fullname,
         phone: payment.phone,
         price: payment.price,
         refId: response.RefID,
-        floor: payment.floor,
+        unit: payment.unit,
         plaque: payment.plaque,
+        postalCode: payment.postalCode,
         address: payment.address,
-        childItemsTitle: payment.titles,
+        titles: payment.titles,
       })
 
     } else {

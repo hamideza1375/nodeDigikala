@@ -375,7 +375,7 @@ function AdminController() {
     if (sellerPhone) return res.status(400).send('این شماره را قبلا به فروشندگان اضاف کرده اید')
     if (sellerBrand) return res.status(400).send('این برند را قبلا برای فروشنده ی دیگری انتخاب کزده اید')
     await SellerModel.create({ brand: req.body.brand, phone: req.body.phone });
-    user.isAdmin = 3
+    user.seller = 1
     user.save()
     res.status(200).json('با موفقیت ساخته شد')
   }

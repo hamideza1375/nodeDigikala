@@ -3,9 +3,7 @@ const mongoose = require('mongoose');
 
 // regex 
 // const Comment = new Schema({
-//     age: { type: Number, min: 18, max : 25 , minlength: 3, maxlength: 3, match: /[a-z]/, match: '/^.{0,20}$/', index: true, },
-//     date: { type: Date, default: Date.now },
-//     // buff: Buffer
+//     age: {  buff: Buffer, match: /[a-z]/, match: '/^.{0,20}$/', index: true, },
 //   });
 
 
@@ -34,9 +32,9 @@ const CommenteModel = new mongoose.Schema({
     fullname: { type: String, required: true },
     message: { type: String, required: true },
     fiveStar: { type: Number, required: true, min: 1, max: 5 },
-    like: [{type:LikeModel, require:false}],
-    disLike: [{type:DisLikeModel, require:false}],
-    answer: [{type:AnswerModel, require:false}],
+    like: [{ type: LikeModel, require: false }],
+    disLike: [{ type: DisLikeModel, require: false }],
+    answer: [{ type: AnswerModel, require: false }],
     likeCount: { type: Number, default: 0 },
     disLikeCount: { type: Number, default: 0 },
     commentId: { type: mongoose.Schema.Types.ObjectId, ref: "ChildItem" },
@@ -68,7 +66,7 @@ const ChildItemModel = new mongoose.Schema({
     total: { type: Number, default: 0 },
     available: { type: Number, default: 1 },
     availableCount: { type: Number, require: true, min: 1 },
-    offerTime: { type: Object, default: {exp:0, value:0} },
+    offerTime: { type: Object, default: { exp: 0, value: 0 } },
     offerValue: { type: Number, default: 0 },
     categoryId: { type: mongoose.Schema.Types.ObjectId, ref: "category" }
 });
@@ -90,12 +88,13 @@ exports.CategoryModel = mongoose.model("CategoryModel", CategoryModel);
 
 const PaymentModel = new mongoose.Schema({
     fullname: { type: String, require: true, minlength: 3 },
-    phoneOrEmail: { type: String, require: true, minlength: 5 },
+    phone: { type: String, require: true, minlength: 11, maxlength: 11 },
     price: { type: Number, require: true },
     childItemsId: { type: Array, require: true },
     titles: { type: String, require: true },
     unit: { type: Number, require: true, min: 1 },
     plaque: { type: Number, require: true, min: 1 },
+    postalCode: { type: Number, require: true, minlength: 10, maxlength: 10 },
     address: { type: String, require: true, minlength: 1 },
     description: { type: String },
     origin: { type: Object },

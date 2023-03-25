@@ -78,7 +78,7 @@
             <p style="display: flex;flex-direction: column;
                    font-weight: 500;
                     
-                    ">نام: fullname
+                    ">نام: <%= fullname %>
             </p>
             <div style="display: flex;justify-content: space-between;
               flex-direction: row;
@@ -103,14 +103,16 @@
                 flex-direction: row;
                  justify-content: space-between;
                    ">
-            <p style="display: flex;flex-direction: column;font-weight: 500 ">پلاک: <%= floor %>
+            <p style="display: flex;flex-direction: column;font-weight: 500 ">پلاک: <%= plaque %>
             </p>
-            <p style="display: flex;flex-direction: column;font-weight: 500 ">طبقه: <%= plaque %>
+            <p style="display: flex;flex-direction: column;font-weight: 500 ">طبقه: <%= unit %>
+            </p>
+            <p style="display: flex;flex-direction: column;font-weight: 500 ">کد پستی: <%= postalCode %>
             </p>
           </div>
 
           <div style="display: flex;flex-direction: row;padding:8px 0 0;border-bottom: 1px solid silver;width: 100%;">
-            <p style="font-weight: 500; width: 100%;overflow-wrap: break-word;"> سفارش شما : <%= childItemsTitle %>
+            <p style="font-weight: 500; width: 100%;overflow-wrap: break-word;"> سفارش شما : <%= titles %>
             </p>
           </div>
 
@@ -132,10 +134,10 @@
 
       </div>
 
-      <div style="margin:0 auto;width: 200;border-radius: 4px;margin-top: 14px;"> <button
+      <!-- <div style="margin:0 auto;width: 200;border-radius: 4px;margin-top: 14px;"> <button
           onclick="window.location.assign('http://localhost:3000', 'target=_self')"
           style="box-shadow: 0px 0px 7px #5552;border-radius: 4px;background-color:#fff;border: 1px solid rgb(158, 155, 155);padding:8px;color: rgb(0, 0, 0);font-size: 13px;">اتمام
-          سفارش و بازگشت به صفحه ی اصلی</button></div>
+          سفارش و بازگشت به صفحه ی اصلی</button></div> -->
 
 
 
@@ -143,6 +145,8 @@
       <script src="https://unpkg.com/jalali-moment/dist/jalali-moment.browser.js"></script>
 
       <script>
+
+        console.log(`<%= unit %>`);
 
         function spacePrice(inputPrice) {
           try {

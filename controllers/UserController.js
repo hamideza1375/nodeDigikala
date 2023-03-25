@@ -52,11 +52,11 @@ function UserController() {
     cacheSetTimeForSendNewCode.del("newTime")
     res.status(201).send('ثبت نام موفقیت آمیز بود')
   }
-
+ 
 
   this.login = async (req, res) => {
     if (parseInt(req.body.captcha) != CAPTCHA_NUM) return res.status(400).send('اعداد کادر تایید صحت را اشتباه وارد کردین')
-    // if (req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
+    if (req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
     const _users = await UserModel.find();
     const user = await UserModel.findOne({ phoneOrEmail: req.body.phoneOrEmail });
     if (!user) return res.status(400).send('مشخصات اشتباه هست')
@@ -91,6 +91,7 @@ function UserController() {
     const tokenUser = {
       isAdmin: user.isAdmin,
       userId: user._id.toString(),
+      fullname: user.fullname,
       phoneOrEmail: user.phoneOrEmail,
     }
     const token = jwt.sign(tokenUser, "secret", { expiresIn: cacheSpecification.get("remember") ? cacheSpecification.get("remember") : '24h' });
@@ -144,8 +145,8 @@ function UserController() {
 
 
   this.getNewCode = async (req, res) => {
-    if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
-    else if (req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
+    if (req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
+    else if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
     else if (!cacheSpecification.get("phoneOrEmail")) return res.status(400).send("لطفا برگردین و مشخصاتتان را دوباره ارسال وارد کنید")
     else sendCode(req, res, cacheCode, cacheSetTimeForSendNewCode, cacheSpecification)
   }
@@ -397,3 +398,6 @@ function UserController() {
 
 
 module.exports = new UserController();
+
+
+//? _23 cacheSetTimeForSendNewCode.get("newTime") = مدت زمانی که باید منتظر بمونه برای ارسال تایم جدید
