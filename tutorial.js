@@ -58,11 +58,6 @@ let text12 = "Hello world, welcome to the universe.";
 let result12 = text12.startsWith("Hello");
 console.log(result12) = true
 //* startsWith !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//* substr !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-let text13 = "Hello world!";
-let result13 = text13.substr(6, 1);
-console.log(result13) = w
-//* substr !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //* substring !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 let text14 = "Hello world!";
 let result14 = text14.substring(6, 7);
@@ -83,6 +78,14 @@ let text17 = "       Hello World!        ";
 let result17 = text17.trim();
 console.log(result17) = "Hello World!"
 //* trim !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//* charCodeAt
+let text111 = "HELLO WORLD";
+let code111 = text.charCodeAt(1); 69
+//* charCodeAt
+//* fromCharCode
+String.fromCharCode(69) = 'E'
+//* fromCharCode
+
 //! String
 
 //! Object
@@ -294,15 +297,22 @@ setInterval(() => {
 
 
 
+//!
 
+const falseLike = await CommenteModel.findOne({ _id: req.params.id })
+  .select({ answer: { $elemMatch: { _id: req.query.commentId } } })
+
+console.log('falseLike', falseLike.answer[0].like);
+
+//!
 // $pull
 // $pullAll
 
 //! pull
 //*{ "_id" : 1, "bar" : [ 1, 7, 2, 3, 8, 7, 1 ] }
-db.products.update( 
-  { _id: 1 }, 
-  { $pull: { bar: 7 } } 
+db.products.update(
+  { _id: 1 },
+  { $pull: { bar: 7 } }
 )
 
 db.foo.update(
@@ -310,31 +320,31 @@ db.foo.update(
   { $pullAll: { bar: [7] } }
 )
 
-await CommenteModel.update( 
-  { _id: req.params.id }, 
-  { $pull: { like: {userId: req.user.payload.userId} } } //! delete width userId
+await CommenteModel.update(
+  { _id: req.params.id },
+  { $pull: { like: { userId: req.user.payload.userId } } } //! delete width userId
 )
 //*
 this.commentLike = async (req, res) => {
   const truLike = await CommenteModel.findOne({ _id: req.params.id, like: { $elemMatch: { userId: req.user.payload.userId } } })
-  await CommenteModel.update( 
-    { _id: req.params.id }, 
-    { $pull: { like: {userId: req.user.payload.userId} } } //! این تمام ابجکت هایی که مقدار که یوزر ایدیشون برابر هست رو پاک میکنه
+  await CommenteModel.update(
+    { _id: req.params.id },
+    { $pull: { like: { userId: req.user.payload.userId } } } //! این تمام ابجکت هایی که مقدار که یوزر ایدیشون برابر هست رو پاک میکنه
   )
   res.json(truLike)
 }
 //! pull
 
 {
-//!
-await CommenteModel.updateOne({ _id: req.params.id }, {
-  $set: { like: [{ likeNumber: 1, userId: req.user.payload.userId }] },
-});
-//*
-await CommenteModel.findOneAndUpdate({ _id: req.params.id, like: { $elemMatch: { userId: req.user.payload.userId } } },
-  { $set: { "like.$.likeNumber": 0, "like.$.userId": req.user.payload.userId } },
-  { new: true }
-) //! فقط نامبر موجود باشه عددش رو صفر میکنه ولی توی اولی همرو پاک میکنه و از نو میسازش
+  //!
+  await CommenteModel.updateOne({ _id: req.params.id }, {
+    $set: { like: [{ likeNumber: 1, userId: req.user.payload.userId }] },
+  });
+  //*
+  await CommenteModel.findOneAndUpdate({ _id: req.params.id, like: { $elemMatch: { userId: req.user.payload.userId } } },
+    { $set: { "like.$.likeNumber": 0, "like.$.userId": req.user.payload.userId } },
+    { new: true }
+  ) //! فقط نامبر موجود باشه عددش رو صفر میکنه ولی توی اولی همرو پاک میکنه و از نو میسازش
 }
 
 

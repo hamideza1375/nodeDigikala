@@ -25,6 +25,13 @@ router.get('/getSingleComment/:id', user, ClientController.getSingleComment);
 router.post('/commentLike/:id', Auth, ClientController.commentLike);
 router.post('/commentDisLike/:id', Auth, ClientController.commentDisLike);
 
+router.post('/createCommentAnswer/:id', [Auth], ClientController.createCommentAnswer);
+router.put('/editCommentAnswer/:id', [Auth], ClientController.editCommentAnswer);
+router.delete('/deleteCommentAnswer/:id', [Auth], ClientController.deleteCommentAnswer);
+router.post('/likeAnswer/:id', Auth, ClientController.likeAnswer);
+router.post('/disLikeAnswer/:id', Auth, ClientController.disLikeAnswer);
+
+
 // comment 
 // getNotification
 router.get('/getNotification', ClientController.getNotification);
@@ -39,7 +46,7 @@ router.get('/verifyPayment', ClientController.verifyPayment);
 // Payment 
 
 router.post('/addBuyBasket/:id', ClientController.addBuyBasket);
-router.get('/getAddress', ClientController.getAddress);
+router.get('/getAddress',user, ClientController.getAddress);
 
 
 module.exports = router

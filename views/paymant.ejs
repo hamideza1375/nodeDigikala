@@ -10,7 +10,8 @@
   </title>
 </head>
 
-<body dir="rtl" style="width:93%;height:100vh;overflow: hidden;align-self: center;align-items: center; margin: 0 auto;">
+<body dir="rtl"
+  style="width:93%;height:100vh;overflow: hidden;align-self: center;align-items: center; margin: 0 auto; text-align: right;">
 
   <%if (qualification==='ok' ) { %>
     <div style="display: flex;flex-direction: column;
@@ -148,58 +149,12 @@
 
         console.log(`<%= unit %>`);
 
-        function spacePrice(inputPrice) {
-          try {
-            let rt = String(inputPrice)
-            let k = ''
-            for (let i = 0; i < rt.length; i++) {
-              k +=
-                rt.length == 4 ?
-                  (i == 0 ?
-                    rt[i] + '.'
-                    :
-                    rt[i])
-                  :
-                  rt.length == 5 ?
-                    (i == 1 ?
-                      rt[i] + '.'
-                      :
-                      rt[i])
-                    :
-                    rt.length == 7 ?
-                      (i == 0 || i == 3
-                        ? rt[i] + '.'
-                        : rt[i])
-                      :
-                      rt.length == 8 ?
-                        (i == 1 || i == 4
-                          ? rt[i] + '.'
-                          : rt[i])
-                        :
-                        rt.length == 9 ?
-                          (i == 2 || i == 5
-                            ? rt[i] + '.'
-                            : rt[i])
-                          :
-                          rt.length == 10 ?
-                            (i == 0 || i == 3 || i == 6
-                              ? rt[i] + '.'
-                              : rt[i])
-                            :
-                            rt.length == 11 ?
-                              (i == 1 || i == 4 || i == 7
-                                ? rt[i] + '.'
-                                : rt[i])
-                              :
-                              i == 2
-                                ? rt[i] + '.'
-                                : rt[i]
-            }
-            return k
-          }
-          catch (err) { console.log(err) }
+        function spacePrice(inputPrice = '') {
+          let newNumber = (inputPrice).toString() ? (inputPrice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : inputPrice
+          return newNumber
         }
 
+       
         document.getElementById('price').innerHTML = 'قیمت: ' + spacePrice(document.getElementById('price').innerHTML)
         const jalaly = moment().locale('fa').format('hh:mm:ss YYYY/M/D')
         document.getElementById('createdAt').innerHTML = jalaly

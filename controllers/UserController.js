@@ -52,7 +52,7 @@ function UserController() {
     cacheSetTimeForSendNewCode.del("newTime")
     res.status(201).send('ثبت نام موفقیت آمیز بود')
   }
- 
+
 
   this.login = async (req, res) => {
     if (parseInt(req.body.captcha) != CAPTCHA_NUM) return res.status(400).send('اعداد کادر تایید صحت را اشتباه وارد کردین')
@@ -347,33 +347,38 @@ function UserController() {
 
   this.savedItem = async (req, res) => {
     const ChildItem = await ChildItemModel.findOne({ _id: req.params.id })
-    const savedIte = await SavedItemModel.findOne({ itemId: req.params.id })
-    if (savedIte) return res.status(400).send('این محصول از قبل ذخیره شده هست')
+    const savedItem = await SavedItemModel.findOne().and([{ itemId: req.params.id }, {userId: req.user.payload.userId}])
+    if (!savedItem) {
+      await SavedItemModel.create({
+        itemId: req.params.id,
+        userId: req.user.payload.userId,
+        imageUrl: ChildItem.imageUrl1,
+        title: ChildItem.title,
+        price: ChildItem.price
+      })
+      res.json(true)
 
-    console.log('ChildItem.imageUrl',ChildItem.imageUrl);
-
-    const savedItem = await SavedItemModel.create({
-      itemId: req.params.id,
-      userId: req.user.payload.userId,
-      imageUrl: ChildItem.imageUrl1,
-      title: ChildItem.title,
-      price: ChildItem.price
-    })
-    res.json({ savedItem })
+    } else {
+      await SavedItemModel.deleteOne({ itemId: req.params.id })
+      res.json(false)
+    }
   }
 
 
   this.removeSavedItem = async (req, res) => {
-    const savedItem = await SavedItemModel.findOne({ userId: req.user.payload.userId, itemId: req.params.id })
-    if (!savedItem) return res.status(400).send('این محصول از ذخیره های شما حذف شده')
-    await SavedItemModel.deleteOne({ itemId: req.params.id })
-    res.send('با موفقیت از ذخیره ها حذف شد')
+    await SavedItemModel.deleteOne().and([{ itemId: req.params.id }, {userId: req.user.payload.userId}])
+    res.send('از ذخیره ها حذف شد')
   }
 
 
   this.getSavedItems = async (req, res) => {
     const savedItem = await SavedItemModel.find({ userId: req.user.payload.userId })
     res.json(savedItem)
+  }
+
+  this.getSingleSavedItems = async (req, res) => {
+    const savedItem = await SavedItemModel.findOne().and([{ itemId: req.params.id }, {userId: req.user.payload.userId}])
+    savedItem? res.json(true) : res.json(false)
   }
 
   // this.activeOrder = async (req, res) => {

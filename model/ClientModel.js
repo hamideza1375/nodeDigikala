@@ -22,8 +22,13 @@ const DisLikeModel = new mongoose.Schema({
 const AnswerModel = new mongoose.Schema({
     fullname: { type: String, required: true },
     message: { type: String, required: true },
-    like: { type: Number, default: 0 },
-    disLike: { type: Number, default: 0 },
+    like: [{ type: LikeModel, require: false }],
+    disLike: [{ type: DisLikeModel, require: false }],
+    likeCount: { type: Number, default: 0 },
+    disLikeCount: { type: Number, default: 0 },
+    userphoneOrEmail: String,
+    to: String,
+    commentId: { type: mongoose.Schema.Types.ObjectId, ref: "ChildItem" },
     date: { type: Date, default: Date.now },
 });
 
@@ -38,7 +43,7 @@ const CommenteModel = new mongoose.Schema({
     likeCount: { type: Number, default: 0 },
     disLikeCount: { type: Number, default: 0 },
     commentId: { type: mongoose.Schema.Types.ObjectId, ref: "ChildItem" },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "userIdComment" },
+    userphoneOrEmail: String,
     date: { type: Date, default: Date.now },
 });
 
@@ -96,6 +101,7 @@ const PaymentModel = new mongoose.Schema({
     plaque: { type: Number, require: true, min: 1 },
     postalCode: { type: Number, require: true, minlength: 10, maxlength: 10 },
     address: { type: String, require: true, minlength: 1 },
+    latlng: { type: Object },
     description: { type: String },
     origin: { type: Object },
     paymentCode: { type: String, require: true },

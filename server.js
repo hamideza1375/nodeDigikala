@@ -10,12 +10,10 @@ const express = require("express");
 const app = express();
 const mongoose = require('mongoose');
 const fileUpload = require("express-fileupload");
+require('express-async-errors')
 const dotEnv = require("dotenv");
 dotEnv.config({ path: "./.env" }); // process.env.SECRET
 const setHeaders = require("./middleware/headers");
-const errorHandler = require("./middleware/errorHandler");
-const _404 = require("./middleware/404");
-
 const Client = require("./router/ClientRouter");
 const User = require("./router/UserRouter");
 const Admin = require("./router/AdminRouter");
@@ -23,22 +21,10 @@ const Admin = require("./router/AdminRouter");
 const http = require("http");
 const server = http.createServer(app)
 const socketIo = require('./socketIo/socketIo');
-const winston = require("winston");
-const AuthMainAdmin = require("./middleware/AuthMainAdmin");
-const { SocketMessageModel } = require("./socketIo/SocketMessageModel");
+const errorHandler = require("./middleware/errorHandler");
 
-
-
-
-winston.add(new winston.transports.File({ filename: 'error-log.log' }));
-process.on('uncaughtException', (err) => {
-  console.log(err.stack);
-  winston.error(err.message);
-});
-process.on('unhandledRejection', (err) => {
-  console.log(err.stack);
-  winston.error(err.message);
-});
+process.on('uncaughtException', (err) => {});
+process.on('unhandledRejection', (err) => {});
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static("public"));
@@ -47,12 +33,11 @@ app.use(fileUpload());
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
-
 socketIo(server, app)
 app.use(Client)
 app.use(User)
 app.use(Admin)
-
+app.use(errorHandler)
 
 const port = process.env.PORT || 4000
 server.listen(port, (err) => { console.log(`App Listen to port ${port}`) })

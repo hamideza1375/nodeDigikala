@@ -4,6 +4,7 @@
 const node_geocoder = require('node-geocoder');
 const { CategoryModel, ChildItemModel, PaymentModel, CommenteModel } = require('../model/ClientModel')
 const { NotifeeModel, AddressVoucherModel, SliderModel } = require('../model/AdminModel')
+const { UserModel } = require('../model/UserModel')
 const ZarinpalCheckout = require('zarinpal-checkout');
 const zarinpal = ZarinpalCheckout.create('00000000-0000-0000-0000-000000000000', true);
 const nodeCache = require("node-cache");
@@ -75,21 +76,43 @@ function ClientController() {
   }
 
 
+
   this.createComment = async (req, res) => {
     const { message, fiveStar } = req.body;
+
     var fullname
     if (req.user.payload.isAdmin === 1 || req.user.payload.isAdmin === 2) fullname = 'مدیر'
     else if (req.user.payload.seller === 1) fullname = 'فروشندگان'
     else fullname = 'کاربر'
-    const comment = await CommenteModel.create({ message, fiveStar, fullname, commentId: req.params.id, userId: req.user.payload.userId })
+
+    let comment = await CommenteModel.create({ message, fiveStar, fullname, commentId: req.params.id, userphoneOrEmail: req.user.payload.phoneOrEmail })
     this.setStar(req)
+
     res.status(200).json({ comment })
   }
 
 
+
+  this.createCommentAnswer = async (req, res) => {
+    const { message, to } = req.body;
+    console.log(to);
+    const comment = await CommenteModel.findOne({ _id: req.params.id });
+    var fullname
+    if (req.user.payload.isAdmin === 1 || req.user.payload.isAdmin === 2) fullname = 'مدیر'
+    else if (req.user.payload.seller === 1) fullname = 'فروشندگان'
+    else fullname = 'کاربر'
+
+    await comment.answer.push({ message, fullname, commentId: req.params.id, userphoneOrEmail: req.user.payload.phoneOrEmail, to: to })
+    await comment.save()
+
+    res.status(200).json(comment.answer[comment.answer.length - 1])
+  }
+
+
+
   this.editComment = async (req, res) => {
     const { message, fiveStar } = req.body;
-    const comment = await CommenteModel.findById(req.query.commentid)
+    const comment = await CommenteModel.findById(req.params.id)
     comment.message = message
     comment.fiveStar = fiveStar
     await comment.save()
@@ -98,12 +121,30 @@ function ClientController() {
   }
 
 
+  this.editCommentAnswer = async (req, res) => {
+    const { message } = req.body;
+    const comment = await CommenteModel.findById(req.params.id)
+    const answer = comment.answer.id(req.query.commentId)
+    answer.message = message
+    await comment.save()
+    res.status(200).json({ comment })
+  }
+
+
+
   this.deleteComment = async (req, res) => {
     await CommenteModel.findByIdAndDelete({ _id: req.params.id })
     res.status(200).send('نظر شما حذف شد')
   }
 
-
+  this.deleteCommentAnswer = async (req, res) => {
+    const a = await CommenteModel.update(
+      { _id: req.params.id },
+      { $pull: { answer: { _id: req.query.commentId } } }
+    )
+    console.log(req.query.commentId, req.params.id);
+    res.status(200).send('نظر شما حذف شد')
+  }
 
   this.commentLike = async (req, res) => {
     const falseLike = await CommenteModel.findById({ _id: req.params.id })
@@ -169,6 +210,103 @@ function ClientController() {
   }
 
 
+
+
+  this.likeAnswer = async (req, res) => {
+    const falseLike = await CommenteModel.findOne({ _id: req.params.id }).select({ answer: { $elemMatch: { _id: req.query.commentId } } })
+    const _truLike = await CommenteModel.findOne({
+       _id: req.params.id,
+       answer: { $elemMatch: { _id: req.query.commentId, like: { $elemMatch: { userId: req.user.payload.userId }} } } ,
+      }
+       )
+      .select({
+        _id: req.params.id,
+        answer: { $elemMatch: { _id: req.query.commentId, like: { $elemMatch: { userId: req.user.payload.userId }} } } ,
+      })
+
+    const truLike = _truLike?.answer[0]
+    const like = truLike?.like
+    const findLike = like?.length && like.find(l => l.userId == req.user.payload.userId)
+    const preLike = findLike ? !findLike.value : 0
+
+    if (truLike) {
+      await CommenteModel.findOneAndUpdate(
+        {_id: req.params.id,
+        answer: { $elemMatch: { _id: req.query.commentId, like: { $elemMatch: { userId: req.user.payload.userId }} } }} ,
+        { $set: { "answer.$.like": {value:preLike} } },
+        { new: true }
+      )
+      const comment = await CommenteModel.findOne({ _id: req.params.id }).select({ answer: { $elemMatch: { _id: req.query.commentId } } })
+      const filterValueTrue = comment.answer[0].like.filter(l => l.value === 1)
+      comment.answer[0].likeCount = filterValueTrue.length
+      await comment.save()
+      res.status(200).json(filterValueTrue.length)
+    }
+
+    else if (falseLike) {
+      falseLike.answer[0].like.push({ value: 1, userId: req.user.payload.userId })
+      await falseLike.save()
+      const comment = await CommenteModel.findOne({ _id: req.params.id }).select({ answer: { $elemMatch: { _id: req.query.commentId } } })
+      const filterValueTrue = comment.answer[0].like.filter(l => l.value === 1)
+      comment.answer[0].likeCount = filterValueTrue.length
+      await comment.save()
+      res.status(200).json(filterValueTrue.length)
+    }
+  }
+
+
+
+
+
+
+  
+  this.disLikeAnswer = async (req, res) => {
+    const falseLike = await CommenteModel.findOne({ _id: req.params.id }).select({ answer: { $elemMatch: { _id: req.query.commentId } } })
+    const _truLike = await CommenteModel.findOne({
+       _id: req.params.id,
+       answer: { $elemMatch: { _id: req.query.commentId, disLike: { $elemMatch: { userId: req.user.payload.userId }} } } ,
+      }
+       )
+      .select({
+        _id: req.params.id,
+        answer: { $elemMatch: { _id: req.query.commentId, disLike: { $elemMatch: { userId: req.user.payload.userId }} } } ,
+      })
+
+    const truLike = _truLike?.answer[0]
+    const like = truLike?.disLike
+    const findLike = like?.length && like.find(l => l.userId == req.user.payload.userId)
+    const preLike = findLike ? !findLike.value : 0
+
+    if (truLike) {
+      await CommenteModel.findOneAndUpdate(
+        {_id: req.params.id,
+        answer: { $elemMatch: { _id: req.query.commentId, disLike: { $elemMatch: { userId: req.user.payload.userId }} } }} ,
+        { $set: { "answer.$.disLike": {value:preLike} } },
+        { new: true }
+      )
+      const comment = await CommenteModel.findOne({ _id: req.params.id }).select({ answer: { $elemMatch: { _id: req.query.commentId } } })
+      const filterValueTrue = comment.answer[0].disLike.filter(l => l.value === 1)
+      comment.answer[0].disLikeCount = filterValueTrue.length
+      await comment.save()
+      res.status(200).json(filterValueTrue.length)
+    }
+
+    else if (falseLike) {
+      falseLike.answer[0].disLike.push({ value: 1, userId: req.user.payload.userId })
+      await falseLike.save()
+      const comment = await CommenteModel.findOne({ _id: req.params.id }).select({ answer: { $elemMatch: { _id: req.query.commentId } } })
+      const filterValueTrue = comment.answer[0].disLike.filter(l => l.value === 1)
+      comment.answer[0].disLikeCount = filterValueTrue.length
+      await comment.save()
+      res.status(200).json(filterValueTrue.length)
+    }
+  }
+
+
+
+
+
+
   this.getChildItemComments = async (req, res) => {
     const comment = await CommenteModel.find({ commentId: req.params.id }).sort({ date: -1 })
     res.status(200).json({ comment })
@@ -199,13 +337,12 @@ function ClientController() {
     let geoCoder = node_geocoder({ provider: 'openstreetmap' });
     geoCoder.reverse({ lat: req.body.lat, lon: req.body.lng })
       .then((_res) => {
-
         const one = (_res[0].streetName && _res[0].streetName !== _res[0].formattedAddress.split(",")[0]) ? _res[0].streetName : ''
         const two = _res[0].formattedAddress.split(",")[0] ? _res[0].formattedAddress.split(",")[0] : ''
         const three = _res[0].formattedAddress.split(",")[1] ? _res[0].formattedAddress.split(",")[1] : ''
         const address = one + ' ' + two + ' ' + three
         cache.set('address', address)
-
+        cache.set('latlng', { lat: _res[0].latitude, lng: _res[0].longitude })
         res.json(_res)
       })
       .catch((err) => res.status(400).send(''));
@@ -217,87 +354,90 @@ function ClientController() {
     let geoCoder = node_geocoder({ provider: 'openstreetmap' });
     geoCoder.geocode(req.body.loc)
       .then((_res) => {
-        console.log(_res);
         const one = (_res[0].streetName && _res[0].streetName !== _res[0].formattedAddress.split(",")[0]) ? _res[0].streetName : ''
         const two = _res[0].formattedAddress.split(",")[0] ? _res[0].formattedAddress.split(",")[0] : ''
         const three = _res[0].formattedAddress.split(",")[1] ? _res[0].formattedAddress.split(",")[1] : ''
         const address = one + ' ' + two + ' ' + three
         cache.set('address', address)
-        
+        cache.set('latlng', { lat: _res[0].latitude, lng: _res[0].longitude })
         res.json(_res)
       })
       .catch((err) => res.status(400).send(''));
   }
 
 
-  this.getAddress =(req,res)=>{
-    res.json(cache.get('address'))
+
+
+
+
+
+  this.getAddress = async (req, res) => {
+    const user = await UserModel.findById({ _id: req.user.payload.userId });
+    res.json({ phone: user.phone, address: cache.get('address'), latlng: cache.get('latlng') })
   }
-
-
-  // this.addBuyBasket = async (req, res) => {
-  //   var num = 0
-  //   Object.entries(req.body.productBasket).forEach(async (item, index) => {
-  //     const ChildItem = await ChildItemModel.findOne({ _id: item[0] })
-  //     if (item[1].number < 0 || typeof item[1].number !== 'number') return res.status(400).send('مقدار نامعتبر')
-  //     num += item[1].number * ChildItem.price
-  //     if (index === Object.entries(req.body.productBasket).length - 1) {
-  //       console.log(num);
-  //     }
-  //   }
-  //   )
-  //   res.status(200).json('')
-  // }
 
 
 
   this.addBuyBasket = (productBasket, res) => new Promise(async (resolve, reject) => {
+    if (!Object.values(productBasket).length) return res.status(400).send('هنوز محصولی انتخاب نکرده اید')
     var _totalPrice = 0,
       _title = ''
-    _itemsId = []
-    Object.entries(productBasket).forEach(async (item, index) => {
-      const ChildItem = await ChildItemModel.findById(item[0])
-      if (item[1].number < 0) return res.status(400).send('مقدار نامعتبر')
-      _totalPrice += item[1].number * ChildItem.price
-      _title += ChildItem.title + (index !== Object.entries(productBasket).length - 1 ? ',' : '')
-      _itemsId.push(ChildItem._id)
-      if (index === Object.entries(productBasket).length - 1) {
-        resolve({ _totalPrice, _title, _itemsId })
+    _itemsId = [],
+      Object.entries(productBasket).forEach(async (item, index) => {
+        const ChildItem = await ChildItemModel.findById(item[0])
+        if (item[1].number < 0) return res.status(400).send('مقدار نامعتبر')
+        _totalPrice += item[1].number * ChildItem.price
+        _title += `( ${ChildItem.title} تعداد: ${item[1].number} رنگ: ${item[1].color} )` + (index !== Object.entries(productBasket).length - 1 ? ' و ' : '')
+        _itemsId.push(ChildItem._id)
+        if (index === Object.entries(productBasket).length - 1) {
+          resolve({ _totalPrice, _title, _itemsId })
+        }
       }
-    }
-    )
+      )
   })
 
+
+  this.setUserPhone = async (req) => {
+    const user = await UserModel.findById(req.user.payload.userId);
+    user.phone = req.body.phone
+    await user.save()
+  }
 
 
 
   this.confirmPayment = async (req, res) => {
-    //! yub
-    // include tostring برای اینکه مشخص بشه کاربر قبلا این محصول رو خرید کرده یا نه با فیند تو ارایه ی خرید های قبلش پیدا کن
-    const { _totalPrice, _title, _itemsId } = await this.addBuyBasket(req.body.productBasket, res)
-    const response = await zarinpal.PaymentRequest({
-      Amount: _totalPrice,
-      CallbackURL: 'http://localhost:4000/verifyPayment',
-      Description: _title,
-    });
-    const payments = await PaymentModel.find();
-    await new PaymentModel({
-      userId: req.user.payload.userId,
-      phone: req.body.phone,
-      fullname: req.user.payload.fullname,
-      price: _totalPrice,
-      childItemsId: _itemsId,
-      titles: _title,
-      unit: req.body.unit,
-      plaque: req.body.plaque,
-      postalCode: req.body.postalCode,
-      address: req.body.address,
-      origin: req.body.origin,
-      description: req.body.description,
-      paymentCode: response.authority,
-      id: payments.length ? payments[payments.length - 1].id + 1 : 1,
-    }).save();
-    res.status(200).json(response.url);
+    try {
+      this.setUserPhone(req)
+      //! yub
+      // include tostring برای اینکه مشخص بشه کاربر قبلا این محصول رو خرید کرده یا نه با فیند تو ارایه ی خرید های قبلش پیدا کن
+      const { _totalPrice, _title, _itemsId } = await this.addBuyBasket(req.body.productBasket, res)
+      const response = await zarinpal.PaymentRequest({
+        Amount: _totalPrice,
+        CallbackURL: 'http://localhost:4000/verifyPayment',
+        Description: _title,
+      });
+      const payments = await PaymentModel.find();
+      await new PaymentModel({
+        userId: req.user.payload.userId,
+        phone: req.body.phone,
+        fullname: req.user.payload.fullname,
+        price: _totalPrice,
+        childItemsId: _itemsId,
+        titles: _title,
+        unit: req.body.unit,
+        plaque: req.body.plaque,
+        postalCode: req.body.postalCode,
+        address: req.body.address,
+        latlng: req.body.latlng,
+        origin: req.body.origin,
+        description: req.body.description,
+        paymentCode: response.authority,
+        id: payments.length ? payments[payments.length - 1].id + 1 : 1,
+      }).save();
+      res.status(200).json(response.url);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
 
@@ -316,6 +456,7 @@ function ClientController() {
       await payment.save();
 
       cache.del('address')
+      cache.del('latlng')
 
       res.render("./paymant", {
         pageTitle: "پرداخت",
@@ -338,7 +479,6 @@ function ClientController() {
       })
     }
   }
-  // res.redirect('mailo://reza@gmail.com')
   // res.redirect('/lastPayment')
 
 
