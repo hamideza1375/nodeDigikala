@@ -11,9 +11,9 @@ const appRootPath = require('app-root-path');
 const sharp = require('sharp');
 const { ChildItemModel, PaymentModel } = require('../model/ClientModel');
 const sendCode = require('../middleware/sendCode');
-const cacheCode = new nodeCache({ stdTTL: 60 * 3, checkperiod: 60 * 3 })
-const cacheSpecification = new nodeCache({ stdTTL: 60 * 12, checkperiod: 60 * 12 })
-const cacheSetTimeForSendNewCode = new nodeCache({ stdTTL: 60 * 3, checkperiod: 60 * 3 })
+const cacheCode = new nodeCache({ stdTTL: (60 * 3) - 2, checkperiod: (60 * 3) - 2 })
+const cacheSpecification = new nodeCache({ stdTTL: 60 * 15, checkperiod: 60 * 15 })
+const cacheSetTimeForSendNewCode = new nodeCache({ stdTTL: (60 * 3) - 2, checkperiod: (60 * 3) - 2 })
 var CAPTCHA_NUM = null;
 
 
@@ -69,7 +69,7 @@ function UserController() {
         fullname: user.fullname,
         phoneOrEmail: user.phoneOrEmail,
       }
-      const token = jwt.sign(tokenUser, "secret", { expiresIn: req.body.remember });
+      const token = jwt.sign(tokenUser, "token", { expiresIn: req.body.remember });
       res.status(200).header(token).json({ token });
     }
     else {
@@ -94,7 +94,7 @@ function UserController() {
       fullname: user.fullname,
       phoneOrEmail: user.phoneOrEmail,
     }
-    const token = jwt.sign(tokenUser, "secret", { expiresIn: cacheSpecification.get("remember") ? cacheSpecification.get("remember") : '24h' });
+    const token = jwt.sign(tokenUser, "token", { expiresIn: cacheSpecification.get("remember") });
     cacheSpecification.del("phoneOrEmail")
     cacheSpecification.del("password")
     cacheSpecification.del("remember")
@@ -106,7 +106,7 @@ function UserController() {
 
   this.getCodeForgetPass = async (req, res) => {
     if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
-    else if (req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
+    // else if (req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
     const user = await UserModel.findOne({ phoneOrEmail: req.body.phoneOrEmail });
     if (!user) return res.status(400).send('شما قبلا ثبت نام نکردین')
     cacheSpecification.set("phoneOrEmail", req.body.phoneOrEmail)
@@ -116,7 +116,7 @@ function UserController() {
 
   this.verifycodeForgetPass = async (req, res) => {
     if (req.body.code != cacheCode.get("code")) return res.status(400).status(400).send("کد وارد شده منقضی شده یا اشتباه هست")
-    else if (req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
+    // else if (req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
     else if (!cacheSpecification.get("phoneOrEmail")) return res.status(400).status(400).send("لطفا برگردین و شماره یا ایمیلتان را دوباره ارسال وارد کنید")
     else {
       const user = await UserModel.findOne({ phoneOrEmail: cacheSpecification.get("phoneOrEmail") })
@@ -144,8 +144,58 @@ function UserController() {
   }
 
 
+
+  this.resetSpecification = async (req, res) => {
+    if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
+    const user = await UserModel.findOne({ phoneOrEmail: req.user.payload.phoneOrEmail });
+    const oldPass = await bcrypt.compare(req.body.oldPassword, user.password);
+    console.log(oldPass);
+    if (!oldPass) return res.status(400).send('رمز عبور قبلی را صحیح وارد کنید')
+
+
+    cacheSpecification.set("fullname", req.body.fullname)
+    cacheSpecification.set("phoneOrEmail", req.body.phoneOrEmail)
+    cacheSpecification.set("password", req.body.password)
+    sendCode(req, res, cacheCode, cacheSetTimeForSendNewCode, cacheSpecification)
+    return res.status(200).json('کد دریافتی را وارد کنید');
+  }
+
+
+  this.verifycodeResetSpecification = async (req, res) => {
+    if (req.body.code != cacheCode.get("code")) return res.status(400).status(400).send("کد وارد شده منقضی شده یا اشتباه هست")
+    else if (!cacheSpecification.get("phoneOrEmail")) return res.status(400).status(400).send("لطفا برگردین و شماره یا ایمیلتان را دوباره ارسال وارد کنید")
+    else {
+      const user = await UserModel.findOne({ phoneOrEmail: req.user.payload.phoneOrEmail })
+      user.fullname = cacheSpecification.get("fullname");
+      user.password = cacheSpecification.get("password");
+      user.phoneOrEmail = cacheSpecification.get("phoneOrEmail");
+      await user.save();
+
+      const tokenUser = {
+        fullname: user.fullname,
+        phoneOrEmail: user.phoneOrEmail,
+        isAdmin: user.isAdmin,
+        userId: user._id.toString(),
+      }
+      const token = jwt.sign(tokenUser, "token", { expiresIn: '24h' });
+
+      cacheSpecification.del("fullname");
+      cacheSpecification.del("password");
+      cacheSpecification.del("phoneOrEmail");
+
+      res.status(200).json({ token })
+    }
+  }
+
+
+  this.getUserSpecification = async (req, res) => {
+    const user = await UserModel.findOne({ phoneOrEmail: req.user.payload.phoneOrEmail });
+    res.json({ fullname: user.fullname, phoneOrEmail: user.phoneOrEmail })
+  }
+
+
   this.getNewCode = async (req, res) => {
-    if (req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
+    if ((!req.query.newCode) && (req.user?.payload?.userId)) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
     else if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
     else if (!cacheSpecification.get("phoneOrEmail")) return res.status(400).send("لطفا برگردین و مشخصاتتان را دوباره ارسال وارد کنید")
     else sendCode(req, res, cacheCode, cacheSetTimeForSendNewCode, cacheSpecification)
@@ -347,7 +397,7 @@ function UserController() {
 
   this.savedItem = async (req, res) => {
     const ChildItem = await ChildItemModel.findOne({ _id: req.params.id })
-    const savedItem = await SavedItemModel.findOne().and([{ itemId: req.params.id }, {userId: req.user.payload.userId}])
+    const savedItem = await SavedItemModel.findOne().and([{ itemId: req.params.id }, { userId: req.user.payload.userId }])
     if (!savedItem) {
       await SavedItemModel.create({
         itemId: req.params.id,
@@ -366,7 +416,7 @@ function UserController() {
 
 
   this.removeSavedItem = async (req, res) => {
-    await SavedItemModel.deleteOne().and([{ itemId: req.params.id }, {userId: req.user.payload.userId}])
+    await SavedItemModel.deleteOne().and([{ itemId: req.params.id }, { userId: req.user.payload.userId }])
     res.send('از ذخیره ها حذف شد')
   }
 
@@ -377,8 +427,8 @@ function UserController() {
   }
 
   this.getSingleSavedItems = async (req, res) => {
-    const savedItem = await SavedItemModel.findOne().and([{ itemId: req.params.id }, {userId: req.user.payload.userId}])
-    savedItem? res.json(true) : res.json(false)
+    const savedItem = await SavedItemModel.findOne().and([{ itemId: req.params.id }, { userId: req.user.payload.userId }])
+    savedItem ? res.json(true) : res.json(false)
   }
 
   // this.activeOrder = async (req, res) => {

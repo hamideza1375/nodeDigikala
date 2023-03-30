@@ -18,7 +18,7 @@ function AdminController() {
   this.createCategory = async (req, res) => {
     if (!req.files) return res.status(400).send('لطفا یک فایل انتخاب کنید')
     await sharp(req.file.data).toFile(`${appRootPath}/public/upload/category/${req.fileName}`)
-    const category = await new CategoryModel({ title: req.body.title, imageUrl: req.fileName, sellerId: req.params.id }).save();
+    const category = await new CategoryModel({ title: req.body.title, imageUrl: req.fileName }).save();
     res.status(200).json({ category })
     // res.status(200).send('با موفقیت ساخته شد')
   }
@@ -30,7 +30,7 @@ function AdminController() {
 
 
   this.getCategory = async (req, res) => {
-    let category = await CategoryModel.find({ sellerId: req.params.id })
+    let category = await CategoryModel.find()
     res.status(200).json({ category });
   }
 
@@ -64,8 +64,15 @@ function AdminController() {
   }
 
 
+  this.getChildItemsTable = async (req, res) => {
+    let childItems = await ChildItemModel.find({ categoryId: req.params.id, sellerId: req.query.sellerId }).sort({ data: -1 })
+    res.status(200).json({ childItems });
+  }
+
+
+
   this.createChildItem = async (req, res) => {
-    const { title, price, info, ram, cpuCore, camera, storage, warranty, color, display, fullSpecifications, meanStar, num, total, available, availableCount } = req.body
+    const { title, price, info, ram, cpuCore, camera, storage, warranty, color, display, meanStar, num, total, available, availableCount } = req.body
     if (!req.fileName1 || !req.fileName2 || !req.fileName3 || !req.fileName4) return res.status(400).send('لطفا تمام کادر های تصاویر را پر کنید')
 
     await sharp(req.file1.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName1}`)
@@ -83,7 +90,6 @@ function AdminController() {
       warranty,
       color: JSON.parse(color),
       display,
-      fullSpecifications,
       info,
       meanStar,
       num,
@@ -95,6 +101,7 @@ function AdminController() {
       imageUrl3: req.fileName3,
       imageUrl4: req.fileName4,
       categoryId: req.params.id,
+      sellerId: req.query.sellerId
     }).save()
     res.status(200).json({ childItem })
     // res.status(200).send('با موفقیت ساخته شد')
@@ -161,16 +168,14 @@ function AdminController() {
 
 
 
-  
+
   this.setOffer = async (req, res) => {
     const childItem = await ChildItemModel.findById(req.params.id)
     if (!childItem) return res.status(400).send('این گزینه قبلا از سرور حذف شده')
-    const {offerTime, offerValue } = req.body
-    console.log('offerTime, ',offerTime);
-    console.log('offerValue ',offerValue);
+    const { offerTime, offerValue } = req.body
     if ((offerTime > 0 && offerValue < 1) || (offerTime < 1 && offerValue > 0)) return res.status(400).send('نمیشود فقط یک کدام از مقادیر زمان یا درصد تخفیف را مشخص کنید')
-    childItem.offerTime = (offerTime == 0 || offerValue == 0 ) ? ({ exp: 0, value: 0 }) : ({ exp: new Date().getTime() + (60000 * 60 * offerTime), value: offerTime })
-    childItem.offerValue = (offerTime == 0 || offerValue == 0 ) ? 0 : offerValue
+    childItem.offerTime = (offerTime == 0 || offerValue == 0) ? ({ exp: 0, value: 0 }) : ({ exp: new Date().getTime() + (60000 * 60 * offerTime), value: offerTime })
+    childItem.offerValue = (offerTime == 0 || offerValue == 0) ? 0 : offerValue
     await childItem.save();
     res.status(200).json({ childItem })
   }
@@ -294,35 +299,39 @@ function AdminController() {
   }
 
 
-  this.getAllAddressForChart = async (req, res) => {
-    const getAllAddressForChart = await PaymentModel.find({ success: true }).sort({ date: -1 });
-    res.json(getAllAddressForChart)
-  }
-
-
-
   this.getAllPaymentSuccessFalseAndTrue = async (req, res) => {
     const payments = await PaymentModel.find().sort({ date: -1 });
     res.json({ payments })
   }
 
 
+  this.postQueue = async (req, res) => {
+    let payment = await PaymentModel.findById(req.params.id)
+    payment.checkSend = payment.queueSend
+    payment.queueSend = !payment.queueSend
+    payment.send = 0
+    await payment.save()
+    res.json(payment.queueSend)
+  }
+
+
   this.postedOrder = async (req, res) => {
     let payment = await PaymentModel.findById(req.params.id)
-    payment.checkSend = 0
+    if (payment.checkSend != 0) return res.status(400).send('اول فیش را از صف ارسال خارج کنید')
     payment.send = 1
     await payment.save()
     res.json(payment.send)
   }
 
-  this.postQueue = async (req, res) => {
-    let payment = await PaymentModel.findById(req.params.id)
-    payment.checkSend = 0
-    payment.send = 0
-    payment.queueSend = !payment.queueSend
-    await payment.save()
-    res.json(payment.queueSend)
+
+  this.sendDisablePost = async (req, res) => {
+    // const payment = await PaymentModel.findById(req.params.id);
+    // if (!payment) return res.status(400).send('این سفارش فعال نیست')
+    // payment.send = 0
+    // await payment.save()
+    // res.send('حالت انتظار برای مشتری لغو شد')
   }
+
 
 
   // this.deleteAddressForOneAdmin = async (req, res) => {
@@ -335,15 +344,6 @@ function AdminController() {
   // }
 
 
-
-
-  this.sendDisablePost = async (req, res) => {
-    const payment = await PaymentModel.findById(req.params.id);
-    if (!payment) return res.status(400).send('این سفارش فعال نیست')
-    payment.enablePosted = 1
-    await payment.save()
-    res.send('حالت انتظار برای مشتری لغو شد')
-  }
 
 
 
@@ -369,7 +369,7 @@ function AdminController() {
   this.createSeller = async (req, res) => {
     //  const seller = await SellerModel.findOne().or([{ phone: req.body.phone },{ brand: req.body.brand }]);
     const user = await UserModel.findOne({ phoneOrEmail: req.body.phone });
-    if (!user) return res.send('کاربری با این شماره قبلا ثبت نام نکرده است')
+    if (!user) return res.status(400).send('کاربری با این شماره قبلا ثبت نام نکرده است')
     const sellerPhone = await SellerModel.findOne({ phone: req.body.phone })
     const sellerBrand = await SellerModel.findOne({ brand: req.body.brand })
     if (sellerPhone) return res.status(400).send('این شماره را قبلا به فروشندگان اضاف کرده اید')
@@ -403,12 +403,14 @@ function AdminController() {
   }
 
 
-  this.getAllUser = async (req, res) => {
-    const allUsers = await UserModel.find().select({ date: 1 }).sort({ date: -1 })
-    res.status(200).json({ allUsers })
+
+  this.getDataForChart = async (req, res) => {
+    const getAddress7DeyForChart = await PaymentModel.find({ success: true, date: { $gt: new Date(new Date().getTime() - (60000 * 60 * 24 * (7 + 1))) } })
+    const getAddress1YearsForChart = await PaymentModel.find({ success: true, date: { $gt: new Date(new Date().getTime() - (60000 * 60 * 24 * (365 + 30))) } })
+    const getUsers7DeyForChart = await UserModel.find({ date: { $gt: new Date(new Date().getTime() - (60000 * 60 * 24 * (7 + 1))) } }).select({ date: 1 })
+    const getUsersLength = await UserModel.find().countDocuments()
+    res.json({ getAddress7DeyForChart, getAddress1YearsForChart, getUsers7DeyForChart, getUsersLength })
   }
-
-
 
 
 
@@ -468,35 +470,6 @@ function AdminController() {
   }
 
 
-
-
-  // this.getUsersLength = async (req, res) => {
-  //   const userCount = await UserModel.find().count();
-  //   res.status(200).json({ userCount })
-  // }
-
-
-  // this.getChartLast7dayUserRegister = async (req, res) => {
-  //   const user = await UserModel.find();
-  //   const lastUserRegister = await UserModel.find({ getTime: { $gt: new Date(user[user.length - 1].date).getTime() - 6000 * 10 * 60 * 24 * 10 } });
-  //   res.status(200).json({ lastUserRegister })
-  // }
-
-
-  // this.getChartLast7dayUserBuy = async (req, res) => {
-  //   const user = await ClientModel.find();
-  //   const lastUserBuy = await ClientModel.find({ getTime: { $gt: new Date(user[user.length - 1].date).getTime() - 6000 * 10 * 60 * 24 * 10 } });
-  //   res.status(200).json({ lastUserBuy })
-  // }
-
-
-  // this.getChartsLastYearsUserBuy = async (req, res) => {
-  //   const user = await ClientModel.find({ getTime: { $gt: new Date(user[user.length - 1].date).getTime() - 6000 * 10 * 60 * 24 * (365 + 30) } });
-  //   const lastYearsBuy = await ClientModel.find({ getTime });
-  //   res.status(200).json({ lastUserBuy: lastYearsBuy })
-  // }
-
-  // قسمت ورود فروشندگان رو جدا درست کن و اگه بخوان وارد بشن شماره تماس میخواد
 }
 
 

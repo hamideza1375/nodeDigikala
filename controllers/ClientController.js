@@ -66,9 +66,9 @@ function ClientController() {
   // }
 
 
-  this.setStar = async (req) => {
-    let singleItem = await ChildItemModel.findById(req.params.id)
-    let comment = await CommenteModel.find({ commentId: req.params.id }).select({ fiveStar: 1 })
+  this.setStar = async (id) => {
+    let singleItem = await ChildItemModel.findById(id)
+    let comment = await CommenteModel.find({ commentId: id }).select({ fiveStar: 1 })
     let totalStar = 0
     for (let i in comment) { totalStar += comment[i].fiveStar }
     singleItem.meanStar = totalStar / comment.length
@@ -86,7 +86,7 @@ function ClientController() {
     else fullname = 'کاربر'
 
     let comment = await CommenteModel.create({ message, fiveStar, fullname, commentId: req.params.id, userphoneOrEmail: req.user.payload.phoneOrEmail })
-    this.setStar(req)
+    this.setStar(req.params.id)
 
     res.status(200).json({ comment })
   }
@@ -95,7 +95,6 @@ function ClientController() {
 
   this.createCommentAnswer = async (req, res) => {
     const { message, to } = req.body;
-    console.log(to);
     const comment = await CommenteModel.findOne({ _id: req.params.id });
     var fullname
     if (req.user.payload.isAdmin === 1 || req.user.payload.isAdmin === 2) fullname = 'مدیر'
@@ -116,7 +115,7 @@ function ClientController() {
     comment.message = message
     comment.fiveStar = fiveStar
     await comment.save()
-    this.setStar(req)
+    this.setStar(comment.commentId)
     res.status(200).json({ comment })
   }
 
@@ -142,7 +141,6 @@ function ClientController() {
       { _id: req.params.id },
       { $pull: { answer: { _id: req.query.commentId } } }
     )
-    console.log(req.query.commentId, req.params.id);
     res.status(200).send('نظر شما حذف شد')
   }
 
@@ -215,13 +213,13 @@ function ClientController() {
   this.likeAnswer = async (req, res) => {
     const falseLike = await CommenteModel.findOne({ _id: req.params.id }).select({ answer: { $elemMatch: { _id: req.query.commentId } } })
     const _truLike = await CommenteModel.findOne({
-       _id: req.params.id,
-       answer: { $elemMatch: { _id: req.query.commentId, like: { $elemMatch: { userId: req.user.payload.userId }} } } ,
-      }
-       )
+      _id: req.params.id,
+      answer: { $elemMatch: { _id: req.query.commentId, like: { $elemMatch: { userId: req.user.payload.userId } } } },
+    }
+    )
       .select({
         _id: req.params.id,
-        answer: { $elemMatch: { _id: req.query.commentId, like: { $elemMatch: { userId: req.user.payload.userId }} } } ,
+        answer: { $elemMatch: { _id: req.query.commentId, like: { $elemMatch: { userId: req.user.payload.userId } } } },
       })
 
     const truLike = _truLike?.answer[0]
@@ -231,9 +229,11 @@ function ClientController() {
 
     if (truLike) {
       await CommenteModel.findOneAndUpdate(
-        {_id: req.params.id,
-        answer: { $elemMatch: { _id: req.query.commentId, like: { $elemMatch: { userId: req.user.payload.userId }} } }} ,
-        { $set: { "answer.$.like": {value:preLike} } },
+        {
+          _id: req.params.id,
+          answer: { $elemMatch: { _id: req.query.commentId, like: { $elemMatch: { userId: req.user.payload.userId } } } }
+        },
+        { $set: { "answer.$.like": { value: preLike } } },
         { new: true }
       )
       const comment = await CommenteModel.findOne({ _id: req.params.id }).select({ answer: { $elemMatch: { _id: req.query.commentId } } })
@@ -259,17 +259,16 @@ function ClientController() {
 
 
 
-  
   this.disLikeAnswer = async (req, res) => {
     const falseLike = await CommenteModel.findOne({ _id: req.params.id }).select({ answer: { $elemMatch: { _id: req.query.commentId } } })
     const _truLike = await CommenteModel.findOne({
-       _id: req.params.id,
-       answer: { $elemMatch: { _id: req.query.commentId, disLike: { $elemMatch: { userId: req.user.payload.userId }} } } ,
-      }
-       )
+      _id: req.params.id,
+      answer: { $elemMatch: { _id: req.query.commentId, disLike: { $elemMatch: { userId: req.user.payload.userId } } } },
+    }
+    )
       .select({
         _id: req.params.id,
-        answer: { $elemMatch: { _id: req.query.commentId, disLike: { $elemMatch: { userId: req.user.payload.userId }} } } ,
+        answer: { $elemMatch: { _id: req.query.commentId, disLike: { $elemMatch: { userId: req.user.payload.userId } } } },
       })
 
     const truLike = _truLike?.answer[0]
@@ -279,9 +278,11 @@ function ClientController() {
 
     if (truLike) {
       await CommenteModel.findOneAndUpdate(
-        {_id: req.params.id,
-        answer: { $elemMatch: { _id: req.query.commentId, disLike: { $elemMatch: { userId: req.user.payload.userId }} } }} ,
-        { $set: { "answer.$.disLike": {value:preLike} } },
+        {
+          _id: req.params.id,
+          answer: { $elemMatch: { _id: req.query.commentId, disLike: { $elemMatch: { userId: req.user.payload.userId } } } }
+        },
+        { $set: { "answer.$.disLike": { value: preLike } } },
         { new: true }
       )
       const comment = await CommenteModel.findOne({ _id: req.params.id }).select({ answer: { $elemMatch: { _id: req.query.commentId } } })
@@ -305,8 +306,6 @@ function ClientController() {
 
 
 
-
-
   this.getChildItemComments = async (req, res) => {
     const comment = await CommenteModel.find({ commentId: req.params.id }).sort({ date: -1 })
     res.status(200).json({ comment })
@@ -317,6 +316,13 @@ function ClientController() {
   this.getSingleComment = async (req, res) => {
     const comment = await CommenteModel.findById(req.params.id)
     res.status(200).json({ comment })
+  }
+
+
+  this.getSingleCommentAnswer = async (req, res) => {
+    const comment = await CommenteModel.findOne({ _id: req.params.id, answer: { $elemMatch: { _id: req.query.commentId } } })
+      .select({ answer: { message: true } })
+    res.status(200).json({ comment: comment.answer[0] })
   }
 
 
@@ -368,9 +374,6 @@ function ClientController() {
 
 
 
-
-
-
   this.getAddress = async (req, res) => {
     const user = await UserModel.findById({ _id: req.user.payload.userId });
     res.json({ phone: user.phone, address: cache.get('address'), latlng: cache.get('latlng') })
@@ -386,7 +389,11 @@ function ClientController() {
       Object.entries(productBasket).forEach(async (item, index) => {
         const ChildItem = await ChildItemModel.findById(item[0])
         if (item[1].number < 0) return res.status(400).send('مقدار نامعتبر')
-        _totalPrice += item[1].number * ChildItem.price
+        _totalPrice +=
+          (ChildItem.offerTime?.exp > new Date().getTime() )?
+            (item[1].number * parseInt(ChildItem.price - ((ChildItem.price / 100) * ChildItem.offerValue)))
+            :
+            (item[1].number * ChildItem.price)
         _title += `( ${ChildItem.title} تعداد: ${item[1].number} رنگ: ${item[1].color} )` + (index !== Object.entries(productBasket).length - 1 ? ' و ' : '')
         _itemsId.push(ChildItem._id)
         if (index === Object.entries(productBasket).length - 1) {

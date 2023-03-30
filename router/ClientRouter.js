@@ -22,6 +22,7 @@ router.put('/editComment/:id', Auth, ClientController.editComment);
 router.delete('/deleteComment/:id', Auth, ClientController.deleteComment);
 router.get('/getChildItemComments/:id', user, ClientController.getChildItemComments);
 router.get('/getSingleComment/:id', user, ClientController.getSingleComment);
+router.get('/getSingleCommentAnswer/:id', user, ClientController.getSingleCommentAnswer);
 router.post('/commentLike/:id', Auth, ClientController.commentLike);
 router.post('/commentDisLike/:id', Auth, ClientController.commentDisLike);
 

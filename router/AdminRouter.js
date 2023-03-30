@@ -17,6 +17,7 @@ router.delete('/deleteCategory/:id', AuthMainAdmin, AdminController.deleteCatego
 router.get('/getSinleCategory/:id', AdminController.getSinleCategory);
 
 
+router.get('/getChildItemsTable/:id', [AuthMainAdmin], AdminController.getChildItemsTable);
 router.post('/createChildItem/:id', [AuthMainAdmin, multiFileUpload], AdminController.createChildItem);
 router.put('/editChildItem/:id', [AuthMainAdmin, multiFileUpload], AdminController.editChildItem);
 router.delete('/deleteChildItem/:id', AuthMainAdmin, AdminController.deleteChildItem);
@@ -37,7 +38,7 @@ router.get('/getProposal', AuthMainAdmin, AdminController.getProposal);
 router.post('/deleteMultiProposal', AuthMainAdmin, AdminController.deleteMultiProposal);
 
 router.get('/getAllAddress', Auth, AdminController.getAllAddress);
-router.get('/getAllAddressForChart', Auth, AdminController.getAllAddressForChart);
+router.get('/getDataForChart', Auth, AdminController.getDataForChart);
 router.post('/postedOrder/:id', AuthAllAdmin, AdminController.postedOrder);
 router.post('/postQueue/:id', AuthAllAdmin, AdminController.postQueue);
 router.post('/sendDisablePost', AuthAllAdmin, AdminController.sendDisablePost);
@@ -56,7 +57,6 @@ router.get('/getAllSellers', AuthMainAdmin, AdminController.getAllSellers)
 router.put('/setSellerAvailable/:id', AuthMainAdmin, AdminController.setSellerAvailable)
 
 
-router.get('/getAllUser', AuthMainAdmin, AdminController.getAllUser)
 router.post('/createSlider', AuthMainAdmin, AdminController.createSlider)
 
 module.exports = router

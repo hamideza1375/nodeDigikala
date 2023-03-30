@@ -73,7 +73,8 @@ const ChildItemModel = new mongoose.Schema({
     availableCount: { type: Number, require: true, min: 1 },
     offerTime: { type: Object, default: { exp: 0, value: 0 } },
     offerValue: { type: Number, default: 0 },
-    categoryId: { type: mongoose.Schema.Types.ObjectId, ref: "category" }
+    categoryId: { type: mongoose.Schema.Types.ObjectId, ref: "category" },
+    sellerId: { type: mongoose.Schema.Types.ObjectId, ref: "sellerId" }
 });
 
 exports.ChildItemModel = mongoose.model("ChildItemModel", ChildItemModel);
@@ -83,8 +84,6 @@ exports.ChildItemModel = mongoose.model("ChildItemModel", ChildItemModel);
 const CategoryModel = new mongoose.Schema({
     title: { type: String, required: true },
     imageUrl: String,
-    available: { type: Number, default: 1 },
-    sellerId: { type: mongoose.Schema.Types.ObjectId, ref: "seller" }
 });
 
 exports.CategoryModel = mongoose.model("CategoryModel", CategoryModel);
