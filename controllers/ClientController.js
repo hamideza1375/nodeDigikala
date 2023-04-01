@@ -388,9 +388,15 @@ function ClientController() {
     _itemsId = [],
       Object.entries(productBasket).forEach(async (item, index) => {
         const ChildItem = await ChildItemModel.findById(item[0])
+
+        await ChildItemModel.update(
+          { _id: item[0] },
+          { $set: { availableCount: ChildItem.availableCount - item[1].number } }
+        )
+
         if (item[1].number < 0) return res.status(400).send('مقدار نامعتبر')
         _totalPrice +=
-          (ChildItem.offerTime?.exp > new Date().getTime() )?
+          (ChildItem.offerTime?.exp > new Date().getTime()) ?
             (item[1].number * parseInt(ChildItem.price - ((ChildItem.price / 100) * ChildItem.offerValue)))
             :
             (item[1].number * ChildItem.price)

@@ -14,7 +14,7 @@ module.exports = (req, res, myCache, cacheSetTimeForSendNewCode, cacheSpecificat
         service: "outlook",
         auth: {
           user: "reza.attar1375@outlook.com",
-          pass: "reza1375",
+          pass: process.env.SECRET_PASSWORD,
         },
       });
       transporter.sendMail({
@@ -24,13 +24,12 @@ module.exports = (req, res, myCache, cacheSetTimeForSendNewCode, cacheSpecificat
         text: `ارسال کد از دیجی کالا 
              Code: ${random}`,
       }, (err, info) => {
-        if (err) {
+        if (err || !info) {
           console.log(err);
           myCache.del("code")
           return res.status(400).send('مشکلی پیش آمد بعدا دوباره امتحان کنید')
         }
         else {
-          console.log(err);
           cacheSetTimeForSendNewCode.set('newTime', true)
           return res.status(200).send('کد دریافتی را وارد کنید')
         }

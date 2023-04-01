@@ -38,7 +38,7 @@ function UserController() {
 
   this.verifycodeRegister = async (req, res) => {
     if (req.body.code != cacheCode.get("code")) return res.status(400).send("کد وارد شده منقضی شده یا اشتباه هست")
-    else if (!cacheSpecification.get("password") || !cacheSpecification.get("fullname") || !cacheSpecification.get("phoneOrEmail")) return res.status(400).send("لطفا برگردین و مشخصاتتان را دوباره ارسال وارد کنید")
+    else if (!cacheSpecification.get("password") || !cacheSpecification.get("fullname") || !cacheSpecification.get("phoneOrEmail")) return res.status(400).send("لطفا برگردین و مشخصاتتان را دوباره ارسال کنید")
     await UserModel.create({ fullname: cacheSpecification.get("fullname"), password: cacheSpecification.get("password"), phoneOrEmail: cacheSpecification.get("phoneOrEmail") });
     let user = await UserModel.find();
     if (user.length === 1) {
@@ -84,7 +84,7 @@ function UserController() {
 
   this.verifyCodeLoginForAdmin = async (req, res) => {
     if (req.body.code != cacheCode.get("code")) return res.status(400).send("کد وارد شده منقضی شده یا اشتباه هست")
-    else if (!cacheSpecification.get("phoneOrEmail") || !cacheSpecification.get("password")) return res.status(400).send("لطفا برگردین و مشخصاتتان را دوباره ارسال وارد کنید")
+    else if (!cacheSpecification.get("phoneOrEmail") || !cacheSpecification.get("password")) return res.status(400).send("لطفا برگردین و مشخصاتتان را دوباره ارسال کنید")
     const user = await UserModel.findOne({ phoneOrEmail: cacheSpecification.get("phoneOrEmail") });
     const pass = await bcrypt.compare(cacheSpecification.get("password"), user.password);
     if (!pass) return res.status(400).send('مشخصات اشتباه هست')
@@ -106,7 +106,7 @@ function UserController() {
 
   this.getCodeForgetPass = async (req, res) => {
     if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
-    // else if (req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
+    else if (req.query.newCode !== 'true' && req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
     const user = await UserModel.findOne({ phoneOrEmail: req.body.phoneOrEmail });
     if (!user) return res.status(400).send('شما قبلا ثبت نام نکردین')
     cacheSpecification.set("phoneOrEmail", req.body.phoneOrEmail)
@@ -116,8 +116,7 @@ function UserController() {
 
   this.verifycodeForgetPass = async (req, res) => {
     if (req.body.code != cacheCode.get("code")) return res.status(400).status(400).send("کد وارد شده منقضی شده یا اشتباه هست")
-    // else if (req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
-    else if (!cacheSpecification.get("phoneOrEmail")) return res.status(400).status(400).send("لطفا برگردین و شماره یا ایمیلتان را دوباره ارسال وارد کنید")
+    else if (!cacheSpecification.get("phoneOrEmail")) return res.status(400).status(400).send("لطفا برگردین و شماره یا ایمیلتان را دوباره ارسال کنید")
     else {
       const user = await UserModel.findOne({ phoneOrEmail: cacheSpecification.get("phoneOrEmail") })
       cacheSpecification.set('userId', user._id)
@@ -149,10 +148,7 @@ function UserController() {
     if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
     const user = await UserModel.findOne({ phoneOrEmail: req.user.payload.phoneOrEmail });
     const oldPass = await bcrypt.compare(req.body.oldPassword, user.password);
-    console.log(oldPass);
     if (!oldPass) return res.status(400).send('رمز عبور قبلی را صحیح وارد کنید')
-
-
     cacheSpecification.set("fullname", req.body.fullname)
     cacheSpecification.set("phoneOrEmail", req.body.phoneOrEmail)
     cacheSpecification.set("password", req.body.password)
@@ -163,7 +159,7 @@ function UserController() {
 
   this.verifycodeResetSpecification = async (req, res) => {
     if (req.body.code != cacheCode.get("code")) return res.status(400).status(400).send("کد وارد شده منقضی شده یا اشتباه هست")
-    else if (!cacheSpecification.get("phoneOrEmail")) return res.status(400).status(400).send("لطفا برگردین و شماره یا ایمیلتان را دوباره ارسال وارد کنید")
+    else if (!cacheSpecification.get("phoneOrEmail")) return res.status(400).status(400).send("لطفا برگردین و شماره یا ایمیلتان را دوباره ارسال کنید")
     else {
       const user = await UserModel.findOne({ phoneOrEmail: req.user.payload.phoneOrEmail })
       user.fullname = cacheSpecification.get("fullname");
@@ -179,9 +175,11 @@ function UserController() {
       }
       const token = jwt.sign(tokenUser, "token", { expiresIn: '24h' });
 
+      cacheCode.del("code")
       cacheSpecification.del("fullname");
       cacheSpecification.del("password");
       cacheSpecification.del("phoneOrEmail");
+      cacheSetTimeForSendNewCode.del("newTime")
 
       res.status(200).json({ token })
     }
@@ -195,9 +193,9 @@ function UserController() {
 
 
   this.getNewCode = async (req, res) => {
-    if ((!req.query.newCode) && (req.user?.payload?.userId)) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
+    if (req.query.newCode !== 'true' && (req.user?.payload?.userId)) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
     else if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
-    else if (!cacheSpecification.get("phoneOrEmail")) return res.status(400).send("لطفا برگردین و مشخصاتتان را دوباره ارسال وارد کنید")
+    else if (!cacheSpecification.get("phoneOrEmail")) return res.status(400).send("لطفا برگردین و مشخصاتتان را دوباره ارسال کنید")
     else sendCode(req, res, cacheCode, cacheSetTimeForSendNewCode, cacheSpecification)
   }
 
@@ -216,7 +214,8 @@ function UserController() {
       .then(data => { })
       .catch(err => { })
     await new ImageProfileModel({ imageUrl: req.fileName, userId: req.user.payload.userId }).save()
-    res.status(200).send('موفق آمیز')
+
+      res.status(200).json({ imageUrl: req.fileName })
   }
 
 
@@ -240,14 +239,14 @@ function UserController() {
           }
         }
     }
-    res.status(200).send('')
+    res.status(200)
   }
 
 
   this.getImageProfile = async (req, res, next) => {
     const imageProfile = await ImageProfileModel.findOne({ userId: req.user.payload.userId })
     if (imageProfile) res.status(200).json({ imageUrl: imageProfile.imageUrl })
-    else next()
+    else res.status(400)
   }
 
 
@@ -442,8 +441,10 @@ function UserController() {
   this.captcha = (req, res) => {
     CAPTCHA_NUM = req.params.id
     var p = new captchapng(80, 30, CAPTCHA_NUM);
-    p.color(0, 0, 0, 0);
-    p.color(80, 80, 80, 255);
+    p.color(100, 200, 250, 200);
+    p.color(10, 10, 10, 255);
+
+
     var img = p.getBase64();
     var imgbase64 = Buffer.from(img, 'base64');
     res.send(imgbase64);
