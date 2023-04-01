@@ -79,3 +79,11 @@
 {"level":"error","message":"Cannot read properties of null (reading 'fullname')"}
 {"level":"error","message":"E11000 duplicate key error collection: digikala.usermodels index: phoneOrEmail_1 dup key: { phoneOrEmail: \"09152330897\" }"}
 {"level":"error","message":"Unexpected token b in JSON at position 0"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'userId')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'userId')"}
+{"level":"error","message":"Cannot read properties of null (reading 'answer')"}
+{"level":"error","message":"Cannot read properties of null (reading 'answer')"}
+{"level":"error","message":"Cannot read properties of null (reading 'answer')"}
+{"level":"error","message":"Cannot read properties of null (reading 'answer')"}
+{"level":"error","message":"Cannot read properties of null (reading 'answer')"}
+{"level":"error","message":"Cannot read properties of null (reading 'answer')"}

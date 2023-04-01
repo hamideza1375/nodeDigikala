@@ -46,7 +46,7 @@ router.get('/getAllPaymentSuccessFalseAndTrue', Auth, AdminController.getAllPaym
 
 // priceForPost
 router.post('/sendPostPrice', AuthMainAdmin, AdminController.sendPostPrice);
-router.get('/getPostPrice', AuthMainAdmin, AdminController.getPostPrice);
+router.get('/getPostPrice', Auth, AdminController.getPostPrice);
 // priceForPost
 
 router.get('/adminTicketBox', AuthMainAdmin, AdminController.adminTicketBox)

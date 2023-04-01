@@ -215,7 +215,7 @@ function UserController() {
       .catch(err => { })
     await new ImageProfileModel({ imageUrl: req.fileName, userId: req.user.payload.userId }).save()
 
-      res.status(200).json({ imageUrl: req.fileName })
+    res.status(200).json({ imageUrl: req.fileName })
   }
 
 
@@ -294,11 +294,12 @@ function UserController() {
 
   this.getTicketSeen = async (req, res) => {
     let ticketseen
-    if (req.user.payload.isAdmin)
-      ticketseen = await TicketModel.find({ adminSeen: 0 }).countDocuments()
-    else
-      ticketseen = await TicketModel.find({ userId: req.user.payload.userId, userSeen: 0 }).countDocuments()
-    res.json(ticketseen)
+    if (req.user.payload.isAdmin) ticketseen = await TicketModel.find({ adminSeen: 0 }).countDocuments()
+    else ticketseen = await TicketModel.find({ userId: req.user.payload.userId, userSeen: 0 }).countDocuments()
+
+    const ticket = await TicketModel.findOne({ userId: req.user.payload.userId, userSeen: 0 })
+
+    res.json({ seen: ticketseen, ticket: ticket ? ticket.answer[ticket.answer.length - 1] : '' })
   }
 
 
@@ -426,8 +427,11 @@ function UserController() {
   }
 
   this.getSingleSavedItems = async (req, res) => {
-    const savedItem = await SavedItemModel.findOne().and([{ itemId: req.params.id }, { userId: req.user.payload.userId }])
-    savedItem ? res.json(true) : res.json(false)
+    if (req.user.payload?.userId) {
+      const savedItem = await SavedItemModel.findOne().and([{ itemId: req.params.id }, { userId: req.user.payload.userId }])
+      savedItem ? res.json(true) : res.json(false)
+    }
+    else res.json(false)
   }
 
   // this.activeOrder = async (req, res) => {

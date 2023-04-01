@@ -39,7 +39,7 @@ router.delete("/deleteMainItemTicketBox/:id", Auth, UserController.deleteMainIte
 router.post("/savedItem/:id", Auth, UserController.savedItem);
 router.delete("/removeSavedItem/:id", Auth, UserController.removeSavedItem);
 router.get("/getSavedItems", Auth, UserController.getSavedItems);
-router.get("/getSingleSavedItems/:id", Auth, UserController.getSingleSavedItems);
+router.get("/getSingleSavedItems/:id", user, UserController.getSingleSavedItems);
 
 router.get("/captcha.png/:id", UserController.captcha);
 

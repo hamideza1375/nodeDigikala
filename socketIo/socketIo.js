@@ -6,8 +6,15 @@ module.exports = (server, app) => {
   const { SocketMessageModel } = require('./SocketMessageModel');
 
 
-  app.get('/getSocketIoSeen',AuthMainAdmin, async (req, res) => {
+  app.get('/getSocketIoSeen', AuthMainAdmin, async (req, res) => {
     let socketSeen = await SocketMessageModel.find({ seen: 0 }).countDocuments()
+    res.json(socketSeen)
+  }
+  )
+
+
+  app.get('/getSocketIoSeenUser', async (req, res) => {
+    let socketSeen = await SocketMessageModel.findOne({ to: req.query.id }).sort({ date: -1 })
     res.json(socketSeen)
   }
   )
@@ -62,6 +69,7 @@ module.exports = (server, app) => {
         const user = socket.handshake.auth.token
         users = users.filter((u) => u.userId !== user)
         socket.leave('1')
+        socket.rooms.forEach((item) => (socket.leave(item)))
       } catch (err) { console.log(err); }
     })
 
@@ -72,7 +80,9 @@ module.exports = (server, app) => {
         const user = socket.handshake.auth.token
         if (user) {
           users = users.filter((u) => u.userId !== user)
+          users = users.filter((u) => u.socketId !== socket.id)
           socket.leave('1')
+          socket.rooms.forEach((item) => (socket.leave(item)))
         }
       } catch (err) { console.log(err); }
     })

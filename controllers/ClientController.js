@@ -3,7 +3,7 @@
 // app200
 const node_geocoder = require('node-geocoder');
 const { CategoryModel, ChildItemModel, PaymentModel, CommenteModel } = require('../model/ClientModel')
-const { NotifeeModel, AddressVoucherModel, SliderModel } = require('../model/AdminModel')
+const { NotifeeModel, AddressVoucherModel, SliderModel, PostPriceModel } = require('../model/AdminModel')
 const { UserModel } = require('../model/UserModel')
 const ZarinpalCheckout = require('zarinpal-checkout');
 const zarinpal = ZarinpalCheckout.create('00000000-0000-0000-0000-000000000000', true);
@@ -382,6 +382,7 @@ function ClientController() {
 
 
   this.addBuyBasket = (productBasket, res) => new Promise(async (resolve, reject) => {
+
     if (!Object.values(productBasket).length) return res.status(400).send('هنوز محصولی انتخاب نکرده اید')
     var _totalPrice = 0,
       _title = ''
@@ -420,12 +421,15 @@ function ClientController() {
 
   this.confirmPayment = async (req, res) => {
     try {
+
+      const postPrice = await PostPriceModel.findOne()
+      const price = postPrice ? postPrice.price : 30000
       this.setUserPhone(req)
       //! yub
       // include tostring برای اینکه مشخص بشه کاربر قبلا این محصول رو خرید کرده یا نه با فیند تو ارایه ی خرید های قبلش پیدا کن
       const { _totalPrice, _title, _itemsId } = await this.addBuyBasket(req.body.productBasket, res)
       const response = await zarinpal.PaymentRequest({
-        Amount: _totalPrice,
+        Amount: _totalPrice + price,
         CallbackURL: 'http://localhost:4000/verifyPayment',
         Description: _title,
       });
@@ -434,7 +438,7 @@ function ClientController() {
         userId: req.user.payload.userId,
         phone: req.body.phone,
         fullname: req.user.payload.fullname,
-        price: _totalPrice,
+        price: _totalPrice + price,
         childItemsId: _itemsId,
         titles: _title,
         unit: req.body.unit,

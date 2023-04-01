@@ -348,6 +348,7 @@ function AdminController() {
 
 
   this.sendPostPrice = async (req, res) => {
+    await PostPriceModel.deleteMany()
     await new PostPriceModel({ price: req.body.price }).save()
     res.status(200).send('قیمت پست با موفقیت ثبت شد')
   }
@@ -355,7 +356,7 @@ function AdminController() {
 
   this.getPostPrice = async (req, res) => {
     const postPrice = await PostPriceModel.findOne()
-    const price = postPrice ? postPrice : 20000
+    const price = postPrice ? postPrice.price : 30000
     res.status(200).json({ price })
   }
 
