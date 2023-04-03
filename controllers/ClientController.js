@@ -3,7 +3,7 @@
 // app200
 const node_geocoder = require('node-geocoder');
 const { CategoryModel, ChildItemModel, PaymentModel, CommenteModel } = require('../model/ClientModel')
-const { NotifeeModel, AddressVoucherModel, SliderModel, PostPriceModel } = require('../model/AdminModel')
+const { NotifeeModel, AddressVoucherModel, SliderModel, PostPriceModel, SellerModel } = require('../model/AdminModel')
 const { UserModel } = require('../model/UserModel')
 const ZarinpalCheckout = require('zarinpal-checkout');
 const zarinpal = ZarinpalCheckout.create('00000000-0000-0000-0000-000000000000', true);
@@ -337,6 +337,12 @@ function ClientController() {
   }
 
 
+  this.getSingleSeller = async (req, res) => {
+    const seller = await SellerModel.findById({ _id: req.query.id });
+    res.json(seller)
+  }
+
+
 
 
   this.reverse = async (req, res) => {
@@ -385,30 +391,53 @@ function ClientController() {
 
     if (!Object.values(productBasket).length) return res.status(400).send('هنوز محصولی انتخاب نکرده اید')
     var _totalPrice = 0,
-      _title = ''
-    _itemsId = [],
-      Object.entries(productBasket).forEach(async (item, index) => {
-        const ChildItem = await ChildItemModel.findById(item[0])
+      _title = '',
+      _itemsId = []
+    Object.entries(productBasket).forEach(async (item, index) => {
 
-        await ChildItemModel.update(
-          { _id: item[0] },
-          { $set: { availableCount: ChildItem.availableCount - item[1].number } }
-        )
+      const ChildItem = await ChildItemModel.findById(item[0])
 
-        if (item[1].number < 0) return res.status(400).send('مقدار نامعتبر')
-        _totalPrice +=
-          (ChildItem.offerTime?.exp > new Date().getTime()) ?
-            (item[1].number * parseInt(ChildItem.price - ((ChildItem.price / 100) * ChildItem.offerValue)))
-            :
-            (item[1].number * ChildItem.price)
-        _title += `( ${ChildItem.title} تعداد: ${item[1].number} رنگ: ${item[1].color} )` + (index !== Object.entries(productBasket).length - 1 ? ' و ' : '')
-        _itemsId.push(ChildItem._id)
-        if (index === Object.entries(productBasket).length - 1) {
-          resolve({ _totalPrice, _title, _itemsId })
-        }
+
+      if (item[1].number > ChildItem.color.find(c=> c.color === item[1].color ).value) return res.status(400).send(`${ChildItem.title} به رنگ ${item[1].color} فقط ${ChildItem.color.find(c=> c.color === item[1].color ).value} عدد موجود میباشد لطفا سفارشتان را ویرایش کنید`)
+      if (ChildItem.availableCount < 0 || !ChildItem.available || ChildItem.availableCount < item[1].number) return res.status(400).send(`${ChildItem.title} موجود نمیباشد`)
+
+
+      if (item[1].number < 0) return res.status(400).send('مقدار نامعتبر')
+      _totalPrice +=
+        (ChildItem.offerTime?.exp > new Date().getTime()) ?
+          (item[1].number * parseInt(ChildItem.price - ((ChildItem.price / 100) * ChildItem.offerValue)))
+          :
+          (item[1].number * ChildItem.price)
+      _title += `( ${ChildItem.title} تعداد: ${item[1].number} رنگ: ${item[1].color} )` + (index !== Object.entries(productBasket).length - 1 ? ' و ' : '')
+      _itemsId.push(ChildItem._id)
+
+
+      if (index === Object.entries(productBasket).length - 1) {
+        resolve({ _totalPrice, _title, _itemsId })
       }
-      )
+    }
+    )
   })
+
+
+
+  this.minusAvailableCount = () => {
+    Object.entries(cache.get('productBasket')).forEach(async (item, index) => {
+      const ChildItem = await ChildItemModel.findById(item[0])
+      await ChildItemModel.updateOne(
+        { _id: item[0] },
+        { $set: { availableCount: ChildItem.availableCount - item[1].number } }
+      )
+
+      await ChildItemModel.updateOne(
+        { _id: item[0], color: { $elemMatch: { color: item[1].color } } },
+        { $set: { 'color.$.value': ChildItem.color.find(c=> c.color === item[1].color ).value - item[1].number } }
+      )
+
+    }
+    )
+    cache.del('productBasket')
+  }
 
 
   this.setUserPhone = async (req) => {
@@ -421,6 +450,7 @@ function ClientController() {
 
   this.confirmPayment = async (req, res) => {
     try {
+      cache.set('productBasket', req.body.productBasket)
 
       const postPrice = await PostPriceModel.findOne()
       const price = postPrice ? postPrice.price : 30000
@@ -489,6 +519,8 @@ function ClientController() {
         titles: payment.titles,
       })
 
+      this.minusAvailableCount()
+
     } else {
       res.status(500).render("./paymant", {
         pageTitle: "پرداخت",
@@ -499,14 +531,18 @@ function ClientController() {
   // res.redirect('/lastPayment')
 
 
-  // this.commentLike = async (req, res) => {
-  //   const truLike = await CommenteModel.findOne({ _id: req.params.id, like: { $elemMatch: { userId: req.user.payload.userId } } })
-  //   await CommenteModel.update( 
-  //     { _id: req.params.id }, 
-  //     { $pull: { like: {userId: req.user.payload.userId} } } 
-  //   )
-  //   res.json(truLike)
-  // }
+
+
+
+
+
+  this.getSendStatus = async (req, res) => {
+    let payment = await PaymentModel.findOne({ success: true, userId: req.user.payload.userId }).sort({ date: -1 })
+    res.json({ checkSend: payment.checkSend, queueSend: payment.queueSend, send: payment.send })
+  }
+
+
+
 }
 
 module.exports = new ClientController()

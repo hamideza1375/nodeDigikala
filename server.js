@@ -22,9 +22,10 @@ const http = require("http");
 const server = http.createServer(app)
 const socketIo = require('./socketIo/socketIo');
 const errorHandler = require("./middleware/errorHandler");
+const user = require("./middleware/user");
 
-process.on('uncaughtException', (err) => {});
-process.on('unhandledRejection', (err) => {});
+process.on('uncaughtException', (err) => { });
+process.on('unhandledRejection', (err) => { });
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static("public"));
@@ -34,15 +35,15 @@ app.set('view engine', 'ejs');
 app.set('views', './views');
 
 socketIo(server, app)
-app.use(Client)
-app.use(User)
-app.use(Admin)
+app.use(user, Client)
+app.use(user, User)
+app.use(user, Admin)
 app.use(errorHandler)
 
 const port = process.env.PORT || 4000
 server.listen(port, (err) => { console.log(`App Listen to port ${port}`) })
 
-mongoose.connect("mongodb://localhost:27017/digikala", { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify:false /* ,useFindAndModify: false */ })
+mongoose.connect("mongodb://localhost:27017/digikala", { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false /* ,useFindAndModify: false */ })
   .then(() => console.log('db connected'))
   .catch((err) => console.error('db not connected', err));
 

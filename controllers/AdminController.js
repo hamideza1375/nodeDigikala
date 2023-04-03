@@ -72,13 +72,19 @@ function AdminController() {
 
 
   this.createChildItem = async (req, res) => {
-    const { title, price, info, ram, cpuCore, camera, storage, warranty, color, display, meanStar, num, total, available, availableCount } = req.body
+    const { title, price, info, ram, cpuCore, camera, storage, warranty, color, display, meanStar, num, total, available } = req.body
     if (!req.fileName1 || !req.fileName2 || !req.fileName3 || !req.fileName4) return res.status(400).send('لطفا تمام کادر های تصاویر را پر کنید')
 
     await sharp(req.file1.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName1}`)
     await sharp(req.file2.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName2}`)
     await sharp(req.file3.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName3}`)
     await sharp(req.file4.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName4}`)
+
+    let numberAvailable = 0
+    for(let i in JSON.parse(color)){
+      numberAvailable += Number(JSON.parse(color)[i].value)
+      console.log(numberAvailable)
+    }
 
     const childItem = await new ChildItemModel({
       title,
@@ -95,7 +101,7 @@ function AdminController() {
       num,
       total,
       available,
-      availableCount: availableCount,
+      availableCount: numberAvailable,
       imageUrl1: req.fileName1,
       imageUrl2: req.fileName2,
       imageUrl3: req.fileName3,
@@ -112,7 +118,7 @@ function AdminController() {
   this.editChildItem = async (req, res) => {
     const childItem = await ChildItemModel.findById(req.params.id)
     if (!childItem) return res.status(400).send('این گزینه قبلا از سرور حذف شده')
-    const { title, price, info, ram, cpuCore, camera, storage, warranty, color, display, fullSpecifications, meanStar, num, total, available, availableCount } = req.body
+    const { title, price, info, ram, cpuCore, camera, storage, warranty, color, display, fullSpecifications, meanStar, num, total, available } = req.body
 
 
     if (req.fileName1) {
@@ -139,6 +145,11 @@ function AdminController() {
         fs.unlinkSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl4}`)
     }
 
+    let numberAvailable = 0
+    for(let i in JSON.parse(color)){
+      numberAvailable += Number(JSON.parse(color)[i].value)
+      console.log(numberAvailable)
+    }
 
     childItem.title = title
     childItem.price = price
@@ -155,7 +166,7 @@ function AdminController() {
     childItem.num = num
     childItem.total = total
     childItem.available = available
-    childItem.availableCount = availableCount
+    childItem.availableCount = numberAvailable
     if (req.fileName1) childItem.imageUrl1 = req.fileName1;
     if (req.fileName2) childItem.imageUrl2 = req.fileName2;
     if (req.fileName3) childItem.imageUrl3 = req.fileName3;
@@ -318,6 +329,7 @@ function AdminController() {
   this.postedOrder = async (req, res) => {
     let payment = await PaymentModel.findById(req.params.id)
     if (payment.checkSend != 0) return res.status(400).send('اول فیش را از صف ارسال خارج کنید')
+    payment.queueSend = 0
     payment.send = 1
     await payment.save()
     res.json(payment.send)
@@ -331,18 +343,6 @@ function AdminController() {
     // await payment.save()
     // res.send('حالت انتظار برای مشتری لغو شد')
   }
-
-
-
-  // this.deleteAddressForOneAdmin = async (req, res) => {
-  //   let payment = await PaymentModel.findById(req.params.id)
-  //   if (!payment) return res.status(400).send('این گزینه قبلا از سرور حذف شده')
-  //   payment.deleteForUser = req.user.payload.userId
-  //   payment.send = 1
-  //   await payment.save()
-  //   res.send("با موفقیت برای شما موفقیت حذف شد")
-  // }
-
 
 
 
@@ -400,7 +400,7 @@ function AdminController() {
     const seller = await SellerModel.findById(req.params.id);
     seller.available = seller.available ? 0 : 1
     await seller.save()
-    res.status(200).json(seller.available)
+    res.status(200).json({available:seller.available})
   }
 
 

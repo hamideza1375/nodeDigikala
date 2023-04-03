@@ -353,19 +353,6 @@ function UserController() {
   }
 
 
-  // this.editTicket = async (req, res) => {
-  //   const lastPayment = await TicketModel.findOneAndUpdate(
-  //     {
-  //       _id: req.params.id,
-  //       answer: { $elemMatch: { _id: req.query.ticketId } }
-  //     },
-  //     { $set: { "answer.$.message": req.body.message } },
-  //     { new: true }
-  //     )
-  //     res.send('با موفقیت ویرایش شد')
-  //   }
-
-
 
   this.ticketBox = async (req, res) => {
     let tickets
