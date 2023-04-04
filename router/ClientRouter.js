@@ -51,6 +51,7 @@ router.get('/getAddress', user, ClientController.getAddress);
 router.get('/getSingleSeller', ClientController.getSingleSeller);
 router.get('/getSendStatus', ClientController.getSendStatus);
 
+router.get("/getSingleSavedItems/:id", user, ClientController.getSingleSavedItems);
 
 
 module.exports = router

@@ -19,19 +19,19 @@ function AdminController() {
     if (!req.files) return res.status(400).send('لطفا یک فایل انتخاب کنید')
     await sharp(req.file.data).toFile(`${appRootPath}/public/upload/category/${req.fileName}`)
     const category = await new CategoryModel({ title: req.body.title, imageUrl: req.fileName }).save();
-    res.status(200).json({ category })
+    res.status(200).json({message: 'با موفقیت ساخته شد', value: category })
     // res.status(200).send('با موفقیت ساخته شد')
   }
 
   this.getSinleCategory = async (req, res) => {
     const category = await CategoryModel.findById(req.params.id);
-    res.status(200).json(category)
+    res.status(200).json({value:category})
   }
 
 
   this.getCategory = async (req, res) => {
     let category = await CategoryModel.find()
-    res.status(200).json({ category });
+    res.status(200).json({ value:category });
   }
 
 
@@ -48,8 +48,7 @@ function AdminController() {
     category.title = req.body.title;
     category.imageUrl = req.fileName;
     await category.save();
-    res.status(200).json({ category })
-    // res.status(200).send('با موفقیت ویرایش شد')
+    res.status(200).json({message: 'با موفقیت ویرایش شد', value:category })
   }
 
 
@@ -59,14 +58,13 @@ function AdminController() {
     await CategoryModel.findByIdAndRemove(req.params.id)
     if (fs.existsSync(`${appRootPath}/public/upload/category/${category.imageUrl}`))
       fs.unlinkSync(`${appRootPath}/public/upload/category/${category.imageUrl}`)
-    res.status(200).json({ category });
-    // res.status(200).send('با موفقیت حذف شد');
+    res.status(200).json({ message:'با موفقیت حذف شد',value:category });
   }
 
 
   this.getChildItemsTable = async (req, res) => {
     let childItems = await ChildItemModel.find({ categoryId: req.params.id, sellerId: req.query.sellerId }).sort({ data: -1 })
-    res.status(200).json({ childItems });
+    res.status(200).json({ value:childItems });
   }
 
 
@@ -109,8 +107,7 @@ function AdminController() {
       categoryId: req.params.id,
       sellerId: req.query.sellerId
     }).save()
-    res.status(200).json({ childItem })
-    // res.status(200).send('با موفقیت ساخته شد')
+    res.status(200).json({value: childItem })
   }
 
 
@@ -173,8 +170,7 @@ function AdminController() {
     if (req.fileName4) childItem.imageUrl4 = req.fileName4;
 
     await childItem.save();
-    res.status(200).json({ childItem })
-    // res.status(200).send('باموفقیت ویرایش شد')
+    res.status(200).json({message:'باموفقیت ویرایش شد',value: childItem })
   }
 
 
@@ -188,7 +184,7 @@ function AdminController() {
     childItem.offerTime = (offerTime == 0 || offerValue == 0) ? ({ exp: 0, value: 0 }) : ({ exp: new Date().getTime() + (60000 * 60 * offerTime), value: offerTime })
     childItem.offerValue = (offerTime == 0 || offerValue == 0) ? 0 : offerValue
     await childItem.save();
-    res.status(200).json({ childItem })
+    res.status(200).json({message:{},value: childItem })
   }
 
 
@@ -201,14 +197,14 @@ function AdminController() {
       fs.unlinkSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl}`)
     await ChildItemModel.findByIdAndRemove(req.params.id)
     // res.status(200).send('با موفقیت حذف شد');
-    res.status(200).json({ childItem })
+    res.status(200).json({message:'با موفقیت حذف شد',value: childItem })
   }
 
 
 
   this.listUnAvailable = async (req, res) => {
     const childItems = await ChildItemModel.find({ available: 0 })
-    res.status(200).json(childItems)
+    res.status(200).json({value:childItems})
   }
 
 
@@ -217,7 +213,7 @@ function AdminController() {
     if (!childItem) return res.status(400).send('این گزینه قبلا از سرور حذف شده')
     childItem.available = !childItem.available
     await childItem.save()
-    res.status(200).json(childItem.available)
+    res.status(200).json({value:childItem.available})
   }
 
 
@@ -229,7 +225,7 @@ function AdminController() {
     if (user.isAdmin === 2) return res.status(400).send('این شماره یا ایمیل را قبلا به عنوان ادمین گروه دوم انتخاب کردین');
     user.isAdmin = 2;
     await user.save();
-    res.status(200).send('کاربر مورد نظر به عنوان ادمین گروه دوم ثبت شد');
+    res.status(200).json({message:'کاربر مورد نظر به عنوان ادمین گروه دوم ثبت شد'});
   }
 
 
@@ -240,14 +236,14 @@ function AdminController() {
     if (user.isAdmin !== 2) return res.status(400).send('شماره یا ایمیل وارد شده متعلق به هیچ ادمینی نیست');
     user.isAdmin = 0;
     await user.save();
-    res.status(200).send('این کاربر با موفقیت از گروه ادمین دوم حذف شد');
+    res.status(200).json({message: 'این کاربر با موفقیت از گروه ادمین دوم حذف شد'});
   }
 
 
   this.getAllAdmin = async (req, res) => {
     const user = await UserModel.find();
     const userAdmin = user.filter((user) => user.isAdmin === 2)
-    res.status(200).json(userAdmin);
+    res.status(200).json({value: userAdmin});
   }
 
 
@@ -262,7 +258,7 @@ function AdminController() {
     newAdmin.isAdmin = 1;
     await Admin.save();
     await newAdmin.save();
-    res.status(200).send('تغییر ادمین اصلی با موفقیت انجام شد');
+    res.status(200).json({message: 'تغییر ادمین اصلی با موفقیت انجام شد'});
   }
 
 
@@ -270,7 +266,7 @@ function AdminController() {
 
   this.getProposal = async (req, res) => {
     const allProposal = await ProposalModel.find();
-    res.json(allProposal)
+    res.json({value: allProposal})
   }
 
 
@@ -278,8 +274,8 @@ function AdminController() {
     let allId = req.body.proposalId
     if (!allId.length) return res.status(400).send('حد اقل یک مورد را انتخاب کنید')
     for (let _id of allId) { await ProposalModel.deleteMany({ _id }) }
-    if (allId.length === 1) res.status(200).send('با موفقیت حذف شد')
-    else res.status(200).send('با موفقیت حذف شدند')
+    if (allId.length === 1) res.status(200).json({message:'با موفقیت حذف شد'})
+    else res.status(200).json({message: 'با موفقیت حذف شدند'})
   }
 
 
@@ -289,8 +285,8 @@ function AdminController() {
       await NotifeeModel.deleteMany()
       await new NotifeeModel({ title: req.body.title, message: req.body.message }).save()
       if (interval) clearInterval(interval)
-      interval = setTimeout(async () => { await NotifeeModel.deleteMany() }, 60 * 1000 * 60 * 24 * 5)
-      res.send('با موفقیت ساخته شد')
+      interval = setTimeout(async () => { await NotifeeModel.deleteMany() }, 60 * 1000 * 60 * 24 * 7)
+      res.json({message:'با موفقیت ساخته شد'})
     }
     else
       res.status(400).send('اعلانی با این پیام فعلا فعال هست')
@@ -300,19 +296,19 @@ function AdminController() {
 
   this.deleteNotification = async (req, res) => {
     await NotifeeModel.deleteMany()
-    res.send('با موفقیت حذف شد')
+    res.json({message:'با موفقیت حذف شد'})
   }
 
 
   this.getAllAddress = async (req, res) => {
     const payments = await PaymentModel.find().and([{ success: true }, { send: { $ne: 1 } }]).sort({ date: -1 });
-    res.json({ payments })
+    res.json({ value: payments })
   }
 
 
   this.getAllPaymentSuccessFalseAndTrue = async (req, res) => {
     const payments = await PaymentModel.find().sort({ date: -1 });
-    res.json({ payments })
+    res.json({ value: payments })
   }
 
 
@@ -322,7 +318,7 @@ function AdminController() {
     payment.queueSend = !payment.queueSend
     payment.send = 0
     await payment.save()
-    res.json(payment.queueSend)
+    res.json({value: payment.queueSend})
   }
 
 
@@ -332,7 +328,7 @@ function AdminController() {
     payment.queueSend = 0
     payment.send = 1
     await payment.save()
-    res.json(payment.send)
+    res.json({value: payment.send})
   }
 
 
@@ -350,20 +346,20 @@ function AdminController() {
   this.sendPostPrice = async (req, res) => {
     await PostPriceModel.deleteMany()
     await new PostPriceModel({ price: req.body.price }).save()
-    res.status(200).send('قیمت پست با موفقیت ثبت شد')
+    res.status(200).json({message: 'قیمت پست با موفقیت ثبت شد'})
   }
 
 
   this.getPostPrice = async (req, res) => {
     const postPrice = await PostPriceModel.findOne()
     const price = postPrice ? postPrice.price : 30000
-    res.status(200).json({ price })
+    res.status(200).json({ value: price })
   }
 
 
   this.adminTicketBox = async (req, res) => {
     const tickets = await TicketModel.find().sort({ date: -1 });
-    res.status(200).json({ tickets })
+    res.status(200).json({ value: tickets })
   }
 
 
@@ -378,20 +374,20 @@ function AdminController() {
     await SellerModel.create({ brand: req.body.brand, phone: req.body.phone });
     user.seller = 1
     user.save()
-    res.status(200).json('با موفقیت ساخته شد')
+    res.status(200).json({message: 'با موفقیت ساخته شد'})
   }
 
 
   this.getAllSellers = async (req, res) => {
     const seller = await SellerModel.find();
-    res.status(200).json(seller)
+    res.status(200).json({value:seller})
   }
 
 
 
   this.deleteSeller = async (req, res) => {
     await SellerModel.findByIdAndRemove(req.params.id);
-    res.status(200).send('با موفقیت حذف شد')
+    res.status(200).json({message: 'با موفقیت حذف شد'})
   }
 
 
@@ -400,7 +396,7 @@ function AdminController() {
     const seller = await SellerModel.findById(req.params.id);
     seller.available = seller.available ? 0 : 1
     await seller.save()
-    res.status(200).json({available:seller.available})
+    res.status(200).json({value:seller.available})
   }
 
 
@@ -467,7 +463,7 @@ function AdminController() {
       image5: fileName5,
       image6: fileName6,
     })
-    res.json(newSlider)
+    res.json({value:newSlider})
   }
 
 

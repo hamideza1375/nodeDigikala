@@ -50,7 +50,7 @@ function UserController() {
     cacheSpecification.del("password")
     cacheSpecification.del("phoneOrEmail")
     cacheSetTimeForSendNewCode.del("newTime")
-    res.status(201).send('ثبت نام موفقیت آمیز بود')
+    return res.status(201).json({ message: 'کد دریافتی را وارد کنید' })
   }
 
 
@@ -70,7 +70,7 @@ function UserController() {
         phoneOrEmail: user.phoneOrEmail,
       }
       const token = jwt.sign(tokenUser, "token", { expiresIn: req.body.remember });
-      res.status(200).header(token).json({ token });
+      res.status(200).header(token).json({ value: token });
     }
     else {
       if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
@@ -100,7 +100,7 @@ function UserController() {
     cacheSpecification.del("remember")
     cacheCode.del("code")
     cacheSetTimeForSendNewCode.del("newTime")
-    res.status(200).header(token).json({ token });
+    res.status(200).header(token).json({ value: token });
   }
 
 
@@ -135,7 +135,7 @@ function UserController() {
       cacheSpecification.del("userId")
       cacheSpecification.del("phoneOrEmail")
       cacheSetTimeForSendNewCode.del("newTime")
-      return res.status(200).send("موفقیت بروزرسانی شد");
+      return res.status(200).json({ message: "موفقیت بروزرسانی شد" });
     }
     else {
       return res.status(400).send('کادر اول و دوم باید مطابق هم باشند')
@@ -153,7 +153,7 @@ function UserController() {
     cacheSpecification.set("phoneOrEmail", req.body.phoneOrEmail)
     cacheSpecification.set("password", req.body.password)
     sendCode(req, res, cacheCode, cacheSetTimeForSendNewCode, cacheSpecification)
-    return res.status(200).json('کد دریافتی را وارد کنید');
+    return res.status(200).json({ message: 'کد دریافتی را وارد کنید' });
   }
 
 
@@ -181,7 +181,7 @@ function UserController() {
       cacheSpecification.del("phoneOrEmail");
       cacheSetTimeForSendNewCode.del("newTime")
 
-      res.status(200).json({ token })
+      res.status(200).json({ value: token })
     }
   }
 
@@ -215,32 +215,32 @@ function UserController() {
       .catch(err => { })
     await new ImageProfileModel({ imageUrl: req.fileName, userId: req.user.payload.userId }).save()
 
-    res.status(200).json({ imageUrl: req.fileName })
+    res.status(200).json({ message: 'تصویر با موفقیت بروزرسانی شد', imageUrl: req.fileName })
   }
 
 
-  this.changeCommentImage = async (req, res) => {
-    const childItem = await ChildItemModel.find()
-    for (let i in childItem) {
-      if (childItem[i])
-        for (let n in childItem[i].childFood) {
-          if (childItem[i].childFood[n]?.comment.length) {
-            for (let y in childItem[i].childFood[n].comment) {
-              if (childItem[i].childFood[n].comment[y].starId == req.user.payload.userId) {
-                childItem[i].childFood[n].comment[y].imageUrl = imageUrl
-                await FoodModel.updateMany(
-                  { _id: childItem[i]._id },
-                  { childFood: childItem[i].childFood },
-                  // { childFood: childItem[i].childFood, _id: childItem[i].id },
-                  // { _id: childItem[i].id },
-                )
-              }
-            }
-          }
-        }
-    }
-    res.status(200)
-  }
+  // this.changeCommentImage = async (req, res) => {
+  //   const childItem = await ChildItemModel.find()
+  //   for (let i in childItem) {
+  //     if (childItem[i])
+  //       for (let n in childItem[i].childFood) {
+  //         if (childItem[i].childFood[n]?.comment.length) {
+  //           for (let y in childItem[i].childFood[n].comment) {
+  //             if (childItem[i].childFood[n].comment[y].starId == req.user.payload.userId) {
+  //               childItem[i].childFood[n].comment[y].imageUrl = imageUrl
+  //               await FoodModel.updateMany(
+  //                 { _id: childItem[i]._id },
+  //                 { childFood: childItem[i].childFood },
+  //                 // { childFood: childItem[i].childFood, _id: childItem[i].id },
+  //                 // { _id: childItem[i].id },
+  //               )
+  //             }
+  //           }
+  //         }
+  //       }
+  //   }
+  //   res.status(200)
+  // }
 
 
   this.getImageProfile = async (req, res, next) => {
@@ -253,7 +253,7 @@ function UserController() {
   this.sendProposal = async (req, res) => {
     const proposal = await ProposalModel.create({ message: req.body.message });
     // res.json({ proposal })
-    res.send('پیام شما با موفقیت ارسال شد')
+    res.json({ message: 'پیام شما با موفقیت ارسال شد' })
   }
 
 
@@ -262,14 +262,14 @@ function UserController() {
     const lastPayment = await PaymentModel.find({ success: true })
       .sort({ date: -1 })
       .limit(5)
-    res.json({ lastPayment })
+    res.json({ value: lastPayment })
   }
 
 
   this.sendNewTicket = async (req, res) => {
     if (req.files) await sharp(req.file.data).toFile(`${appRootPath}/public/upload/ticket/${req.fileName}`)
     const newTicket = await TicketModel.create({ date: new Date(), title: req.body.title, message: req.body.message, imageUrl: req.fileName, userId: req.user.payload.userId })
-    res.json(newTicket)
+    res.json({ message: 'تیکت شما با موفقیت ارسال شد', value: newTicket })
   }
 
 
@@ -281,14 +281,14 @@ function UserController() {
     ticket.date = new Date()
     ticket.answer.push({ message: req.body.message, imageUrl: req.fileName, userId: req.user.payload.userId, date: new Date() })
     await ticket.save()
-    res.json(ticket.answer[ticket.answer.length - 1])
+    res.json({ message: {}, value: ticket.answer[ticket.answer.length - 1] })
   }
 
 
   this.getAnswersTicket = async (req, res) => {
     const getAnswersTicket = await TicketModel.findById(req.params.id)
     const answer = getAnswersTicket.answer.reverse()
-    res.json([...answer, getAnswersTicket])
+    res.json({message: {},value:[...answer, getAnswersTicket]})
   }
 
 
@@ -313,7 +313,7 @@ function UserController() {
 
     answer.remove()
     await ticket.save()
-    res.send('با موفقیت حذف شد')
+    res.json({message:'با موفقیت حذف شد'})
   }
 
 
@@ -331,14 +331,14 @@ function UserController() {
     if (req.files) answer.imageUrl = req.fileName
     ticket.date = new Date()
     await ticket.save()
-    res.send(answer)
+    res.json({value:answer})
   }
 
 
   this.getSingleAnswerTicket = async (req, res) => {
     const ticket = await TicketModel.findOne({ _id: req.params.id })
     const answer = ticket.answer.id(req.query.ticketid)
-    res.json(answer)
+    res.json({value:answer})
   }
 
 
@@ -349,7 +349,7 @@ function UserController() {
       if (fs.existsSync(`${appRootPath}/public/upload/ticket/${ticket.imageUrl}`))
         fs.unlinkSync(`${appRootPath}/public/upload/ticket/${ticket.imageUrl}`)
     await TicketModel.findByIdAndDelete(req.params.id);
-    res.send('با موفقیت حذف شد')
+    res.json({message:'با موفقیت حذف شد'})
   }
 
 
@@ -361,14 +361,14 @@ function UserController() {
     } else {
       tickets = await TicketModel.find().sort({ date: -1 })
 
-    } res.json(tickets)
+    } res.json({value:tickets})
   }
 
 
 
   this.deleteMainItemTicketBox = async (req, res) => {
     await TicketModel.findByIdAndDelete(req.params.id)
-    res.send('با موفقیت حذف شد')
+    res.json({message:'با موفقیت حذف شد'})
   }
 
 
@@ -377,7 +377,7 @@ function UserController() {
     if (!req.user.payload.isAdmin) ticket.userSeen = 1
     if (req.user.payload.isAdmin) ticket.adminSeen = 1
     ticket.save()
-    res.send('')
+    res.send()
   }
 
 
@@ -393,40 +393,33 @@ function UserController() {
         title: ChildItem.title,
         price: ChildItem.price
       })
-      res.json(true)
+      res.json({value:true})
 
     } else {
       await SavedItemModel.deleteOne({ itemId: req.params.id })
-      res.json(false)
+      res.json({value:false})
     }
   }
 
 
   this.removeSavedItem = async (req, res) => {
     await SavedItemModel.deleteOne().and([{ itemId: req.params.id }, { userId: req.user.payload.userId }])
-    res.send('از ذخیره ها حذف شد')
+    res.json({message:'از ذخیره ها حذف شد'})
   }
 
 
   this.getSavedItems = async (req, res) => {
     const savedItem = await SavedItemModel.find({ userId: req.user.payload.userId })
-    res.json(savedItem)
+    res.json({value:savedItem})
   }
 
   this.getSingleSavedItems = async (req, res) => {
     if (req.user.payload?.userId) {
       const savedItem = await SavedItemModel.findOne().and([{ itemId: req.params.id }, { userId: req.user.payload.userId }])
-      savedItem ? res.json(true) : res.json(false)
+      savedItem ? res.json({value:true}) : res.json({value:false})
     }
-    else res.json(false)
+    else res.json({value:false})
   }
-
-  // this.activeOrder = async (req, res) => {
-  //   let fileName
-  //   if (req.files) fileName = req.fileName
-  //   else fileName = ''
-  //   await TicketModel.create({ title: req.body.title, message: req.body.message, imageUrl: fileName, userId: req.user.payload.userId })
-  // }
 
 
   this.captcha = (req, res) => {

@@ -31,7 +31,7 @@ module.exports = (req, res, myCache, cacheSetTimeForSendNewCode, cacheSpecificat
         }
         else {
           cacheSetTimeForSendNewCode.set('newTime', true)
-          return res.status(200).send('کد دریافتی را وارد کنید')
+          return res.status(200).json({message:'کد دریافتی را وارد کنید'})
         }
       });
       //! email
@@ -53,7 +53,7 @@ module.exports = (req, res, myCache, cacheSetTimeForSendNewCode, cacheSpecificat
           }
           console.log('response', response)
           cacheSetTimeForSendNewCode.set('newTime', true)
-          return res.status(200).send('کد دریافتی را وارد کنید')
+          return res.status(200).json({message:'کد دریافتی را وارد کنید'})
         });
       //! sms 
     }

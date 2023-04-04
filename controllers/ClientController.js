@@ -4,7 +4,7 @@
 const node_geocoder = require('node-geocoder');
 const { CategoryModel, ChildItemModel, PaymentModel, CommenteModel } = require('../model/ClientModel')
 const { NotifeeModel, AddressVoucherModel, SliderModel, PostPriceModel, SellerModel } = require('../model/AdminModel')
-const { UserModel } = require('../model/UserModel')
+const { UserModel, SavedItemModel } = require('../model/UserModel')
 const ZarinpalCheckout = require('zarinpal-checkout');
 const zarinpal = ZarinpalCheckout.create('00000000-0000-0000-0000-000000000000', true);
 const nodeCache = require("node-cache");
@@ -12,40 +12,50 @@ const cache = new nodeCache({ stdTTL: 60 * 30, checkperiod: 60 * 30 })
 
 function ClientController() {
 
+
+  this.getSingleSavedItems = async (req, res) => {
+    if (req.user.payload?.userId) {
+      const savedItem = await SavedItemModel.findOne().and([{ itemId: req.params.id }, { userId: req.user.payload.userId }])
+      savedItem ? res.json({value:true}) : res.json({value:false})
+    }
+    else res.json({value:false})
+  }
+
+
   this.getCategory = async (req, res) => {
     let category = await CategoryModel.find()
-    res.status(200).json({ category });
+    res.status(200).json({ value :category });
   }
 
 
   this.getSlider = async (req, res) => {
     let slider = await SliderModel.findOne().select({ _id: false })
-    res.status(200).json(slider);
+    res.status(200).json({value:slider});
   }
 
 
   this.getChildItems = async (req, res) => {
     let childItems = await ChildItemModel.find({ categoryId: req.params.id }).sort({ data: -1 })
-    res.status(200).json({ childItems });
+    res.status(200).json({ value: childItems });
   }
 
 
   this.getSingleItem = async (req, res) => {
     let singleItem = await ChildItemModel.findById(req.params.id)
-    res.status(200).json({ singleItem });
+    res.status(200).json({ value:singleItem });
   }
 
 
 
   this.getOffers = async (req, res) => {
     let offers = await ChildItemModel.find({ 'offerTime.exp': { $gt: new Date().getTime() } }).sort({ data: -1 })
-    res.status(200).json(offers);
+    res.status(200).json({value:offers});
   }
 
 
   this.getPopulars = async (req, res) => {
-    let opulars = await ChildItemModel.find({ meanStar: { $gte: 4 } })
-    res.status(200).json(opulars);
+    let populars = await ChildItemModel.find({ meanStar: { $gte: 4 } })
+    res.status(200).json({value:populars});
   }
 
 
@@ -57,7 +67,7 @@ function ClientController() {
       .and([{ ram: { $gte: singleItem.ram - 4 } }, { ram: { $lte: singleItem.ram + 4 } }])
       .and([{ storage: { $gte: singleItem.storage - 32 } }, { storage: { $lte: singleItem.storage + 32 } }])
       .and([{ camera: { $gte: singleItem.camera - 32 } }, { camera: { $lte: singleItem.camera + 32 } }])
-    res.status(200).json(similars);
+    res.status(200).json({value:similars});
   }
 
   // this.getBestSeller = async (req, res) => {
@@ -88,7 +98,7 @@ function ClientController() {
     let comment = await CommenteModel.create({ message, fiveStar, fullname, commentId: req.params.id, userphoneOrEmail: req.user.payload.phoneOrEmail })
     this.setStar(req.params.id)
 
-    res.status(200).json({ comment })
+    res.status(200).json({ message:'ساخته شد',value:comment })
   }
 
 
@@ -104,7 +114,7 @@ function ClientController() {
     await comment.answer.push({ message, fullname, commentId: req.params.id, userphoneOrEmail: req.user.payload.phoneOrEmail, to: to })
     await comment.save()
 
-    res.status(200).json(comment.answer[comment.answer.length - 1])
+    res.status(200).json({message:'ساخته شد',value:comment.answer[comment.answer.length - 1]})
   }
 
 
@@ -116,7 +126,7 @@ function ClientController() {
     comment.fiveStar = fiveStar
     await comment.save()
     this.setStar(comment.commentId)
-    res.status(200).json({ comment })
+    res.status(200).json({ message:'ویرایش شد',value:comment })
   }
 
 
@@ -126,14 +136,14 @@ function ClientController() {
     const answer = comment.answer.id(req.query.commentId)
     answer.message = message
     await comment.save()
-    res.status(200).json({ comment })
+    res.status(200).json({message:'ویرایش شد'})
   }
 
 
 
   this.deleteComment = async (req, res) => {
     await CommenteModel.findByIdAndDelete({ _id: req.params.id })
-    res.status(200).send('نظر شما حذف شد')
+    res.status(200).json({message:'نظر شما حذف شد'})
   }
 
   this.deleteCommentAnswer = async (req, res) => {
@@ -141,7 +151,7 @@ function ClientController() {
       { _id: req.params.id },
       { $pull: { answer: { _id: req.query.commentId } } }
     )
-    res.status(200).send('نظر شما حذف شد')
+    res.status(200).json({message:'نظر شما حذف شد'})
   }
 
   this.commentLike = async (req, res) => {
@@ -161,7 +171,7 @@ function ClientController() {
       const filterValueTrue = comment.like.filter(l => l.value === 1)
       comment.likeCount = filterValueTrue.length
       await comment.save()
-      res.status(200).json(filterValueTrue.length)
+      res.status(200).json({value:filterValueTrue.length})
     }
 
     else if (falseLike) {
@@ -171,7 +181,7 @@ function ClientController() {
       const filterValueTrue = comment.like.filter(l => l.value === 1)
       comment.likeCount = filterValueTrue.length
       await comment.save()
-      res.status(200).json(filterValueTrue.length)
+      res.status(200).json({value:filterValueTrue.length})
     }
   }
 
@@ -194,7 +204,7 @@ function ClientController() {
       const filterValueTrue = comment.disLike.filter(l => l.value === 1)
       comment.disLikeCount = filterValueTrue.length
       await comment.save()
-      res.status(200).json(filterValueTrue.length)
+      res.status(200).json({value:filterValueTrue.length})
     }
     else if (falseDisLike) {
       falseDisLike.disLike.push({ value: 1, userId: req.user.payload.userId })
@@ -203,7 +213,7 @@ function ClientController() {
       const filterValueTrue = comment.disLike.filter(l => l.value === 1)
       comment.disLikeCount = filterValueTrue.length
       await comment.save()
-      res.status(200).json(filterValueTrue.length)
+      res.status(200).json({value:filterValueTrue.length})
     }
   }
 
@@ -240,7 +250,7 @@ function ClientController() {
       const filterValueTrue = comment.answer[0].like.filter(l => l.value === 1)
       comment.answer[0].likeCount = filterValueTrue.length
       await comment.save()
-      res.status(200).json(filterValueTrue.length)
+      res.status(200).json({value:filterValueTrue.length})
     }
 
     else if (falseLike) {
@@ -250,7 +260,7 @@ function ClientController() {
       const filterValueTrue = comment.answer[0].like.filter(l => l.value === 1)
       comment.answer[0].likeCount = filterValueTrue.length
       await comment.save()
-      res.status(200).json(filterValueTrue.length)
+      res.status(200).json({value:filterValueTrue.length})
     }
   }
 
@@ -289,7 +299,7 @@ function ClientController() {
       const filterValueTrue = comment.answer[0].disLike.filter(l => l.value === 1)
       comment.answer[0].disLikeCount = filterValueTrue.length
       await comment.save()
-      res.status(200).json(filterValueTrue.length)
+      res.status(200).json({value:filterValueTrue.length})
     }
 
     else if (falseLike) {
@@ -299,7 +309,7 @@ function ClientController() {
       const filterValueTrue = comment.answer[0].disLike.filter(l => l.value === 1)
       comment.answer[0].disLikeCount = filterValueTrue.length
       await comment.save()
-      res.status(200).json(filterValueTrue.length)
+      res.status(200).json({value:filterValueTrue.length})
     }
   }
 
@@ -308,21 +318,21 @@ function ClientController() {
 
   this.getChildItemComments = async (req, res) => {
     const comment = await CommenteModel.find({ commentId: req.params.id }).sort({ date: -1 })
-    res.status(200).json({ comment })
+    res.status(200).json({ value:comment })
   }
 
 
 
   this.getSingleComment = async (req, res) => {
     const comment = await CommenteModel.findById(req.params.id)
-    res.status(200).json({ comment })
+    res.status(200).json({ value:comment })
   }
 
 
   this.getSingleCommentAnswer = async (req, res) => {
     const comment = await CommenteModel.findOne({ _id: req.params.id, answer: { $elemMatch: { _id: req.query.commentId } } })
       .select({ answer: { message: true } })
-    res.status(200).json({ comment: comment.answer[0] })
+    res.status(200).json({ value: comment.answer[0] })
   }
 
 
@@ -339,7 +349,7 @@ function ClientController() {
 
   this.getSingleSeller = async (req, res) => {
     const seller = await SellerModel.findById({ _id: req.query.id });
-    res.json(seller)
+    res.json({value:seller})
   }
 
 
@@ -481,7 +491,7 @@ function ClientController() {
         paymentCode: response.authority,
         id: payments.length ? payments[payments.length - 1].id + 1 : 1,
       }).save();
-      res.status(200).json(response.url);
+      res.status(200).json({value:response.url});
     } catch (error) {
       console.log(error);
     }
@@ -529,7 +539,6 @@ function ClientController() {
     }
   }
   // res.redirect('/lastPayment')
-
 
 
 
