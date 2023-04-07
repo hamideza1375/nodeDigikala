@@ -10,7 +10,7 @@ const UserModel = new mongoose.Schema({
   phone: { type: String, minlength: 11, maxlength: 11 },
   password: { type: String, required: true, minlength: 4, maxlength: 100 },
   isAdmin: { type: Number, default: 0 },
-  seller: { type: Number, default: 0 },
+  sellerId: { type: mongoose.Schema.Types.ObjectId },
   CommentPermission: { type: Array, default: [] },
   date: { type: Date, default: Date.now }
 });

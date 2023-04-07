@@ -29,9 +29,10 @@ module.exports = (req, res, myCache, cacheSetTimeForSendNewCode, cacheSpecificat
           myCache.del("code")
           return res.status(400).send('مشکلی پیش آمد بعدا دوباره امتحان کنید')
         }
+        else if (err) { return res.status(400).send('مشکلی پیش آمد بعدا دوباره امتحان کنید') }
         else {
           cacheSetTimeForSendNewCode.set('newTime', true)
-          return res.status(200).json({message:'کد دریافتی را وارد کنید'})
+          return res.status(200).json({ message: 'کد دریافتی را وارد کنید' })
         }
       });
       //! email
@@ -47,13 +48,16 @@ module.exports = (req, res, myCache, cacheSetTimeForSendNewCode, cacheSpecificat
         receptor: cacheSpecification.get('phoneOrEmail'),
       },
         function (response, status) {
-          if (!status || !response) {
+          console.log(status);
+          if (!status || !response || status >= 400) {
             myCache.del("code")
             return res.status(400).send('مشکلی پیش آمد بعدا دوباره امتحان کنید')
           }
-          console.log('response', response)
-          cacheSetTimeForSendNewCode.set('newTime', true)
-          return res.status(200).json({message:'کد دریافتی را وارد کنید'})
+          else {
+            console.log('response', response)
+            cacheSetTimeForSendNewCode.set('newTime', true)
+            return res.status(status).json({ message: 'کد دریافتی را وارد کنید' })
+          }
         });
       //! sms 
     }

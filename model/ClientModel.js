@@ -50,8 +50,12 @@ const CommenteModel = new mongoose.Schema({
 exports.CommenteModel = mongoose.model("CommenteModel", CommenteModel);
 
 
-
 const ChildItemModel = new mongoose.Schema({
+
+    battery: { type: Number, required: true },
+    network: { type: String, required: true },
+    operatingSystem: { type: String, required: true },
+
     title: { type: String, required: true },
     price: { type: Number, required: true },
     ram: { type: Number, required: true },
@@ -67,8 +71,8 @@ const ChildItemModel = new mongoose.Schema({
     imageUrl3: String,
     imageUrl4: String,
     meanStar: { type: Number, default: 0 },
-    num: { type: Number, default: 0 },
-    total: { type: Number, default: 0 },
+    sold: { type: Number, default: 0 },
+    quits: { type: Number, default: 0 },
     available: { type: Number, default: 1 },
     availableCount: { type: Number, require: true, min: 1 },
     offerTime: { type: Object, default: { exp: 0, value: 0 } },
@@ -107,6 +111,7 @@ const PaymentModel = new mongoose.Schema({
     success: { type: Boolean, default: false },
     refId: String,
     date: { type: Date, default: Date.now },
+    postedDate: { type: Date },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
     id: { type: Number, default: 1 },
     enablePosted: { type: Number, default: 0 },

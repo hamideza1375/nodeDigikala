@@ -65,12 +65,13 @@ function UserController() {
     if (user.isAdmin != true || _users.length === 1) {
       const tokenUser = {
         isAdmin: user.isAdmin,
+        sellerId: user.sellerId,
         userId: user._id.toString(),
         fullname: user.fullname,
         phoneOrEmail: user.phoneOrEmail,
       }
       const token = jwt.sign(tokenUser, "token", { expiresIn: req.body.remember });
-      res.status(200).header(token).json({ value: token });
+      res.status(200).header(token).json({ value: token, message:{} });
     }
     else {
       if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
@@ -90,6 +91,7 @@ function UserController() {
     if (!pass) return res.status(400).send('مشخصات اشتباه هست')
     const tokenUser = {
       isAdmin: user.isAdmin,
+      sellerId: user.sellerId,
       userId: user._id.toString(),
       fullname: user.fullname,
       phoneOrEmail: user.phoneOrEmail,
@@ -100,7 +102,7 @@ function UserController() {
     cacheSpecification.del("remember")
     cacheCode.del("code")
     cacheSetTimeForSendNewCode.del("newTime")
-    res.status(200).header(token).json({ value: token });
+    res.status(200).header(token).json({ value: token, message:{} });
   }
 
 
@@ -153,7 +155,6 @@ function UserController() {
     cacheSpecification.set("phoneOrEmail", req.body.phoneOrEmail)
     cacheSpecification.set("password", req.body.password)
     sendCode(req, res, cacheCode, cacheSetTimeForSendNewCode, cacheSpecification)
-    return res.status(200).json({ message: 'کد دریافتی را وارد کنید' });
   }
 
 
@@ -168,9 +169,10 @@ function UserController() {
       await user.save();
 
       const tokenUser = {
+        isAdmin: user.isAdmin,
+        sellerId: user.sellerId,
         fullname: user.fullname,
         phoneOrEmail: user.phoneOrEmail,
-        isAdmin: user.isAdmin,
         userId: user._id.toString(),
       }
       const token = jwt.sign(tokenUser, "token", { expiresIn: '24h' });
@@ -181,7 +183,7 @@ function UserController() {
       cacheSpecification.del("phoneOrEmail");
       cacheSetTimeForSendNewCode.del("newTime")
 
-      res.status(200).json({ value: token })
+      res.status(200).json({ value: token, message:{} })
     }
   }
 
@@ -293,6 +295,7 @@ function UserController() {
 
 
   this.getTicketSeen = async (req, res) => {
+    if(!req.user.payload) return res.send()
     let ticketseen
     if (req.user.payload.isAdmin) ticketseen = await TicketModel.find({ adminSeen: 0 }).countDocuments()
     else ticketseen = await TicketModel.find({ userId: req.user.payload.userId, userSeen: 0 }).countDocuments()
@@ -419,6 +422,12 @@ function UserController() {
       savedItem ? res.json({value:true}) : res.json({value:false})
     }
     else res.json({value:false})
+  }
+
+
+  this.getAllProductForSeller = async (req,res)=>{
+    let childItems = await ChildItemModel.find({ sellerId: req.user.payload.sellerId }).sort({ data: -1 })
+    res.status(200).json({ value: childItems });
   }
 
 

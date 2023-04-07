@@ -443,7 +443,18 @@ function ClientController() {
         { _id: item[0], color: { $elemMatch: { color: item[1].color } } },
         { $set: { 'color.$.value': ChildItem.color.find(c=> c.color === item[1].color ).value - item[1].number } }
       )
+    }
+    )
+  }
 
+
+  this.saleForSeller = () => {
+    Object.entries(cache.get('productBasket')).forEach(async (item, index) => {
+      const ChildItem = await ChildItemModel.findById(item[0])
+     await ChildItemModel.updateOne(
+        { _id: item[0] },
+        { $set: { sold: ChildItem.sold + item[1].number } }
+      )
     }
     )
     cache.del('productBasket')
@@ -509,7 +520,6 @@ function ClientController() {
     if (req.query.Status === "OK") {
       payment.refId = response.RefID;
       payment.success = true;
-      // payment.enablePosted = 0;
       await payment.save();
 
       cache.del('address')
@@ -530,6 +540,7 @@ function ClientController() {
       })
 
       this.minusAvailableCount()
+      this.saleForSeller()
 
     } else {
       res.status(500).render("./paymant", {
@@ -546,6 +557,7 @@ function ClientController() {
 
 
   this.getSendStatus = async (req, res) => {
+    if(!req.user.payload) return res.send()
     let payment = await PaymentModel.findOne({ success: true, userId: req.user.payload.userId }).sort({ date: -1 })
     res.json({ checkSend: payment.checkSend, queueSend: payment.queueSend, send: payment.send })
   }

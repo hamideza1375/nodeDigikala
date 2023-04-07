@@ -4048,3 +4048,135 @@
 {"level":"error","message":"Cannot read properties of null (reading 'price')"}
 {"level":"error","message":"input8 is not defined"}
 {"level":"error","message":"Cannot read properties of null (reading 'price')"}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"sellerId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"SellerModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"SellerModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"SellerModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"SellerModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"SellerModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"sellerId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"sellerId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"sellerId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"sellerId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"SellerModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"SellerModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"SellerModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"SellerModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"SellerModel\""}
+{"level":"error","message":"Cannot set properties of null (setting 'seller')"}
+{"level":"error","message":"seller is not defined"}
+{"level":"error","message":"ChildItemModel validation failed: battery: Path `battery` is required., network: Path `network` is required., operatingSystem: Path `operatingSystem` is required."}
+{"level":"error","message":"ChildItemModel validation failed: battery: Path `battery` is required., network: Path `network` is required., operatingSystem: Path `operatingSystem` is required."}
+{"level":"error","message":"ChildItemModel validation failed: battery: Path `battery` is required., network: Path `network` is required., operatingSystem: Path `operatingSystem` is required."}
+{"level":"error","message":"ChildItemModel validation failed: battery: Path `battery` is required., network: Path `network` is required., operatingSystem: Path `operatingSystem` is required."}
+{"level":"error","message":"ChildItemModel validation failed: battery: Path `battery` is required., network: Path `network` is required., operatingSystem: Path `operatingSystem` is required."}
+{"level":"error","message":"ChildItemModel validation failed: battery: Path `battery` is required., network: Path `network` is required., operatingSystem: Path `operatingSystem` is required."}
+{"level":"error","message":"Cannot read properties of undefined (reading 'userId')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'isAdmin')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'isAdmin')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'isAdmin')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'isAdmin')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'isAdmin')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'isAdmin')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'isAdmin')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'isAdmin')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'isAdmin')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'isAdmin')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'isAdmin')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'isAdmin')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'isAdmin')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'isAdmin')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'isAdmin')"}
+{"level":"error","message":"req is not defined"}
+{"level":"error","message":"UserModel validation failed: seller: Cast to Number failed for value \"642e685dee46513bf0738577\" at path \"seller\""}
+{"level":"error","message":"Cannot convert undefined or null to object"}
+{"level":"error","message":"Cannot convert undefined or null to object"}
+{"level":"error","message":"Cannot convert undefined or null to object"}
+{"level":"error","message":"Cannot convert undefined or null to object"}
+{"level":"error","message":"Cannot convert undefined or null to object"}
+{"level":"error","message":"Cannot convert undefined or null to object"}
+{"level":"error","message":"Cannot convert undefined or null to object"}
+{"level":"error","message":"Cannot convert undefined or null to object"}
+{"level":"error","message":"Cannot convert undefined or null to object"}
+{"level":"error","message":"ChildItemModel.daleteMany is not a function"}
+{"level":"error","message":"ChildItemModel.daleteMany is not a function"}
+{"level":"error","message":"ChildItemModel.daleteMany is not a function"}
+{"level":"error","message":"ChildItemModel.daleteMany is not a function"}
+{"level":"error","message":"Cannot convert undefined or null to object"}
+{"level":"error","message":"Cannot convert undefined or null to object"}
+{"level":"error","message":"Cannot convert undefined or null to object"}
+{"level":"error","message":"p is not iterable"}
+{"level":"error","message":"PaymentModel validation failed: postedDate: Cast to Date failed for value \"[Function: now]\" at path \"postedDate\""}
+{"level":"error","message":"fileName1 is not defined"}
+{"level":"error","message":"fileName1 is not defined"}
+{"level":"error","message":"fileName1 is not defined"}
+{"level":"error","message":"fileName1 is not defined"}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab1fe8fe68e\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"999b1fe8fe68eb\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"999b1fe8fe68eb\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"999b1fe8fe68eb\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"999b1fe8fe68eb\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"999b1fe8fe68eb\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"999b1fe8fe68eb\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"999b1fe8fe68eb\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"999b1fe8fe68eb\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"999b1fe8fe68eb\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"999b1fe8fe68eb\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"999b1fe8fe68eb\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"999b1fe8fe68eb\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"999b1fe8fe68eb\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"999b1fe8fe68eb\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"999b1fe8fe68eb\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"999b1fe8fe68eb\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"999b1fe8fe68eb\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"999b1fe8fe68eb\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"999b1fe8fe68eb\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e956\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e956\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e956\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e956\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e956\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e956\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e956\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e956\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e956\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e956\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e956\" at path \"categoryId\" for model \"ChildItemModel\""}

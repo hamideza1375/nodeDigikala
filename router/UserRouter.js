@@ -27,7 +27,7 @@ router.get("/getLastPayment", Auth, UserController.getLastPayment);
 router.post("/sendNewTicket", [Auth, fileUpload], UserController.sendNewTicket);
 router.get("/ticketBox", Auth, UserController.ticketBox);
 router.get("/getAnswersTicket/:id", Auth, UserController.getAnswersTicket);
-router.get("/getTicketSeen", Auth, UserController.getTicketSeen);
+router.get("/getTicketSeen", user, UserController.getTicketSeen);
 router.post("/sendTicketAnswer/:id", [Auth, fileUpload], UserController.sendTicketAnswer);
 router.delete("/deleteAnswerTicket/:id", [Auth], UserController.deleteAnswerTicket);
 router.delete("/deleteTicket/:id", [Auth], UserController.deleteTicket);
@@ -39,6 +39,7 @@ router.delete("/deleteMainItemTicketBox/:id", Auth, UserController.deleteMainIte
 router.post("/savedItem/:id", Auth, UserController.savedItem);
 router.delete("/removeSavedItem/:id", Auth, UserController.removeSavedItem);
 router.get("/getSavedItems", Auth, UserController.getSavedItems);
+router.get("/getAllProductForSeller", Auth, UserController.getAllProductForSeller);
 
 router.get("/captcha.png/:id", UserController.captcha);
 

@@ -1,7 +1,7 @@
 // sprouter
 const router = require('express').Router();
 const AdminController = require('../controllers/AdminController');
-const Auth = require('../middleware/Auth');
+const Auth = require('../middleware/user');
 const AuthMainAdmin = require('../middleware/AuthMainAdmin');
 const AuthAllAdmin = require('../middleware/AuthAllAdmin');
 const fileUpload = require('../middleware/fileUpload');
@@ -38,10 +38,10 @@ router.get('/getProposal', AuthMainAdmin, AdminController.getProposal);
 router.post('/deleteMultiProposal', AuthMainAdmin, AdminController.deleteMultiProposal);
 
 router.get('/getAllAddress', Auth, AdminController.getAllAddress);
+router.get('/getQuitsForSeller', Auth, AdminController.getQuitsForSeller);
 router.get('/getDataForChart', Auth, AdminController.getDataForChart);
 router.post('/postedOrder/:id', AuthAllAdmin, AdminController.postedOrder);
 router.post('/postQueue/:id', AuthAllAdmin, AdminController.postQueue);
-router.post('/sendDisablePost', AuthAllAdmin, AdminController.sendDisablePost);
 router.get('/getAllPaymentSuccessFalseAndTrue', Auth, AdminController.getAllPaymentSuccessFalseAndTrue);
 
 // priceForPost
@@ -57,6 +57,6 @@ router.get('/getAllSellers', AuthMainAdmin, AdminController.getAllSellers)
 router.put('/setSellerAvailable/:id', AuthMainAdmin, AdminController.setSellerAvailable)
 
 
-router.post('/createSlider', AuthMainAdmin, AdminController.createSlider)
+router.post('/createSlider', [AuthMainAdmin, multiFileUpload], AdminController.createSlider)
 
 module.exports = router
