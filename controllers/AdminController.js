@@ -7,7 +7,7 @@ const appRootPath = require("app-root-path");
 const sharp = require("sharp");
 const { CategoryModel, ChildItemModel, PaymentModel } = require("../model/ClientModel");
 const { NotifeeModel, PostPriceModel, SellerModel, SliderModel } = require("../model/AdminModel");
-const { UserModel, ProposalModel, TicketModel } = require("../model/UserModel");
+const { UserModel, ProposalModel, TicketModel, SavedItemModel } = require("../model/UserModel");
 const shortid = require("shortid");
 
 var interval
@@ -110,7 +110,11 @@ function AdminController() {
     let childItems = await ChildItemModel.find({ categoryId: req.params.id, sellerId: req.query.sellerId }).sort({ data: -1 })
     res.status(200).json({ value: childItems });
   }
-
+  
+  this.getSingleItem = async (req, res) => {
+    let singleItem = await ChildItemModel.findById(req.params.id)
+    res.status(200).json({ value:singleItem });
+  }
 
   this.createChildItem = async (req, res) => {
     const { battery, network, operatingSystem, title, price, info, ram, cpuCore, camera, storage, warranty, color, display, meanStar, num, total, available } = req.body
@@ -243,7 +247,7 @@ function AdminController() {
     if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl}`))
       fs.unlinkSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl}`)
     await ChildItemModel.findByIdAndRemove(req.params.id)
-    // res.status(200).send('با موفقیت حذف شد');
+    await SavedItemModel.deleteMany({itemId:req.params.id})
     res.status(200).json({ message: 'با موفقیت حذف شد', value: childItem })
   }
 
@@ -420,6 +424,13 @@ function AdminController() {
   this.adminTicketBox = async (req, res) => {
     const tickets = await TicketModel.find().sort({ date: -1 });
     res.status(200).json({ value: tickets })
+  }
+  
+
+  this.getAdminTicketSeen = async (req, res) => {
+    if (!req.user.payload) return res.send()
+    let ticketseen = await TicketModel.find({ adminSeen: 0 }).countDocuments()
+    res.json({ seen: ticketseen})
   }
   //! TicketBox
 

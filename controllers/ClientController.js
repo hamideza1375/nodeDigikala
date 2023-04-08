@@ -12,81 +12,94 @@ const cache = new nodeCache({ stdTTL: 60 * 30, checkperiod: 60 * 30 })
 
 function ClientController() {
 
-
-  this.getSingleSavedItems = async (req, res) => {
-    if (req.user.payload?.userId) {
-      const savedItem = await SavedItemModel.findOne().and([{ itemId: req.params.id }, { userId: req.user.payload.userId }])
-      savedItem ? res.json({value:true}) : res.json({value:false})
-    }
-    else res.json({value:false})
-  }
-
-
-  this.getCategory = async (req, res) => {
-    let category = await CategoryModel.find()
-    res.status(200).json({ value :category });
-  }
-
-
+  //! getSlider
   this.getSlider = async (req, res) => {
     let slider = await SliderModel.findOne().select({ _id: false })
     res.status(200).json({value:slider});
   }
+//! getSlider
 
 
-  this.getChildItems = async (req, res) => {
-    let childItems = await ChildItemModel.find({ categoryId: req.params.id }).sort({ data: -1 })
-    res.status(200).json({ value: childItems });
+//! getSendStatus
+this.getSendStatus = async (req, res) => {
+  if(!req.user.payload) return res.send()
+  let payment = await PaymentModel.findOne({ success: true, userId: req.user.payload.userId }).sort({ date: -1 })
+  res.json({ checkSend: payment?.checkSend, queueSend: payment?.queueSend, send: payment?.send })
+}
+//! getSendStatus
+
+
+//! getCategory
+this.getCategory = async (req, res) => {
+  let category = await CategoryModel.find()
+  res.status(200).json({ value :category });
+}
+//! getCategory
+
+
+
+//! product
+this.getSingleSavedItems = async (req, res) => {
+  if (req.user.payload?.userId) {
+    const savedItem = await SavedItemModel.findOne().and([{ itemId: req.params.id }, { userId: req.user.payload.userId }])
+    savedItem ? res.json({value:true}) : res.json({value:false})
   }
-
-
-  this.getSingleItem = async (req, res) => {
-    let singleItem = await ChildItemModel.findById(req.params.id)
-    res.status(200).json({ value:singleItem });
-  }
+  else res.json({value:false})
+}
 
 
 
-  this.getOffers = async (req, res) => {
-    let offers = await ChildItemModel.find({ 'offerTime.exp': { $gt: new Date().getTime() } }).sort({ data: -1 })
-    res.status(200).json({value:offers});
-  }
+this.getChildItems = async (req, res) => {
+  let childItems = await ChildItemModel.find({ categoryId: req.params.id }).sort({ data: -1 })
+  res.status(200).json({ value: childItems });
+}
 
 
-  this.getPopulars = async (req, res) => {
-    let populars = await ChildItemModel.find({ meanStar: { $gte: 4 } })
-    res.status(200).json({value:populars});
-  }
-
-
-  this.getSimilars = async (req, res) => {
-    let singleItem = await ChildItemModel.findById(req.params.id)
-    let similars = await ChildItemModel.find({ _id: { $ne: req.params.id } })
-      .and([{ price: { $gte: Number(singleItem.price) - 3000000 } }, { price: { $lte: Number(singleItem.price) + 3000000 } }])
-      .and([{ cpuCore: { $gte: singleItem.cpuCore - 4 } }, { cpuCore: { $lte: singleItem.cpuCore + 4 } }])
-      .and([{ ram: { $gte: singleItem.ram - 4 } }, { ram: { $lte: singleItem.ram + 4 } }])
-      .and([{ storage: { $gte: singleItem.storage - 32 } }, { storage: { $lte: singleItem.storage + 32 } }])
-      .and([{ camera: { $gte: singleItem.camera - 32 } }, { camera: { $lte: singleItem.camera + 32 } }])
-    res.status(200).json({value:similars});
-  }
-
-  // this.getBestSeller = async (req, res) => {
-  //   let singleItem = await ChildItemModel.findById(req.params.id)
-  //   res.status(200).json({ singleItem });
-  // }
-
-
-  this.setStar = async (id) => {
-    let singleItem = await ChildItemModel.findById(id)
-    let comment = await CommenteModel.find({ commentId: id }).select({ fiveStar: 1 })
-    let totalStar = 0
-    for (let i in comment) { totalStar += comment[i].fiveStar }
-    singleItem.meanStar = totalStar / comment.length
-    await singleItem.save()
-  }
+this.getSingleItem = async (req, res) => {
+  let singleItem = await ChildItemModel.findById(req.params.id)
+  res.status(200).json({ value:singleItem });
+}
 
 
 
+this.getOffers = async (req, res) => {
+  let offers = await ChildItemModel.find({ 'offerTime.exp': { $gt: new Date().getTime() } }).sort({ data: -1 })
+  res.status(200).json({value:offers});
+}
+
+
+this.getPopulars = async (req, res) => {
+  let populars = await ChildItemModel.find({ meanStar: { $gte: 4 } })
+  res.status(200).json({value:populars});
+}
+
+
+this.getSimilars = async (req, res) => {
+  let singleItem = await ChildItemModel.findById(req.params.id)
+  let similars = await ChildItemModel.find({ _id: { $ne: req.params.id } })
+    .and([{ price: { $gte: Number(singleItem.price) - 3000000 } }, { price: { $lte: Number(singleItem.price) + 3000000 } }])
+    .and([{ cpuCore: { $gte: singleItem.cpuCore - 4 } }, { cpuCore: { $lte: singleItem.cpuCore + 4 } }])
+    .and([{ ram: { $gte: singleItem.ram - 4 } }, { ram: { $lte: singleItem.ram + 4 } }])
+    .and([{ storage: { $gte: singleItem.storage - 32 } }, { storage: { $lte: singleItem.storage + 32 } }])
+    .and([{ camera: { $gte: singleItem.camera - 32 } }, { camera: { $lte: singleItem.camera + 32 } }])
+  res.status(200).json({value:similars});
+}
+
+
+
+this.setStar = async (id) => {
+  let singleItem = await ChildItemModel.findById(id)
+  let comment = await CommenteModel.find({ commentId: id }).select({ fiveStar: 1 })
+  let totalStar = 0
+  for (let i in comment) { totalStar += comment[i].fiveStar }
+  singleItem.meanStar = totalStar / comment.length
+  await singleItem.save()
+}
+//! product
+
+
+
+//! Comment
   this.createComment = async (req, res) => {
     const { message, fiveStar } = req.body;
 
@@ -147,7 +160,7 @@ function ClientController() {
   }
 
   this.deleteCommentAnswer = async (req, res) => {
-    const a = await CommenteModel.update(
+    await CommenteModel.update(
       { _id: req.params.id },
       { $pull: { answer: { _id: req.query.commentId } } }
     )
@@ -231,25 +244,26 @@ function ClientController() {
         _id: req.params.id,
         answer: { $elemMatch: { _id: req.query.commentId, like: { $elemMatch: { userId: req.user.payload.userId } } } },
       })
-
-    const truLike = _truLike?.answer[0]
-    const like = truLike?.like
-    const findLike = like?.length && like.find(l => l.userId == req.user.payload.userId)
-    const preLike = findLike ? !findLike.value : 0
+      
+      const truLike = _truLike?.answer[0]
+      const like = truLike?.like
+      const findLike = like?.length && like.find(l => l.userId == req.user.payload.userId)
+      const preLike = findLike ? !findLike.value : 0
 
     if (truLike) {
       await CommenteModel.findOneAndUpdate(
         {
           _id: req.params.id,
-          answer: { $elemMatch: { _id: req.query.commentId, like: { $elemMatch: { userId: req.user.payload.userId } } } }
+          answer: { $elemMatch: { _id: req.query.commentId } }
         },
-        { $set: { "answer.$.like": { value: preLike } } },
+        { $pull: { 'answer.$.like': { userId: req.user.payload.userId }} },
         { new: true }
       )
       const comment = await CommenteModel.findOne({ _id: req.params.id }).select({ answer: { $elemMatch: { _id: req.query.commentId } } })
       const filterValueTrue = comment.answer[0].like.filter(l => l.value === 1)
       comment.answer[0].likeCount = filterValueTrue.length
       await comment.save()
+
       res.status(200).json({value:filterValueTrue.length})
     }
 
@@ -259,7 +273,10 @@ function ClientController() {
       const comment = await CommenteModel.findOne({ _id: req.params.id }).select({ answer: { $elemMatch: { _id: req.query.commentId } } })
       const filterValueTrue = comment.answer[0].like.filter(l => l.value === 1)
       comment.answer[0].likeCount = filterValueTrue.length
+
       await comment.save()
+      
+
       res.status(200).json({value:filterValueTrue.length})
     }
   }
@@ -287,14 +304,23 @@ function ClientController() {
     const preLike = findLike ? !findLike.value : 0
 
     if (truLike) {
+
       await CommenteModel.findOneAndUpdate(
         {
           _id: req.params.id,
-          answer: { $elemMatch: { _id: req.query.commentId, disLike: { $elemMatch: { userId: req.user.payload.userId } } } }
+          answer: { $elemMatch: { _id: req.query.commentId } }
         },
-        { $set: { "answer.$.disLike": { value: preLike } } },
+        { $pull: { 'answer.$.disLike': { userId: req.user.payload.userId }} },
         { new: true }
       )
+      // await CommenteModel.findOneAndUpdate(
+      //   {
+      //     _id: req.params.id,
+      //     answer: { $elemMatch: { _id: req.query.commentId, disLike: { $elemMatch: { userId: req.user.payload.userId } } } }
+      //   },
+      //   { $set: { "answer.$.disLike": { value: preLike } } },
+      //   { new: true }
+      // )
       const comment = await CommenteModel.findOne({ _id: req.params.id }).select({ answer: { $elemMatch: { _id: req.query.commentId } } })
       const filterValueTrue = comment.answer[0].disLike.filter(l => l.value === 1)
       comment.answer[0].disLikeCount = filterValueTrue.length
@@ -334,10 +360,10 @@ function ClientController() {
       .select({ answer: { message: true } })
     res.status(200).json({ value: comment.answer[0] })
   }
+//! Comment
 
 
-
-
+//! getNotification
   this.getNotification = async (req, res) => {
     let notifee = await NotifeeModel.findOne()
     notifee ?
@@ -345,16 +371,18 @@ function ClientController() {
       :
       res.status(200).send('')
   }
+//! getNotification
 
 
+  //! getSingleSeller for check available
   this.getSingleSeller = async (req, res) => {
     const seller = await SellerModel.findById({ _id: req.query.id });
     res.json({value:seller})
   }
+  //! getSingleSeller for check available
 
 
-
-
+//! geoCode
   this.reverse = async (req, res) => {
     let geoCoder = node_geocoder({ provider: 'openstreetmap' });
     geoCoder.reverse({ lat: req.body.lat, lon: req.body.lng })
@@ -386,32 +414,28 @@ function ClientController() {
       })
       .catch((err) => res.status(400).send(''));
   }
+//! geoCode
 
 
-
-
+//! payment
+//! getAddress&latlngMap
   this.getAddress = async (req, res) => {
     const user = await UserModel.findById({ _id: req.user.payload.userId });
     res.json({ phone: user.phone, address: cache.get('address'), latlng: cache.get('latlng') })
   }
+  //! getAddress&latlngMap
 
 
-
+  
   this.addBuyBasket = (productBasket, res) => new Promise(async (resolve, reject) => {
-
     if (!Object.values(productBasket).length) return res.status(400).send('هنوز محصولی انتخاب نکرده اید')
     var _totalPrice = 0,
       _title = '',
       _itemsId = []
     Object.entries(productBasket).forEach(async (item, index) => {
-
       const ChildItem = await ChildItemModel.findById(item[0])
-
-
       if (item[1].number > ChildItem.color.find(c=> c.color === item[1].color ).value) return res.status(400).send(`${ChildItem.title} به رنگ ${item[1].color} فقط ${ChildItem.color.find(c=> c.color === item[1].color ).value} عدد موجود میباشد لطفا سفارشتان را ویرایش کنید`)
       if (ChildItem.availableCount < 0 || !ChildItem.available || ChildItem.availableCount < item[1].number) return res.status(400).send(`${ChildItem.title} موجود نمیباشد`)
-
-
       if (item[1].number < 0) return res.status(400).send('مقدار نامعتبر')
       _totalPrice +=
         (ChildItem.offerTime?.exp > new Date().getTime()) ?
@@ -420,8 +444,6 @@ function ClientController() {
           (item[1].number * ChildItem.price)
       _title += `( ${ChildItem.title} تعداد: ${item[1].number} رنگ: ${item[1].color} )` + (index !== Object.entries(productBasket).length - 1 ? ' و ' : '')
       _itemsId.push(ChildItem._id)
-
-
       if (index === Object.entries(productBasket).length - 1) {
         resolve({ _totalPrice, _title, _itemsId })
       }
@@ -438,7 +460,6 @@ function ClientController() {
         { _id: item[0] },
         { $set: { availableCount: ChildItem.availableCount - item[1].number } }
       )
-
       await ChildItemModel.updateOne(
         { _id: item[0], color: { $elemMatch: { color: item[1].color } } },
         { $set: { 'color.$.value': ChildItem.color.find(c=> c.color === item[1].color ).value - item[1].number } }
@@ -472,12 +493,9 @@ function ClientController() {
   this.confirmPayment = async (req, res) => {
     try {
       cache.set('productBasket', req.body.productBasket)
-
       const postPrice = await PostPriceModel.findOne()
       const price = postPrice ? postPrice.price : 30000
       this.setUserPhone(req)
-      //! yub
-      // include tostring برای اینکه مشخص بشه کاربر قبلا این محصول رو خرید کرده یا نه با فیند تو ارایه ی خرید های قبلش پیدا کن
       const { _totalPrice, _title, _itemsId } = await this.addBuyBasket(req.body.productBasket, res)
       const response = await zarinpal.PaymentRequest({
         Amount: _totalPrice + price,
@@ -521,10 +539,8 @@ function ClientController() {
       payment.refId = response.RefID;
       payment.success = true;
       await payment.save();
-
       cache.del('address')
       cache.del('latlng')
-
       res.render("./paymant", {
         pageTitle: "پرداخت",
         qualification: 'ok',
@@ -549,20 +565,7 @@ function ClientController() {
       })
     }
   }
-  // res.redirect('/lastPayment')
-
-
-
-
-
-
-  this.getSendStatus = async (req, res) => {
-    if(!req.user.payload) return res.send()
-    let payment = await PaymentModel.findOne({ success: true, userId: req.user.payload.userId }).sort({ date: -1 })
-    res.json({ checkSend: payment.checkSend, queueSend: payment.queueSend, send: payment.send })
-  }
-
-
+//! payment
 
 }
 

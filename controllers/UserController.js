@@ -19,6 +19,7 @@ var CAPTCHA_NUM = null;
 
 function UserController() {
 
+  // ! Register
   this.getCodeForRegister = async (req, res) => {
     if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
     if (req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
@@ -52,8 +53,10 @@ function UserController() {
     cacheSetTimeForSendNewCode.del("newTime")
     return res.status(201).json({ message: 'کد دریافتی را وارد کنید' })
   }
+  //! Register
 
 
+  //! login
   this.login = async (req, res) => {
     if (parseInt(req.body.captcha) != CAPTCHA_NUM) return res.status(400).send('اعداد کادر تایید صحت را اشتباه وارد کردین')
     if (req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
@@ -71,7 +74,7 @@ function UserController() {
         phoneOrEmail: user.phoneOrEmail,
       }
       const token = jwt.sign(tokenUser, "token", { expiresIn: req.body.remember });
-      res.status(200).header(token).json({ value: token, message:{} });
+      res.status(200).header(token).json({ value: token, message: {} });
     }
     else {
       if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
@@ -102,10 +105,11 @@ function UserController() {
     cacheSpecification.del("remember")
     cacheCode.del("code")
     cacheSetTimeForSendNewCode.del("newTime")
-    res.status(200).header(token).json({ value: token, message:{} });
+    res.status(200).header(token).json({ value: token, message: {} });
   }
+  //! login
 
-
+//! changePassword
   this.getCodeForgetPass = async (req, res) => {
     if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
     else if (req.query.newCode !== 'true' && req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
@@ -143,12 +147,19 @@ function UserController() {
       return res.status(400).send('کادر اول و دوم باید مطابق هم باشند')
     }
   }
+//! changePassword
 
 
-
+//! changeSpecification
   this.resetSpecification = async (req, res) => {
     if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
     const user = await UserModel.findOne({ phoneOrEmail: req.user.payload.phoneOrEmail });
+    const newuser = await UserModel.findOne({ phoneOrEmail: req.body.phoneOrEmail });
+
+    if(user.phoneOrEmail !== newuser.phoneOrEmail){
+    if (newuser && req.body.phoneOrEmail.includes('@')) return res.status(400).send('کاربری با این ایمیل موجود هست')
+    else if (newuser) return res.status(400).send('کاربری با این شماره تلفن موجود هست')
+}
     const oldPass = await bcrypt.compare(req.body.oldPassword, user.password);
     if (!oldPass) return res.status(400).send('رمز عبور قبلی را صحیح وارد کنید')
     cacheSpecification.set("fullname", req.body.fullname)
@@ -183,7 +194,7 @@ function UserController() {
       cacheSpecification.del("phoneOrEmail");
       cacheSetTimeForSendNewCode.del("newTime")
 
-      res.status(200).json({ value: token, message:{} })
+      res.status(200).json({ value: token, message: {} })
     }
   }
 
@@ -192,6 +203,7 @@ function UserController() {
     const user = await UserModel.findOne({ phoneOrEmail: req.user.payload.phoneOrEmail });
     res.json({ fullname: user.fullname, phoneOrEmail: user.phoneOrEmail })
   }
+//! changeSpecification
 
 
   this.getNewCode = async (req, res) => {
@@ -202,6 +214,7 @@ function UserController() {
   }
 
 
+//! imageProfile
   this.sendImageProfile = async (req, res) => {
     if (!req.files) return res.status(400).json('بعدا دوباره امتحان کنید')
     let imageProfile = await ImageProfileModel.findOne({ userId: req.user.payload.userId })
@@ -221,53 +234,33 @@ function UserController() {
   }
 
 
-  // this.changeCommentImage = async (req, res) => {
-  //   const childItem = await ChildItemModel.find()
-  //   for (let i in childItem) {
-  //     if (childItem[i])
-  //       for (let n in childItem[i].childFood) {
-  //         if (childItem[i].childFood[n]?.comment.length) {
-  //           for (let y in childItem[i].childFood[n].comment) {
-  //             if (childItem[i].childFood[n].comment[y].starId == req.user.payload.userId) {
-  //               childItem[i].childFood[n].comment[y].imageUrl = imageUrl
-  //               await FoodModel.updateMany(
-  //                 { _id: childItem[i]._id },
-  //                 { childFood: childItem[i].childFood },
-  //                 // { childFood: childItem[i].childFood, _id: childItem[i].id },
-  //                 // { _id: childItem[i].id },
-  //               )
-  //             }
-  //           }
-  //         }
-  //       }
-  //   }
-  //   res.status(200)
-  // }
-
-
   this.getImageProfile = async (req, res, next) => {
     const imageProfile = await ImageProfileModel.findOne({ userId: req.user.payload.userId })
     if (imageProfile) res.status(200).json({ imageUrl: imageProfile.imageUrl })
     else res.status(400)
   }
+//! imageProfile
 
 
+//! sendProposal
   this.sendProposal = async (req, res) => {
-    const proposal = await ProposalModel.create({ message: req.body.message });
-    // res.json({ proposal })
+    await ProposalModel.create({ message: req.body.message });
     res.json({ message: 'پیام شما با موفقیت ارسال شد' })
   }
+//! sendProposal
 
 
-
+//! getLastPayment
   this.getLastPayment = async (req, res) => {
     const lastPayment = await PaymentModel.find({ success: true })
       .sort({ date: -1 })
       .limit(5)
     res.json({ value: lastPayment })
   }
+//! getLastPayment
 
 
+//! Ticket
   this.sendNewTicket = async (req, res) => {
     if (req.files) await sharp(req.file.data).toFile(`${appRootPath}/public/upload/ticket/${req.fileName}`)
     const newTicket = await TicketModel.create({ date: new Date(), title: req.body.title, message: req.body.message, imageUrl: req.fileName, userId: req.user.payload.userId })
@@ -290,18 +283,14 @@ function UserController() {
   this.getAnswersTicket = async (req, res) => {
     const getAnswersTicket = await TicketModel.findById(req.params.id)
     const answer = getAnswersTicket.answer.reverse()
-    res.json({message: {},value:[...answer, getAnswersTicket]})
+    res.json({ message: {}, value: [...answer, getAnswersTicket] })
   }
 
 
   this.getTicketSeen = async (req, res) => {
-    if(!req.user.payload) return res.send()
-    let ticketseen
-    if (req.user.payload.isAdmin) ticketseen = await TicketModel.find({ adminSeen: 0 }).countDocuments()
-    else ticketseen = await TicketModel.find({ userId: req.user.payload.userId, userSeen: 0 }).countDocuments()
-
+    if (!req.user.payload) return res.send()
+    let ticketseen = await TicketModel.find({ userId: req.user.payload.userId, userSeen: 0 }).countDocuments()
     const ticket = await TicketModel.findOne({ userId: req.user.payload.userId, userSeen: 0 })
-
     res.json({ seen: ticketseen, ticket: ticket ? ticket.answer[ticket.answer.length - 1] : '' })
   }
 
@@ -316,7 +305,7 @@ function UserController() {
 
     answer.remove()
     await ticket.save()
-    res.json({message:'با موفقیت حذف شد'})
+    res.json({ message: 'با موفقیت حذف شد' })
   }
 
 
@@ -334,14 +323,14 @@ function UserController() {
     if (req.files) answer.imageUrl = req.fileName
     ticket.date = new Date()
     await ticket.save()
-    res.json({value:answer})
+    res.json({ value: answer })
   }
 
 
   this.getSingleAnswerTicket = async (req, res) => {
     const ticket = await TicketModel.findOne({ _id: req.params.id })
     const answer = ticket.answer.id(req.query.ticketid)
-    res.json({value:answer})
+    res.json({ value: answer })
   }
 
 
@@ -352,7 +341,7 @@ function UserController() {
       if (fs.existsSync(`${appRootPath}/public/upload/ticket/${ticket.imageUrl}`))
         fs.unlinkSync(`${appRootPath}/public/upload/ticket/${ticket.imageUrl}`)
     await TicketModel.findByIdAndDelete(req.params.id);
-    res.json({message:'با موفقیت حذف شد'})
+    res.json({ message: 'با موفقیت حذف شد' })
   }
 
 
@@ -364,14 +353,14 @@ function UserController() {
     } else {
       tickets = await TicketModel.find().sort({ date: -1 })
 
-    } res.json({value:tickets})
+    } res.json({ value: tickets })
   }
 
 
 
   this.deleteMainItemTicketBox = async (req, res) => {
     await TicketModel.findByIdAndDelete(req.params.id)
-    res.json({message:'با موفقیت حذف شد'})
+    res.json({ message: 'با موفقیت حذف شد' })
   }
 
 
@@ -382,9 +371,10 @@ function UserController() {
     ticket.save()
     res.send()
   }
+//! Ticket
 
 
-
+//! savedItem
   this.savedItem = async (req, res) => {
     const ChildItem = await ChildItemModel.findOne({ _id: req.params.id })
     const savedItem = await SavedItemModel.findOne().and([{ itemId: req.params.id }, { userId: req.user.payload.userId }])
@@ -396,36 +386,39 @@ function UserController() {
         title: ChildItem.title,
         price: ChildItem.price
       })
-      res.json({value:true})
+      res.json({ value: true })
 
     } else {
       await SavedItemModel.deleteOne({ itemId: req.params.id })
-      res.json({value:false})
+      res.json({ value: false })
     }
   }
 
 
   this.removeSavedItem = async (req, res) => {
     await SavedItemModel.deleteOne().and([{ itemId: req.params.id }, { userId: req.user.payload.userId }])
-    res.json({message:'از ذخیره ها حذف شد'})
+    res.json({ message: 'از ذخیره ها حذف شد' })
   }
 
 
   this.getSavedItems = async (req, res) => {
     const savedItem = await SavedItemModel.find({ userId: req.user.payload.userId })
-    res.json({value:savedItem})
+    res.json({ value: savedItem })
   }
-
+  
+  
   this.getSingleSavedItems = async (req, res) => {
     if (req.user.payload?.userId) {
       const savedItem = await SavedItemModel.findOne().and([{ itemId: req.params.id }, { userId: req.user.payload.userId }])
-      savedItem ? res.json({value:true}) : res.json({value:false})
+      savedItem ? res.json({ value: true }) : res.json({ value: false })
     }
-    else res.json({value:false})
+    else res.json({ value: false })
   }
+  //! savedItem
 
+  
 
-  this.getAllProductForSeller = async (req,res)=>{
+  this.getAllProductForSeller = async (req, res) => {
     let childItems = await ChildItemModel.find({ sellerId: req.user.payload.sellerId }).sort({ data: -1 })
     res.status(200).json({ value: childItems });
   }

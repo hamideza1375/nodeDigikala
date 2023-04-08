@@ -4180,3 +4180,24 @@
 {"level":"error","message":"Cast to ObjectId failed for value \"642e956\" at path \"categoryId\" for model \"ChildItemModel\""}
 {"level":"error","message":"Cast to ObjectId failed for value \"642e956\" at path \"categoryId\" for model \"ChildItemModel\""}
 {"level":"error","message":"Cast to ObjectId failed for value \"642e956\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"642e95631edcab\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"E11000 duplicate key error collection: digikala.usermodels index: phoneOrEmail_1 dup key: { phoneOrEmail: \"reza.attar1375@gmail.com\" }"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'value')"}
+{"level":"error","message":"Cannot read properties of null (reading 'checkSend')"}
+{"level":"error","message":"Cannot read properties of null (reading 'price')"}
+{"level":"error","message":"Cannot read properties of null (reading 'price')"}
+{"level":"error","message":"Cannot read properties of null (reading 'price')"}
+{"level":"error","message":"Cannot read properties of null (reading 'price')"}
+{"level":"error","message":"Cannot read properties of null (reading 'price')"}
+{"level":"error","message":"Cannot read properties of null (reading 'price')"}

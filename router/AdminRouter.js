@@ -18,6 +18,7 @@ router.get('/getSinleCategory/:id', AdminController.getSinleCategory);
 
 
 router.get('/getChildItemsTable/:id', [AuthMainAdmin], AdminController.getChildItemsTable);
+router.get('/admin/getSingleItem/:id', [AuthMainAdmin], AdminController.getSingleItem);
 router.post('/createChildItem/:id', [AuthMainAdmin, multiFileUpload], AdminController.createChildItem);
 router.put('/editChildItem/:id', [AuthMainAdmin, multiFileUpload], AdminController.editChildItem);
 router.delete('/deleteChildItem/:id', AuthMainAdmin, AdminController.deleteChildItem);
@@ -50,6 +51,7 @@ router.get('/getPostPrice', Auth, AdminController.getPostPrice);
 // priceForPost
 
 router.get('/adminTicketBox', AuthMainAdmin, AdminController.adminTicketBox)
+router.get('/getAdminTicketSeen', AuthMainAdmin, AdminController.getAdminTicketSeen)
 
 router.post('/createSeller', AuthMainAdmin, AdminController.createSeller)
 router.delete('/deleteSeller/:id', AuthMainAdmin, AdminController.deleteSeller)

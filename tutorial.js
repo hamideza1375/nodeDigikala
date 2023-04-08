@@ -106,6 +106,13 @@ let a2 = [{ id: 1, name: 'a' }, { id: 2, name: 'b' }]
 delete a2[1].name
 console.log(a2) = [{ id: 1, name: 'a' }, { id: 2 }]
 //* delete !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // countMap.forEach((item, index) => ())
+  // countMap.keys()
+  // countMap.values()
+  // countMap.entries()
+  // console.log(Object.keys(number));
+  // console.log(Object.values(number));
+  // console.log(Object.entries(number)); //! object change to array
 //! Object
 
 //! Array
@@ -390,3 +397,6 @@ this.commentLike = async (req, res) => {
 
   // }
 //! Mongoose
+
+//! redirect
+  // res.redirect('/lastPayment')
