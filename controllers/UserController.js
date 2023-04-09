@@ -186,7 +186,7 @@ function UserController() {
         phoneOrEmail: user.phoneOrEmail,
         userId: user._id.toString(),
       }
-      const token = jwt.sign(tokenUser, "token", { expiresIn: '24h' });
+      const token = jwt.sign(tokenUser, "token", { expiresIn: 60000 * 60 * 24 });
 
       cacheCode.del("code")
       cacheSpecification.del("fullname");

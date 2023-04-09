@@ -12,6 +12,12 @@ const cache = new nodeCache({ stdTTL: 60 * 30, checkperiod: 60 * 30 })
 
 function ClientController() {
 
+  
+  this.allProduct = async (req, res) => {
+    let allChild = await ChildItemModel.find().select({ imageUrl1: 1, title:1 })
+    res.status(200).json({value:allChild});
+  }
+
   //! getSlider
   this.getSlider = async (req, res) => {
     let slider = await SliderModel.findOne().select({ _id: false })
