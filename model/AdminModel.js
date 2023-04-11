@@ -41,7 +41,7 @@ exports.PostPriceModel = mongoose.model("PostPriceModel", PostPriceModel);
 
 const SellerModel = mongoose.Schema({
   brand: { type: String, require: true, minlength: 1 },
-  phone: { type: String, require: true, minlength: 11, maxlength: 11 },
+  phone: { type: String, require: true, minlength: 11, maxlength: 11, unique: true },
   available: { type: Number, default: 1 },
   star: { type: String },
 })

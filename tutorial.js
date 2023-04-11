@@ -304,7 +304,11 @@ setInterval(() => {
 
 
 
-//!
+//! unset
+const user = await UserModel.updateOne(
+  { sellerId: req.params.id },
+  { $unset: { sellerId: 1 } })
+//! unset
 
 const falseLike = await CommenteModel.findOne({ _id: req.params.id })
   .select({ answer: { $elemMatch: { _id: req.query.commentId } } })

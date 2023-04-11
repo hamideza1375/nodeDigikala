@@ -1,4 +1,5 @@
 // appmodel
+const { Number } = require('mongoose');
 const mongoose = require('mongoose');
 
 // regex 
@@ -52,19 +53,19 @@ exports.CommenteModel = mongoose.model("CommenteModel", CommenteModel);
 
 const ChildItemModel = new mongoose.Schema({
 
-    battery: { type: Number, required: true },
+    battery: { type: String, required: true },
     network: { type: String, required: true },
     operatingSystem: { type: String, required: true },
 
     title: { type: String, required: true },
     price: { type: Number, required: true },
-    ram: { type: Number, required: true },
-    cpuCore: { type: Number, required: true },
-    camera: { type: Number, required: true },
-    storage: { type: Number, required: true },
-    warranty: { type: Number, required: true },
+    ram: { type: String, required: true },
+    cpuCore: { type: String, required: true },
+    camera: { type: String, required: true },
+    storage: { type: String, required: true },
+    warranty: { type: String, required: true },
     color: { type: Array, required: true },
-    display: { type: Number, required: true },
+    display: { type: String, required: true },
     info: { type: String, required: true },
     imageUrl1: String,
     imageUrl2: String,
@@ -100,26 +101,35 @@ const PaymentModel = new mongoose.Schema({
     price: { type: Number, require: true },
     childItemsId: { type: Array, require: true },
     titles: { type: String, require: true },
-    unit: { type: Number, require: true, min: 1 },
-    plaque: { type: Number, require: true, min: 1 },
-    postalCode: { type: Number, require: true, minlength: 10, maxlength: 10 },
+    unit: { type: String, require: true, min: 1 },
+    plaque: { type: String, require: true, min: 1 },
+    postalCode: { type: String },
+    // postalCode: { type: String, require: true, minlength: 10, maxlength: 10 },
     address: { type: String, require: true, minlength: 1 },
     latlng: { type: Object },
-    description: { type: String },
-    origin: { type: Object },
     paymentCode: { type: String, require: true },
     success: { type: Boolean, default: false },
     refId: String,
     date: { type: Date, default: Date.now },
     postedDate: { type: Date },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
-    id: { type: Number, default: 1 },
-    enablePosted: { type: Number, default: 0 },
-    deleteForUser: { type: mongoose.Schema.Types.ObjectId, ref: "delete" },
 
     checkSend: { type: Number, default: 1 },
     queueSend: { type: Number, default: 0 },
     send: { type: Number, default: 0 },
 });
 
-exports.PaymentModel = mongoose.model('PaymentModel', PaymentModel);;
+exports.PaymentModel = mongoose.model('PaymentModel', PaymentModel);
+
+
+
+const QuitsSellerModel = new mongoose.Schema({
+    brand: { type: String },
+    phone: { type: String },
+    date: { type: Date, default: Date.now },
+    postedDate: { type: Date },
+    userId: { type: mongoose.Schema.Types.ObjectId },
+});
+
+exports.QuitsSellerModel = mongoose.model('QuitsSellerModel', QuitsSellerModel);;
+

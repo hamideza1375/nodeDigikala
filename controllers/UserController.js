@@ -11,6 +11,7 @@ const appRootPath = require('app-root-path');
 const sharp = require('sharp');
 const { ChildItemModel, PaymentModel } = require('../model/ClientModel');
 const sendCode = require('../middleware/sendCode');
+const { RegisterValidator } = require('../validator/UserValidator');
 const cacheCode = new nodeCache({ stdTTL: (60 * 3) - 2, checkperiod: (60 * 3) - 2 })
 const cacheSpecification = new nodeCache({ stdTTL: 60 * 15, checkperiod: 60 * 15 })
 const cacheSetTimeForSendNewCode = new nodeCache({ stdTTL: (60 * 3) - 2, checkperiod: (60 * 3) - 2 })
@@ -21,6 +22,7 @@ function UserController() {
 
   // ! Register
   this.getCodeForRegister = async (req, res) => {
+    await RegisterValidator.validate(req.body)
     if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
     if (req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
     let usrPhoneOrEmail = await UserModel.findOne({ phoneOrEmail: req.body.phoneOrEmail });
@@ -402,7 +404,7 @@ function UserController() {
 
 
   this.getSavedItems = async (req, res) => {
-    const savedItem = await SavedItemModel.find({ userId: req.user.payload.userId })
+    const savedItem = await SavedItemModel.find({ userId: req.user.payload.userId }).select({title:1, price:1,imageUrl:1,itemId:1})
     res.json({ value: savedItem })
   }
   

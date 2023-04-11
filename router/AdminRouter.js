@@ -38,7 +38,7 @@ router.put('/changeMainAdmin', AuthMainAdmin, AdminController.changeMainAdmin);
 router.get('/getProposal', AuthMainAdmin, AdminController.getProposal);
 router.post('/deleteMultiProposal', AuthMainAdmin, AdminController.deleteMultiProposal);
 
-router.get('/getAllAddress', Auth, AdminController.getAllAddress);
+router.get('/getAllAddress', AuthMainAdmin, AdminController.getAllAddress);
 router.get('/getQuitsForSeller', Auth, AdminController.getQuitsForSeller);
 router.get('/getDataForChart', Auth, AdminController.getDataForChart);
 router.post('/postedOrder/:id', AuthAllAdmin, AdminController.postedOrder);

@@ -39,11 +39,21 @@ function AdminController() {
 
   this.deleteSeller = async (req, res) => {
     await SellerModel.findByIdAndRemove(req.params.id);
-    await SellerModel.ChildItemModel({ sellerId: req.params.id });
+    await ChildItemModel.deleteMany({ sellerId: req.params.id });
+    await UserModel.updateOne({ sellerId: req.params.id },{ $unset: { sellerId: 1 } })
     res.status(200).json({ message: 'با موفقیت حذف شد' })
   }
 
-
+    // await UserModel.updateOne({ sellerId: req.params.id },  
+    // async function (err, user) {
+    //     if (user != null) {
+    //       user = user.toObject();
+    //       delete user.sellerId
+    //       await user.save()
+    //       console.log(user)
+    //     } 
+    //   }
+    //   )
 
   this.setSellerAvailable = async (req, res) => {
     const seller = await SellerModel.findById(req.params.id);
@@ -110,10 +120,10 @@ function AdminController() {
     let childItems = await ChildItemModel.find({ categoryId: req.params.id, sellerId: req.query.sellerId }).sort({ data: -1 })
     res.status(200).json({ value: childItems });
   }
-  
+
   this.getSingleItem = async (req, res) => {
     let singleItem = await ChildItemModel.findById(req.params.id)
-    res.status(200).json({ value:singleItem });
+    res.status(200).json({ value: singleItem });
   }
 
   this.createChildItem = async (req, res) => {
@@ -247,7 +257,7 @@ function AdminController() {
     if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl}`))
       fs.unlinkSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl}`)
     await ChildItemModel.findByIdAndRemove(req.params.id)
-    await SavedItemModel.deleteMany({itemId:req.params.id})
+    await SavedItemModel.deleteMany({ itemId: req.params.id })
     res.status(200).json({ message: 'با موفقیت حذف شد', value: childItem })
   }
 
@@ -384,7 +394,7 @@ function AdminController() {
     payment.send = 1
     payment.postedDate = Date.now()
     await payment.save()
-    res.json({ value: payment.send })
+    res.json({ value: payment.send, message: {} })
   }
 
 
@@ -397,8 +407,8 @@ function AdminController() {
 
   //! QuitsForSeller
   this.getQuitsForSeller = async (req, res) => {
-    let payment = await PaymentModel.find({ success: true, send: { $eq: 1 }, postedDate: { $ne: new Date(new Date().getTime() - (60000 * 60 * 24 * (7 + 1))) } })
-    res.json({ value: payment })
+    let childItem = await ChildItemModel.find({ success: true, send: { $eq: 1 }, postedDate: { $ne: new Date(new Date().getTime() - (60000 * 60 * 24 * (7 + 1))) } })
+    res.json({ value: childItem })
   }
   //! QuitsForSeller
 
@@ -425,12 +435,12 @@ function AdminController() {
     const tickets = await TicketModel.find().sort({ date: -1 });
     res.status(200).json({ value: tickets })
   }
-  
+
 
   this.getAdminTicketSeen = async (req, res) => {
     if (!req.user.payload) return res.send()
     let ticketseen = await TicketModel.find({ adminSeen: 0 }).countDocuments()
-    res.json({ seen: ticketseen})
+    res.json({ seen: ticketseen })
   }
   //! TicketBox
 

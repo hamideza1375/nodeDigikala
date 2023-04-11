@@ -4203,3 +4203,243 @@
 {"level":"error","message":"Cannot read properties of null (reading 'price')"}
 {"level":"error","message":"\"expiresIn\" should be a number of seconds or string representing a timespan"}
 {"level":"error","message":"\"expiresIn\" should be a number of seconds or string representing a timespan"}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"commentId\" for model \"CommenteModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"commentId\" for model \"CommenteModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"commentId\" for model \"CommenteModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"commentId\" for model \"CommenteModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"commentId\" for model \"CommenteModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"commentId\" for model \"CommenteModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"commentId\" for model \"CommenteModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"commentId\" for model \"CommenteModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"commentId\" for model \"CommenteModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"commentId\" for model \"CommenteModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"commentId\" for model \"CommenteModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"commentId\" for model \"CommenteModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"commentId\" for model \"CommenteModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"commentId\" for model \"CommenteModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"commentId\" for model \"CommenteModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"commentId\" for model \"CommenteModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"commentId\" for model \"CommenteModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"commentId\" for model \"CommenteModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"commentId\" for model \"CommenteModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"commentId\" for model \"CommenteModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"_id\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"itemId\" for model \"SavedItemModel\""}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"Cannot read properties of null (reading 'payload')"}
+{"level":"error","message":"SellerModel.ChildItemModel is not a function"}
+{"level":"error","message":"Cannot read properties of null (reading 'available')"}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"UserModel validation failed: sellerId: Cast to ObjectID failed for value \"\" at path \"sellerId\""}
+{"level":"error","message":"Cannot apply $pull to a non-array value"}
+{"level":"error","message":"Assignment to constant variable."}
+{"level":"error","message":"user.save is not a function"}
+{"level":"error","message":"UserModel.findOne(...).save is not a function"}
+{"level":"error","message":"(intermediate value).save is not a function"}
+{"level":"error","message":"user.sellerId.remove is not a function"}
+{"level":"error","message":"Assignment to constant variable."}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"categoryId\" for model \"ChildItemModel\""}
+{"level":"error","message":"Cast to ObjectId failed for value \"undefined\" at path \"categoryId\" for model \"ChildItemModel\""}
