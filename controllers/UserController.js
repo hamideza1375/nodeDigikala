@@ -111,7 +111,7 @@ function UserController() {
   }
   //! login
 
-//! changePassword
+  //! changePassword
   this.getCodeForgetPass = async (req, res) => {
     if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
     else if (req.query.newCode !== 'true' && req.user?.payload?.userId) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
@@ -149,19 +149,19 @@ function UserController() {
       return res.status(400).send('کادر اول و دوم باید مطابق هم باشند')
     }
   }
-//! changePassword
+  //! changePassword
 
 
-//! changeSpecification
+  //! changeSpecification
   this.resetSpecification = async (req, res) => {
     if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')
     const user = await UserModel.findOne({ phoneOrEmail: req.user.payload.phoneOrEmail });
     const newuser = await UserModel.findOne({ phoneOrEmail: req.body.phoneOrEmail });
 
-    if(user.phoneOrEmail !== newuser.phoneOrEmail){
-    if (newuser && req.body.phoneOrEmail.includes('@')) return res.status(400).send('کاربری با این ایمیل موجود هست')
-    else if (newuser) return res.status(400).send('کاربری با این شماره تلفن موجود هست')
-}
+    if (user.phoneOrEmail !== newuser.phoneOrEmail) {
+      if (newuser && req.body.phoneOrEmail.includes('@')) return res.status(400).send('کاربری با این ایمیل موجود هست')
+      else if (newuser) return res.status(400).send('کاربری با این شماره تلفن موجود هست')
+    }
     const oldPass = await bcrypt.compare(req.body.oldPassword, user.password);
     if (!oldPass) return res.status(400).send('رمز عبور قبلی را صحیح وارد کنید')
     cacheSpecification.set("fullname", req.body.fullname)
@@ -205,7 +205,7 @@ function UserController() {
     const user = await UserModel.findOne({ phoneOrEmail: req.user.payload.phoneOrEmail });
     res.json({ fullname: user.fullname, phoneOrEmail: user.phoneOrEmail })
   }
-//! changeSpecification
+  //! changeSpecification
 
 
   this.getNewCode = async (req, res) => {
@@ -216,7 +216,7 @@ function UserController() {
   }
 
 
-//! imageProfile
+  //! imageProfile
   this.sendImageProfile = async (req, res) => {
     if (!req.files) return res.status(400).json('بعدا دوباره امتحان کنید')
     let imageProfile = await ImageProfileModel.findOne({ userId: req.user.payload.userId })
@@ -241,28 +241,28 @@ function UserController() {
     if (imageProfile) res.status(200).json({ imageUrl: imageProfile.imageUrl })
     else res.status(400)
   }
-//! imageProfile
+  //! imageProfile
 
 
-//! sendProposal
+  //! sendProposal
   this.sendProposal = async (req, res) => {
     await ProposalModel.create({ message: req.body.message });
     res.json({ message: 'پیام شما با موفقیت ارسال شد' })
   }
-//! sendProposal
+  //! sendProposal
 
 
-//! getLastPayment
+  //! getLastPayment
   this.getLastPayment = async (req, res) => {
     const lastPayment = await PaymentModel.find({ success: true })
       .sort({ date: -1 })
       .limit(5)
     res.json({ value: lastPayment })
   }
-//! getLastPayment
+  //! getLastPayment
 
 
-//! Ticket
+  //! Ticket
   this.sendNewTicket = async (req, res) => {
     if (req.files) await sharp(req.file.data).toFile(`${appRootPath}/public/upload/ticket/${req.fileName}`)
     const newTicket = await TicketModel.create({ date: new Date(), title: req.body.title, message: req.body.message, imageUrl: req.fileName, userId: req.user.payload.userId })
@@ -373,10 +373,10 @@ function UserController() {
     ticket.save()
     res.send()
   }
-//! Ticket
+  //! Ticket
 
 
-//! savedItem
+  //! savedItem
   this.savedItem = async (req, res) => {
     const ChildItem = await ChildItemModel.findOne({ _id: req.params.id })
     const savedItem = await SavedItemModel.findOne().and([{ itemId: req.params.id }, { userId: req.user.payload.userId }])
@@ -404,11 +404,11 @@ function UserController() {
 
 
   this.getSavedItems = async (req, res) => {
-    const savedItem = await SavedItemModel.find({ userId: req.user.payload.userId }).select({title:1, price:1,imageUrl:1,itemId:1})
+    const savedItem = await SavedItemModel.find({ userId: req.user.payload.userId }).select({ title: 1, price: 1, imageUrl: 1, itemId: 1 })
     res.json({ value: savedItem })
   }
-  
-  
+
+
   this.getSingleSavedItems = async (req, res) => {
     if (req.user.payload?.userId) {
       const savedItem = await SavedItemModel.findOne().and([{ itemId: req.params.id }, { userId: req.user.payload.userId }])
@@ -418,10 +418,11 @@ function UserController() {
   }
   //! savedItem
 
-  
+
 
   this.getAllProductForSeller = async (req, res) => {
     let childItems = await ChildItemModel.find({ sellerId: req.user.payload.sellerId }).sort({ data: -1 })
+
     res.status(200).json({ value: childItems });
   }
 

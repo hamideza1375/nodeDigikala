@@ -60,5 +60,6 @@ router.put('/setSellerAvailable/:id', AuthMainAdmin, AdminController.setSellerAv
 
 
 router.post('/createSlider', [AuthMainAdmin, multiFileUpload], AdminController.createSlider)
+router.post('/sendQuitForSeller',AuthAllAdmin, AdminController.sendQuitForSeller)
 
 module.exports = router

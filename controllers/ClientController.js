@@ -2,7 +2,7 @@
 // spfa
 // app200
 const node_geocoder = require('node-geocoder');
-const { CategoryModel, ChildItemModel, PaymentModel, CommenteModel, QuitsSellerModel } = require('../model/ClientModel')
+const { CategoryModel, ChildItemModel, PaymentModel, CommenteModel, QuitsSellerModel, SpecificationsSoldModel } = require('../model/ClientModel')
 const { NotifeeModel, AddressVoucherModel, SliderModel, PostPriceModel, SellerModel } = require('../model/AdminModel')
 const { UserModel, SavedItemModel } = require('../model/UserModel')
 const ZarinpalCheckout = require('zarinpal-checkout');
@@ -453,6 +453,35 @@ function ClientController() {
 
 
 
+  this.saleForSeller = (paymentId) => {
+    var _totalPrice = 0
+    Object.entries(cache.get('productBasket')).forEach(async (item, index) => {
+      const ChildItem = await ChildItemModel.findById(item[0])
+
+      await ChildItemModel.updateOne(
+        { _id: item[0] },
+        { $set: {sold:ChildItem.sold + item[1].number } }
+      )
+
+      const seller = await SellerModel.findOne({ _id: ChildItem.sellerId })
+      _totalPrice += (ChildItem.offerTime?.exp > new Date().getTime()) ? (item[1].number * parseInt(ChildItem.price - ((ChildItem.price / 100) * ChildItem.offerValue))) : (item[1].number * ChildItem.price)
+
+      await SpecificationsSoldModel.create({
+        paymentId: paymentId,
+        product: ChildItem.title,
+        productId: ChildItem._id,
+        totalPrice: _totalPrice,
+        number: item[1].number,
+        brand: seller.brand,
+        phone: seller.phone
+      })
+
+      setTimeout(() => { cache.del('productBasket') }, 10000);
+    })
+  }
+
+
+
 
   this.addBuyBasket = (productBasket, res) => new Promise(async (resolve, reject) => {
     if (!Object.values(productBasket).length) return res.status(400).send('هنوز محصولی انتخاب نکرده اید')
@@ -465,7 +494,6 @@ function ClientController() {
       if (item[1].number > ChildItem.color.find(c => c.color === item[1].color).value) return res.status(400).send(`فقط ${ChildItem.color.find(c => c.color === item[1].color).value} عدد (${ChildItem.title}) به رنگ ${convertColor(item[1].color)} موجود میباشد لطفا سفارشتان را ویرایش کنید`)
       if (ChildItem.availableCount < 0 || !ChildItem.available || ChildItem.availableCount < item[1].number) return res.status(400).send(`${ChildItem.title} موجود نمیباشد`)
       if (item[1].number < 0) return res.status(400).send('مقدار نامعتبر')
-      console.log(ChildItem.price);
       _totalPrice +=
         (ChildItem.offerTime?.exp > new Date().getTime()) ?
           (item[1].number * parseInt(ChildItem.price - ((ChildItem.price / 100) * ChildItem.offerValue)))
@@ -498,39 +526,12 @@ function ClientController() {
   }
 
 
-  this.saleForSeller = () => {
-    Object.entries(cache.get('productBasket')).forEach(async (item, index) => {
-      const ChildItem = await ChildItemModel.findById(item[0])
-      const seller = await SellerModel.findOne({ _id: ChildItem.sellerId })
-      await ChildItemModel.updateOne(
-        { _id: item[0] },
-        { $set: { sold: ChildItem.sold + item[1].number, brand: seller.brand, phone: seller.phone, totalPrice: ChildItem.Price * item[1].number} }
-      )
-    }
-    )
-    cache.del('productBasket')
-  }
-
-
-
   this.setUserPhone = async (req) => {
     const user = await UserModel.findById(req.user.payload.userId);
     user.phone = req.body.phone
     await user.save()
   }
 
-
-
-  // this.aaaaaaa = () => {
-  //   Object.entries(cache.get('productBasket')).forEach(async (item, index) => {
-  //     const ChildItem = await ChildItemModel.findById(item[0])
-  //     const seller = await SellerModel.findOne({ _id: ChildItem.sellerId })
-  //     await ChildItemModel.updateOne(
-  //       {_id:item[0]},
-  //       { brand: seller.brand, phone: seller.phone, totalPrice: ChildItem.Price * item[1].number, saleId: ChildItem._id })
-  //   }
-  //   )
-  // }
 
 
   this.confirmPayment = async (req, res) => {
@@ -597,7 +598,7 @@ function ClientController() {
         titles: payment.titles,
       })
       this.minusAvailableCount()
-      this.saleForSeller()
+      this.saleForSeller(payment._id)
     } else {
       res.status(500).render("./paymant", {
         pageTitle: "پرداخت",

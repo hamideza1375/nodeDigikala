@@ -5,7 +5,7 @@
 const fs = require("fs");
 const appRootPath = require("app-root-path");
 const sharp = require("sharp");
-const { CategoryModel, ChildItemModel, PaymentModel } = require("../model/ClientModel");
+const { CategoryModel, ChildItemModel, PaymentModel, SpecificationsSoldModel } = require("../model/ClientModel");
 const { NotifeeModel, PostPriceModel, SellerModel, SliderModel } = require("../model/AdminModel");
 const { UserModel, ProposalModel, TicketModel, SavedItemModel } = require("../model/UserModel");
 const shortid = require("shortid");
@@ -40,20 +40,20 @@ function AdminController() {
   this.deleteSeller = async (req, res) => {
     await SellerModel.findByIdAndRemove(req.params.id);
     await ChildItemModel.deleteMany({ sellerId: req.params.id });
-    await UserModel.updateOne({ sellerId: req.params.id },{ $unset: { sellerId: 1 } })
+    await UserModel.updateOne({ sellerId: req.params.id }, { $unset: { sellerId: 1 } })
     res.status(200).json({ message: 'با موفقیت حذف شد' })
   }
 
-    // await UserModel.updateOne({ sellerId: req.params.id },  
-    // async function (err, user) {
-    //     if (user != null) {
-    //       user = user.toObject();
-    //       delete user.sellerId
-    //       await user.save()
-    //       console.log(user)
-    //     } 
-    //   }
-    //   )
+  // await UserModel.updateOne({ sellerId: req.params.id },  
+  // async function (err, user) {
+  //     if (user != null) {
+  //       user = user.toObject();
+  //       delete user.sellerId
+  //       await user.save()
+  //       console.log(user)
+  //     } 
+  //   }
+  //   )
 
   this.setSellerAvailable = async (req, res) => {
     const seller = await SellerModel.findById(req.params.id);
@@ -72,7 +72,6 @@ function AdminController() {
     await sharp(req.file.data).toFile(`${appRootPath}/public/upload/category/${req.fileName}`)
     const category = await new CategoryModel({ title: req.body.title, imageUrl: req.fileName }).save();
     res.status(200).json({ message: 'با موفقیت ساخته شد', value: category })
-    // res.status(200).send('با موفقیت ساخته شد')
   }
 
   this.getSinleCategory = async (req, res) => {
@@ -357,7 +356,6 @@ function AdminController() {
     }
     else
       res.status(400).send('اعلانی با این پیام فعلا فعال هست')
-
   }
 
 
@@ -392,8 +390,9 @@ function AdminController() {
     if (payment.checkSend != 0) return res.status(400).send('اول فیش را از صف ارسال خارج کنید')
     payment.queueSend = 0
     payment.send = 1
-    payment.postedDate = Date.now()
     await payment.save()
+
+    await SpecificationsSoldModel.updateMany({ paymentId: payment._id }, { $set: { postedDate: Date.now() } })
     res.json({ value: payment.send, message: {} })
   }
 
@@ -407,8 +406,17 @@ function AdminController() {
 
   //! QuitsForSeller
   this.getQuitsForSeller = async (req, res) => {
-    let childItem = await ChildItemModel.find({ success: true, send: { $eq: 1 }, postedDate: { $ne: new Date(new Date().getTime() - (60000 * 60 * 24 * (7 + 1))) } })
-    res.json({ value: childItem })
+    let SpecificationsSold = await SpecificationsSoldModel.find({ postedDate: { $lt: new Date(new Date().getTime() - (60000  * 60 * 24 * (7 + 1) )) } })
+    res.json({ value: SpecificationsSold })
+  }
+
+
+  this.sendQuitForSeller = async (req, res) => {
+    let childItem = await ChildItemModel.findOne({_id:req.query.productId})
+    childItem.quits = childItem.quits + Number(req.query.number)
+    await childItem.save()
+    await SpecificationsSoldModel.findByIdAndRemove(req.query.SpecificationsSoldId)
+    res.json({ message: 'واریز شد' })
   }
   //! QuitsForSeller
 

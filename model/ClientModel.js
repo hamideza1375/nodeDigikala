@@ -51,6 +51,20 @@ const CommenteModel = new mongoose.Schema({
 exports.CommenteModel = mongoose.model("CommenteModel", CommenteModel);
 
 
+const SpecificationsSoldModel = new mongoose.Schema({
+    brand: { type: String },
+    phone: { type: String },
+    product:{type:String},
+    totalPrice: { type: Number },
+    number: { type: Number },
+    postedDate: { type: Date },
+    productId: { type: mongoose.Schema.Types.ObjectId },
+    paymentId: { type: mongoose.Schema.Types.ObjectId }
+});
+
+exports.SpecificationsSoldModel = mongoose.model("SpecificationsSoldModel", SpecificationsSoldModel);
+
+
 const ChildItemModel = new mongoose.Schema({
 
     battery: { type: String, required: true },
@@ -72,14 +86,16 @@ const ChildItemModel = new mongoose.Schema({
     imageUrl3: String,
     imageUrl4: String,
     meanStar: { type: Number, default: 0 },
-    sold: { type: Number, default: 0 },
-    quits: { type: Number, default: 0 },
     available: { type: Number, default: 1 },
     availableCount: { type: Number, require: true, min: 1 },
     offerTime: { type: Object, default: { exp: 0, value: 0 } },
     offerValue: { type: Number, default: 0 },
     categoryId: { type: mongoose.Schema.Types.ObjectId, ref: "category" },
-    sellerId: { type: mongoose.Schema.Types.ObjectId, ref: "sellerId" }
+    sellerId: { type: mongoose.Schema.Types.ObjectId, ref: "sellerId" },
+
+    sold: { type: Number, default: 0 },
+    quits: { type: Number, default: 0 },
+
 });
 
 exports.ChildItemModel = mongoose.model("ChildItemModel", ChildItemModel);
@@ -120,16 +136,3 @@ const PaymentModel = new mongoose.Schema({
 });
 
 exports.PaymentModel = mongoose.model('PaymentModel', PaymentModel);
-
-
-
-const QuitsSellerModel = new mongoose.Schema({
-    brand: { type: String },
-    phone: { type: String },
-    date: { type: Date, default: Date.now },
-    postedDate: { type: Date },
-    userId: { type: mongoose.Schema.Types.ObjectId },
-});
-
-exports.QuitsSellerModel = mongoose.model('QuitsSellerModel', QuitsSellerModel);;
-
