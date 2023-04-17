@@ -207,7 +207,7 @@ function UserController() {
   }
   //! changeSpecification
 
-
+ 
   this.getNewCode = async (req, res) => {
     if (req.query.newCode !== 'true' && (req.user?.payload?.userId)) return res.status(400).send('شما در حال حاظر یک حساب فعال دارین')
     else if (cacheSetTimeForSendNewCode.get("newTime")) return res.status(400).send('بعد از اتمام زمان سه دقیقه ای دوباره میتوانید درخواست ارسال کد دهید')

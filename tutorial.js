@@ -404,3 +404,52 @@ this.commentLike = async (req, res) => {
 
 //! redirect
   // res.redirect('/lastPayment')
+
+
+//! fetch
+const response = await fetch("http://example.com/movies.json");
+const jsonData = await response.json();
+//! fetch
+
+//!
+const _response = await fetch(url, {
+  method: "POST", // *GET, POST, PUT, DELETE, etc.
+  mode: "cors", // no-cors, *cors, same-origin
+  cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+  credentials: "same-origin", // include, *same-origin, omit
+  headers: {
+    "Content-Type": "application/json",
+    // 'Content-Type': 'application/x-www-form-urlencoded',
+  },
+  redirect: "follow", // manual, *follow, error
+  referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+  body: JSON.stringify(data), // body data type must match "Content-Type" header
+});
+//!
+
+//! formData
+async function uploadMultiple(formData) {
+  try {
+    const response = await fetch("https://example.com/posts", {
+      method: "POST",
+      body: formData,
+    });
+    const result = await response.json();
+    console.log("Success:", result);
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+const photos = document.querySelector('input[type="file"][multiple]');
+const formData = new FormData();
+
+formData.append("title", "My Vegas Vacation");
+
+for (const [i, photo] of Array.from(photos.files).entries()) {
+  formData.append(`photos_${i}`, photo);
+}
+
+uploadMultiple(formData);
+
+//! formData
