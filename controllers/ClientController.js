@@ -544,7 +544,7 @@ function ClientController() {
       const { _totalPrice, _title, _itemsId } = await this.addBuyBasket(req.body.productBasket, res)
       const response = await zarinpal.PaymentRequest({
         Amount: _totalPrice + price,
-        CallbackURL: 'http://192.168.140.240:4000/verifyPayment',
+        CallbackURL: 'http://192.168.253.240:4000/verifyPayment',
         Description: _title,
       });
       await new PaymentModel({

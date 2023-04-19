@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 
 const SocketMessageModel = new mongoose.Schema({
     message: {type:String, require:true, minlength:1},
+    uri: {type:String},
+    type: {type:String},
     id: String,
     to: String,
     userId: String,
