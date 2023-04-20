@@ -114,7 +114,7 @@ module.exports = (server, app) => {
 
     socket.on("typing", (data) => {
       try {
-        socket.broadcast.in(data.roomNumber).emit("typing", data);
+        socket.broadcast.in('1').emit("typing", data);
       } catch (err) { console.log(err); }
   
     });
