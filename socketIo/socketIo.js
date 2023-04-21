@@ -67,7 +67,6 @@ module.exports = (server, app) => {
 
   let users = []
   io.on("connection", (socket) => {
-    
     socket.on("online", async (data) => {
       socket.join('1');
       users.push({ user: data.user, userId: data.userId, socketId: socket.id })
