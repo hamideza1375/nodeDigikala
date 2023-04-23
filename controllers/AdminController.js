@@ -178,25 +178,25 @@ function AdminController() {
 
     if (req.fileName1) {
       await sharp(req.file1.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName1}`)
-      if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl1}`))
+      if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem?.imageUrl1}`))
         fs.unlinkSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl1}`)
     }
 
     if (req.fileName2) {
       await sharp(req.file2.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName2}`)
-      if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl2}`))
+      if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem?.imageUrl2}`))
         fs.unlinkSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl2}`)
     }
 
     if (req.fileName3) {
       await sharp(req.file3.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName3}`)
-      if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl3}`))
+      if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem?.imageUrl3}`))
         fs.unlinkSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl3}`)
     }
 
     if (req.fileName4) {
       await sharp(req.file4.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName4}`)
-      if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl4}`))
+      if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem?.imageUrl4}`))
         fs.unlinkSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl4}`)
     }
 
@@ -475,37 +475,37 @@ function AdminController() {
 
     if (req.fileName1) {
       await sharp(req.file1.data).toFile(`${appRootPath}/public/upload/slider/${req.fileName1}`)
-      if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider.image1}`))
+      if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider?.image1}`))
         fs.unlinkSync(`${appRootPath}/public/upload/slider/${slider.image1}`)
     }
 
     if (req.fileName2) {
       await sharp(req.file2.data).toFile(`${appRootPath}/public/upload/slider/${req.fileName2}`)
-      if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider.image2}`))
+      if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider?.image2}`))
         fs.unlinkSync(`${appRootPath}/public/upload/slider/${slider.image2}`)
     }
 
     if (req.fileName3) {
       await sharp(req.file3.data).toFile(`${appRootPath}/public/upload/slider/${req.fileName3}`)
-      if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider.image3}`))
+      if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider?.image3}`))
         fs.unlinkSync(`${appRootPath}/public/upload/slider/${slider.image3}`)
     }
 
     if (req.fileName4) {
       await sharp(req.file4.data).toFile(`${appRootPath}/public/upload/slider/${req.fileName4}`)
-      if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider.image4}`))
+      if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider?.image4}`))
         fs.unlinkSync(`${appRootPath}/public/upload/slider/${slider.image4}`)
     }
 
     if (req.fileName5) {
       await sharp(req.file5.data).toFile(`${appRootPath}/public/upload/slider/${req.fileName5}`)
-      if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider.image5}`))
+      if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider?.image5}`))
         fs.unlinkSync(`${appRootPath}/public/upload/slider/${slider.image5}`)
     }
 
     if (req.fileName6) {
       await sharp(req.file6.data).toFile(`${appRootPath}/public/upload/slider/${req.fileName6}`)
-      if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider.image6}`))
+      if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider?.image6}`))
         fs.unlinkSync(`${appRootPath}/public/upload/slider/${slider.image6}`)
     }
 
