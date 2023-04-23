@@ -53,7 +53,7 @@ function UserController() {
     cacheSpecification.del("password")
     cacheSpecification.del("phoneOrEmail")
     cacheSetTimeForSendNewCode.del("newTime")
-    return res.status(201).json({ message: 'کد دریافتی را وارد کنید' })
+    return res.status(201).json({ message: {} })
   }
   //! Register
 
