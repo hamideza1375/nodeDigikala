@@ -2,7 +2,7 @@ const appRootPath = require("app-root-path")
 
 
 module.exports = async (req, res, next) => {
-  fileDir = `${appRootPath}/public/images/circle.png`
+  fileDir = `${appRootPath}/public/images/banner1.png`
   newFileNam = 'circle.png'
     res.download(fileDir, newFileNam, (err) => {
       if (err) {

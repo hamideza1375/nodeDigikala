@@ -5,7 +5,7 @@ const fs = require("fs");
 
 module.exports = (server, app) => {
   const { Server } = require("socket.io");
-  const io = new Server(server, { cors: { origin: "*" } });
+  const io = new Server(server);
   const { SocketMessageModel } = require('./SocketMessageModel');
 
 
