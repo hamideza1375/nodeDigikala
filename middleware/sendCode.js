@@ -21,8 +21,8 @@ module.exports = (req, res, myCache, cacheSetTimeForSendNewCode, cacheSpecificat
         from: "reza.attar1375@outlook.com",
         to: cacheSpecification.get('phoneOrEmail'),
         subject: "ارسال کد از dgkala",
-        text: `ارسال کد از دیجی کالا 
-             Code: ${random}`,
+        text: `code: ${random} 
+        ارسال از دیجیکالا`,
       }, (err, info) => {
         if (err || !info) {
           console.log(err);
@@ -42,8 +42,8 @@ module.exports = (req, res, myCache, cacheSetTimeForSendNewCode, cacheSpecificat
       const random = Math.floor(Math.random() * 90000 + 10000)
       myCache.set("code", random)
       api.Send({
-        message: `ارسال کد از دیجی کالا 
-    Code: ${random}`,
+        message: `code: ${random} 
+        ارسال از دیجیکالا`,
         sender: "2000500666",
         receptor: cacheSpecification.get('phoneOrEmail'),
       },

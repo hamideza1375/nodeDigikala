@@ -12,7 +12,6 @@ const { ConfirmPaymentShama } = require('../validator/ClientValidator');
 const cache = new nodeCache({ stdTTL: 60 * 30, checkperiod: 60 * 30 })
 
 
-
 const convertColor = (item) => {
   let color
   if (item === 'red') color = 'قرمز'
