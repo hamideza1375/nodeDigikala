@@ -2,6 +2,9 @@
 
 //! alt + 1 = میره تو تب اول
 //! alt + 1 = میره تو تب دوم
+const arr = [1, 2, 3]
+Math.min(2, 3, 4)
+Math.min(...arr)
 
 //! String
 //* endsWith !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -106,13 +109,13 @@ let a2 = [{ id: 1, name: 'a' }, { id: 2, name: 'b' }]
 delete a2[1].name
 console.log(a2) = [{ id: 1, name: 'a' }, { id: 2 }]
 //* delete !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // countMap.forEach((item, index) => ())
-  // countMap.keys()
-  // countMap.values()
-  // countMap.entries()
-  // console.log(Object.keys(number));
-  // console.log(Object.values(number));
-  // console.log(Object.entries(number)); //! object change to array
+// countMap.forEach((item, index) => ())
+// countMap.keys()
+// countMap.values()
+// countMap.entries()
+// console.log(Object.keys(number));
+// console.log(Object.values(number));
+// console.log(Object.entries(number)); //! object change to array
 //! Object
 
 //! Array
@@ -359,51 +362,51 @@ this.commentLike = async (req, res) => {
 }
 
 
-  //! edit
-  // const lastPayment = await PaymentModel.findOneAndUpdate(
-  //   { _id: '63fe054d2b67d226ac46bb32' },
-  //   { $set: { "childItemsId.text": "newText" } },
-  //   )
-  // res.json({ lastPayment })
-  //! edit
-  //! edit child
-  // const lastPayment = await PaymentModel.findOne({_id: "63fdf2798705f42c9cbd8655"})
-  // const child = lastPayment.childItemsId.id('63fdf2798705f42c9cbd8658')
-  // child.test = '111'
-  // await lastPayment.save()
-  //!
-  // const lastPayment = await PaymentModel.findOneAndUpdate(
-  //   {_id: "63fe054d2b67d226ac46bb32",
-  //    childItemsId: { $elemMatch: { _id: "63fe054d2b67d226ac46bb35" } }},
-  //   { $set: { "childItemsId.$.test": "newtest2" } },
-  //   { new: true }
-  // )
-  //!
-  // const lastPayment = await PaymentModel.findOneAndUpdate(
-  //   {childItemsId: { $elemMatch: { _id: "63fdf2798705f42c9cbd8657" } }},
-  //   { $set: { "childItemsId.$.test": "newte22s" } },
-  //   { new: true }
-  // )
-  //! edit child
+//! edit
+// const lastPayment = await PaymentModel.findOneAndUpdate(
+//   { _id: '63fe054d2b67d226ac46bb32' },
+//   { $set: { "childItemsId.text": "newText" } },
+//   )
+// res.json({ lastPayment })
+//! edit
+//! edit child
+// const lastPayment = await PaymentModel.findOne({_id: "63fdf2798705f42c9cbd8655"})
+// const child = lastPayment.childItemsId.id('63fdf2798705f42c9cbd8658')
+// child.test = '111'
+// await lastPayment.save()
+//!
+// const lastPayment = await PaymentModel.findOneAndUpdate(
+//   {_id: "63fe054d2b67d226ac46bb32",
+//    childItemsId: { $elemMatch: { _id: "63fe054d2b67d226ac46bb35" } }},
+//   { $set: { "childItemsId.$.test": "newtest2" } },
+//   { new: true }
+// )
+//!
+// const lastPayment = await PaymentModel.findOneAndUpdate(
+//   {childItemsId: { $elemMatch: { _id: "63fdf2798705f42c9cbd8657" } }},
+//   { $set: { "childItemsId.$.test": "newte22s" } },
+//   { new: true }
+// )
+//! edit child
 
-  //! delete child
-  // const lastPayment = await PaymentModel.findOne({ _id: "63fdf2798705f42c9cbd8655" })
-  // const child = lastPayment.childItemsId.id('63fdf2798705f42c9cbd8658')
-  // if (!child) throw new Error()
-  // await child.remove()
-  // await lastPayment.save()
-  //! delete child
+//! delete child
+// const lastPayment = await PaymentModel.findOne({ _id: "63fdf2798705f42c9cbd8655" })
+// const child = lastPayment.childItemsId.id('63fdf2798705f42c9cbd8658')
+// if (!child) throw new Error()
+// await child.remove()
+// await lastPayment.save()
+//! delete child
 
 
 
-  //   const lastPayment = await PaymentModel.findOne()
-  //   res.json({ lastPayment })
+//   const lastPayment = await PaymentModel.findOne()
+//   res.json({ lastPayment })
 
-  // }
+// }
 //! Mongoose
 
 //! redirect
-  // res.redirect('/lastPayment')
+// res.redirect('/lastPayment')
 
 
 //! fetch

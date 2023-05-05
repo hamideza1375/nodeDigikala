@@ -2,6 +2,7 @@ const Yup = require("yup");
 
 
 exports.RegisterValidator = Yup.object().shape({
+    fullname: Yup.string().required(),
     phoneOrEmail: Yup.string().required(),
     password: Yup.string().min(4).max(20).required(),
 });

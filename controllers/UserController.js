@@ -1,6 +1,3 @@
-// appcontas
-// spfa
-// app200
 const fs = require('fs');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -254,7 +251,7 @@ function UserController() {
 
   //! getLastPayment
   this.getLastPayment = async (req, res) => {
-    const lastPayment = await PaymentModel.find({ success: true })
+    const lastPayment = await PaymentModel.find({ success: true, userId: req.user.payload.userId })
       .sort({ date: -1 })
       .limit(5)
     res.json({ value: lastPayment })
@@ -443,6 +440,3 @@ function UserController() {
 
 
 module.exports = new UserController();
-
-
-//? _23 cacheSetTimeForSendNewCode.get("newTime") = مدت زمانی که باید منتظر بمونه برای ارسال تایم جدید
