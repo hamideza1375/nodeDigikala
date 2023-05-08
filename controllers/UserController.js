@@ -267,73 +267,6 @@ function UserController() {
   }
 
 
-  this.sendTicketAnswer = async (req, res) => {
-    if (req.files) await sharp(req.file.data).toFile(`${appRootPath}/public/upload/ticket/${req.fileName}`)
-    const ticket = await TicketModel.findById(req.params.id)
-    ticket.userSeen = 0
-    ticket.adminSeen = 0
-    ticket.date = new Date()
-    ticket.answer.push({ message: req.body.message, imageUrl: req.fileName, userId: req.user.payload.userId, date: new Date() })
-    await ticket.save()
-    res.json({ message: {}, value: ticket.answer[ticket.answer.length - 1] })
-  }
-
-
-  this.getAnswersTicket = async (req, res) => {
-    const getAnswersTicket = await TicketModel.findById(req.params.id)
-    const answer = getAnswersTicket.answer.reverse()
-    res.json({ message: {}, value: [...answer, getAnswersTicket] })
-  }
-
-
-  this.getTicketSeen = async (req, res) => {
-    if (!req.user.payload) return res.send()
-    let ticketseen = await TicketModel.find({ userId: req.user.payload.userId, userSeen: 0 }).countDocuments()
-    const ticket = await TicketModel.findOne({ userId: req.user.payload.userId, userSeen: 0 })
-    res.json({ seen: ticketseen, ticket: ticket ? ticket.answer[ticket.answer.length - 1] : '' })
-  }
-
-
-  this.deleteAnswerTicket = async (req, res) => {
-    const ticket = await TicketModel.findById(req.params.id)
-    const answer = ticket.answer.id(req.query.ticketid)
-
-    if (answer.imageUrl)
-      if (fs.existsSync(`${appRootPath}/public/upload/ticket/${answer.imageUrl}`))
-        fs.unlinkSync(`${appRootPath}/public/upload/ticket/${answer.imageUrl}`)
-
-    answer.remove()
-    await ticket.save()
-    res.json({ message: 'با موفقیت حذف شد' })
-  }
-
-
-  this.editAnswerTicket = async (req, res) => {
-    const ticket = await TicketModel.findById(req.params.id)
-    const answer = ticket.answer.id(req.query.ticketid)
-    if (req.files) {
-      if (answer.imageUrl) {
-        if (fs.existsSync(`${appRootPath}/public/upload/ticket/${answer.imageUrl}`))
-          fs.unlinkSync(`${appRootPath}/public/upload/ticket/${answer.imageUrl}`)
-      }
-      await sharp(req.file.data).toFile(`${appRootPath}/public/upload/ticket/${req.fileName}`)
-    }
-    if (req.body.message) answer.message = req.body.message
-    if (req.files) answer.imageUrl = req.fileName
-    ticket.date = new Date()
-    await ticket.save()
-    res.json({ value: answer })
-  }
-
-
-  this.getSingleAnswerTicket = async (req, res) => {
-    const ticket = await TicketModel.findOne({ _id: req.params.id })
-    const answer = ticket.answer.id(req.query.ticketid)
-    res.json({ value: answer })
-  }
-
-
-
   this.deleteTicket = async (req, res) => {
     const ticket = await TicketModel.findById(req.params.id)
     if (ticket.imageUrl)
@@ -342,8 +275,7 @@ function UserController() {
     await TicketModel.findByIdAndDelete(req.params.id);
     res.json({ message: 'با موفقیت حذف شد' })
   }
-
-
+  
 
   this.ticketBox = async (req, res) => {
     let tickets
@@ -357,10 +289,81 @@ function UserController() {
 
 
 
-  this.deleteMainItemTicketBox = async (req, res) => {
-    await TicketModel.findByIdAndDelete(req.params.id)
+  this.sendTicketAnswer = async (req, res) => {
+    if (req.files) await sharp(req.file.data).toFile(`${appRootPath}/public/upload/ticket/${req.fileName}`)
+    const ticket = await TicketModel.findById(req.params.id)
+    ticket.userSeen = 0
+    ticket.adminSeen = 0
+    ticket.date = new Date()
+    ticket.answer.push({ message: req.body.message, imageUrl: req.fileName, userId: req.user.payload.userId, date: new Date() })
+    await ticket.save()
+    res.json({ message: {}, value: ticket.answer[ticket.answer.length - 1] })
+  }
+
+// MainTicket
+  this.getAnswersTicket = async (req, res) => {
+    const getAnswersTicket = await TicketModel.findById(req.params.id)
+    const answer = getAnswersTicket.answer.reverse()
+    res.json({ message: {}, value: [...answer, getAnswersTicket] })
+  }
+
+
+  this.editAnswerTicket = async (req, res) => {
+    console.log(req.params.id, req.query.ticketid);
+    const ticket = await TicketModel.findById(req.params.id)
+    const answer = ticket.answer.id(req.query.ticketid)
+    if (req.files) {
+      if (answer?.imageUrl) {
+        if (fs.existsSync(`${appRootPath}/public/upload/ticket/${answer.imageUrl}`))
+          fs.unlinkSync(`${appRootPath}/public/upload/ticket/${answer.imageUrl}`)
+      }
+      await sharp(req.file.data).toFile(`${appRootPath}/public/upload/ticket/${req.fileName}`)
+    }
+    if (req.body.message) answer.message = req.body.message
+    if (req.files) answer.imageUrl = req.fileName
+    ticket.date = new Date()
+    await ticket.save()
+    res.json({ value: answer })
+  }
+
+
+  this.deleteAnswerTicket = async (req, res) => {
+    const ticket = await TicketModel.findById(req.params.id)
+    const answer = ticket.answer.id(req.query.ticketid)
+
+    if (answer?.imageUrl)
+      if (fs.existsSync(`${appRootPath}/public/upload/ticket/${answer.imageUrl}`))
+        fs.unlinkSync(`${appRootPath}/public/upload/ticket/${answer.imageUrl}`)
+
+    answer.remove()
+    await ticket.save()
     res.json({ message: 'با موفقیت حذف شد' })
   }
+
+
+
+  this.getSingleAnswerTicket = async (req, res) => {
+    const ticket = await TicketModel.findOne({ _id: req.params.id })
+    const answer = ticket.answer.id(req.query.ticketid)
+    res.json({ value: answer })
+  }
+
+
+
+  this.getTicketSeen = async (req, res) => {
+    if (!req.user.payload) return res.send()
+    let ticketseen = await TicketModel.find({ userId: req.user.payload.userId, userSeen: 0 }).countDocuments()
+    const ticket = await TicketModel.findOne({ userId: req.user.payload.userId, userSeen: 0 })
+    res.json({ seen: ticketseen, ticket: ticket ? ticket.answer[ticket.answer.length - 1] : '' })
+  }
+
+
+
+
+  // this.deleteMainItemTicketBox = async (req, res) => {
+  //   await TicketModel.findByIdAndDelete(req.params.id)
+  //   res.json({ message: 'با موفقیت حذف شد' })
+  // }
 
 
   this.ticketSeen = async (req, res) => {
@@ -406,19 +409,20 @@ function UserController() {
   }
 
 
-  this.getSingleSavedItems = async (req, res) => {
-    if (req.user.payload?.userId) {
-      const savedItem = await SavedItemModel.findOne().and([{ itemId: req.params.id }, { userId: req.user.payload.userId }])
-      savedItem ? res.json({ value: true }) : res.json({ value: false })
-    }
-    else res.json({ value: false })
-  }
+  // this.getSingleSavedItems = async (req, res) => {
+  //   if (req.user.payload?.userId) {
+  //     const savedItem = await SavedItemModel.findOne().and([{ itemId: req.params.id }, { userId: req.user.payload.userId }])
+  //     savedItem ? res.json({ value: true }) : res.json({ value: false })
+  //   }
+  //   else res.json({ value: false })
+  // }
   //! savedItem
 
 
 
   this.getAllProductForSeller = async (req, res) => {
-    let childItems = await ChildItemModel.find({ sellerId: req.user.payload.sellerId }).sort({ data: -1 })
+    let childItems =
+     await ChildItemModel.find({ sellerId: req.user.payload.sellerId }).sort({ data: -1 })
 
     res.status(200).json({ value: childItems });
   }

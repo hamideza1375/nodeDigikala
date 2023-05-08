@@ -1,4 +1,64 @@
+//!
+decodeURIComponent
+encodeURIComponent
+//!
 
+//!
+function Person(firstName, lastName) {
+  this.firstName = firstName;
+  this.lastName = lastName;
+}
+
+Person.prototype.greeting = function () {
+  return `Hello there ${this.firstName} ${this.lastName}`;
+}
+
+const person = new Person('John', 'Doe');
+
+console.log(person.greeting());
+//!
+
+//! extends
+class Animal {
+  constructor(legs) { this.legs = legs; }
+  walk(value) { return value.padEnd(7)  + this.legs }
+}
+
+class Bird extends Animal {
+  constructor(legs) { super(legs); }
+  fly() { return this.legs }
+}
+
+
+let bird = new Bird(2);
+let animal = new Animal(2);
+
+console.log(bird.walk('bird'));
+console.log(animal.walk('animal'));
+
+console.log(bird.fly());
+//! extends
+
+//! Class
+class Convert{
+  constructor(array){
+  this.obj = {}
+  array.forEach(a=>(this.obj[a._id] = a))
+}
+ get value(){return this.obj}
+ set rm(a){ this.obj = a}
+
+
+}
+const array = [{_id:'one'}, {_id:'two'}]
+const convert = new Convert(array)
+const a = convert.value
+convert.rm = {}
+const b = convert.obj
+
+console.log(a);
+console.log(b);
+//! Class
 
 //! alt + 1 = میره تو تب اول
 //! alt + 1 = میره تو تب دوم
