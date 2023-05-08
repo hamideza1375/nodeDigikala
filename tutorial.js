@@ -1,3 +1,14 @@
+  // await UserModel.updateOne({ sellerId: req.params.id },  
+  // async function (err, user) {
+  //     if (user != null) {
+  //       user = user.toObject();
+  //       delete user.sellerId
+  //       await user.save()
+  //       console.log(user)
+  //     } 
+  //   }
+  //   )
+  
 //!
 decodeURIComponent
 encodeURIComponent
