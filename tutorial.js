@@ -1,4 +1,21 @@
-  // await UserModel.updateOne({ sellerId: req.params.id },  
+//! fs
+this.allProduct = async (req, res) => {
+  const testArray = [
+    { id: "1", fullname: "younes ghorbany" },
+    { id: "2", fullname: "Iman Madaeny" },
+    { id: "3", fullname: "Sajad Bagherzade" },
+];
+ fs.writeFileSync(`${appRootPath}/a/newFile.json`, JSON.stringify(testArray));
+ const textFile = fs.readFileSync(`${appRootPath}/a/newFile.json`);
+ const value = JSON.parse(textFile)
+ const filterValue = value.filter((val)=>val.id !== "2" )
+ fs.writeFileSync(`${appRootPath}/a/newFile.json`, JSON.stringify(filterValue));
+ res.send();
+}
+//! fs
+
+// [{"color":"red", "value":"3"}] //! for rapid client
+// await UserModel.updateOne({ sellerId: req.params.id },  
   // async function (err, user) {
   //     if (user != null) {
   //       user = user.toObject();

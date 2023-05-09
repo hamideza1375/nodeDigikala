@@ -34,7 +34,6 @@ router.delete("/deleteTicket/:id", [Auth], UserController.deleteTicket);
 router.put("/editAnswerTicket/:id", [Auth, fileUpload], UserController.editAnswerTicket);
 router.get("/getSingleAnswerTicket/:id", [Auth, fileUpload], UserController.getSingleAnswerTicket);
 router.post("/ticketSeen/:id", [Auth], UserController.ticketSeen);
-// router.delete("/deleteMainItemTicketBox/:id", Auth, UserController.deleteMainItemTicketBox);
 
 router.post("/savedItem/:id", Auth, UserController.savedItem);
 router.delete("/removeSavedItem/:id", Auth, UserController.removeSavedItem);

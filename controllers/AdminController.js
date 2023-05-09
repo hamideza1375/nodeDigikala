@@ -8,55 +8,13 @@ const sharp = require("sharp");
 const { CategoryModel, ChildItemModel, PaymentModel, SpecificationsSoldModel } = require("../model/ClientModel");
 const { NotifeeModel, PostPriceModel, SellerModel, SliderModel } = require("../model/AdminModel");
 const { UserModel, ProposalModel, TicketModel, SavedItemModel } = require("../model/UserModel");
-const shortid = require("shortid");
 
 var interval
 
 function AdminController() {
 
 
-  //! Seller
-  this.createSeller = async (req, res) => {
-    const user = await UserModel.findOne({ phoneOrEmail: req.body.phone });
-    if (!user) return res.status(400).send('کاربری با این شماره قبلا ثبت نام نکرده است')
-    const sellerPhone = await SellerModel.findOne({ phone: req.body.phone })
-    const sellerBrand = await SellerModel.findOne({ brand: req.body.brand })
-    if (sellerPhone) return res.status(400).send('این شماره را قبلا به فروشندگان اضاف کرده اید')
-    if (sellerBrand) return res.status(400).send('این برند را قبلا برای فروشنده ی دیگری انتخاب کزده اید')
-    const seller = await SellerModel.create({ brand: req.body.brand, phone: req.body.phone });
-    user.sellerId = seller._id
-    await user.save()
-    res.status(200).json({ message: 'با موفقیت ساخته شد', value: seller })
-  }
-
-
-  this.getAllSellers = async (req, res) => {
-    const seller = await SellerModel.find();
-    res.status(200).json({ value: seller })
-  }
-
-
-
-  this.deleteSeller = async (req, res) => {
-    await SellerModel.findByIdAndRemove(req.params.id);
-    await ChildItemModel.deleteMany({ sellerId: req.params.id });
-    await UserModel.updateOne({ sellerId: req.params.id }, { $unset: { sellerId: 1 } })
-    res.status(200).json({ message: 'با موفقیت حذف شد' })
-  }
-
-
-
-  this.setSellerAvailable = async (req, res) => {
-    const seller = await SellerModel.findById(req.params.id);
-    seller.available = seller.available ? 0 : 1
-    await seller.save()
-    res.status(200).json({ value: seller.available })
-  }
-  //! Seller
-
-
-
-
+  
   //! Category
   this.createCategory = async (req, res) => {
     if (!req.files) return res.status(400).send('لطفا یک فایل انتخاب کنید')
@@ -65,15 +23,15 @@ function AdminController() {
     res.status(200).json({ message: 'با موفقیت ساخته شد', value: category })
   }
 
-  this.getSinleCategory = async (req, res) => {
-    const category = await CategoryModel.findById(req.params.id);
-    res.status(200).json({ value: category })
+  this.getCategorys = async (req, res) => {
+    let category = await CategoryModel.find()
+    res.status(200).json({ value: category });
   }
 
 
-  this.getCategory = async (req, res) => {
-    let category = await CategoryModel.find()
-    res.status(200).json({ value: category });
+  this.getSinleCategory = async (req, res) => {
+    const category = await CategoryModel.findById(req.params.id);
+    res.status(200).json({ value: category })
   }
 
 
@@ -105,6 +63,49 @@ function AdminController() {
   //! Category
 
 
+
+  //! Seller
+  this.createSeller = async (req, res) => {
+    const user = await UserModel.findOne({ phoneOrEmail: req.body.phone });
+    if (!user) return res.status(400).send('کاربری با این شماره قبلا ثبت نام نکرده است')
+    const sellerPhone = await SellerModel.findOne({ phone: req.body.phone })
+    const sellerBrand = await SellerModel.findOne({ brand: req.body.brand })
+    if (sellerPhone) return res.status(400).send('این شماره را قبلا به فروشندگان اضاف کرده اید')
+    if (sellerBrand) return res.status(400).send('این برند را قبلا برای فروشنده ی دیگری انتخاب کزده اید')
+    const seller = await SellerModel.create({ brand: req.body.brand, phone: req.body.phone });
+    user.sellerId = seller._id
+    await user.save()
+    res.status(200).json({ message: 'با موفقیت ساخته شد', value: seller })
+  }
+
+
+  this.getAllSellers = async (req, res) => {
+    const seller = await SellerModel.find();
+    res.status(200).json({ value: seller })
+  }
+
+
+
+  this.deleteSeller = async (req, res) => {
+   const sell = await SellerModel.deleteOne({_id:req.params.id});
+    await ChildItemModel.deleteMany({ sellerId: req.params.id });
+    await UserModel.updateOne({ sellerId: req.params.id }, { $unset: { sellerId: 1 } })
+    res.status(200).json({ message: (sell.n === 1)? ('با موفقیت حذف شد') : ('این شماره قبلا از لیست فروشندگان حذف شده است') })
+  }
+
+
+
+  this.setSellerAvailable = async (req, res) => {
+    const seller = await SellerModel.findById(req.params.id);
+    seller.available = seller.available ? 0 : 1
+    await seller.save()
+    res.status(200).json({ value: seller.available })
+  }
+  //! Seller
+
+
+
+
   //! ChildItems
   this.getChildItemsTable = async (req, res) => {
     let childItems = await ChildItemModel.find({ categoryId: req.params.id, sellerId: req.query.sellerId }).sort({ data: -1 })
@@ -117,25 +118,42 @@ function AdminController() {
   }
 
   this.createChildItem = async (req, res) => {
-    const { battery, network, operatingSystem, title, price, info, ram, cpuCore, camera, storage, warranty, color, display, meanStar, num, total, available } = req.body
+    const {
+       battery,
+       network,
+       operatingSystem,
+       title,
+       price,
+       info,
+       ram,
+       cpuCore,
+       camera,
+       storage,
+       warranty,
+       color,
+       display,
+        } = req.body
     if (!req.fileName1 || !req.fileName2 || !req.fileName3 || !req.fileName4) return res.status(400).send('لطفا تمام کادر های تصاویر را پر کنید')
 
-    await sharp(req.file1.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName1}`)
-    await sharp(req.file2.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName2}`)
-    await sharp(req.file3.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName3}`)
-    await sharp(req.file4.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName4}`)
+    
+    fs.writeFileSync(`${appRootPath}/public/upload/childItem/${req.fileName1}`, req.file1.data);
+    fs.writeFileSync(`${appRootPath}/public/upload/childItem/${req.fileName2}`, req.file2.data);
+    fs.writeFileSync(`${appRootPath}/public/upload/childItem/${req.fileName3}`, req.file3.data);
+    fs.writeFileSync(`${appRootPath}/public/upload/childItem/${req.fileName4}`, req.file4.data);
 
+    
     let numberAvailable = 0
     for (let i in JSON.parse(color)) {
       numberAvailable += Number(JSON.parse(color)[i].value)
     }
-
+    // [{"color":"red", "value":"3"}]
     const childItem = await new ChildItemModel({
       battery,
       network,
       operatingSystem,
       title,
       price,
+      info,
       ram,
       cpuCore,
       camera,
@@ -143,11 +161,6 @@ function AdminController() {
       warranty,
       color: JSON.parse(color),
       display,
-      info,
-      meanStar,
-      num,
-      total,
-      available,
       availableCount: numberAvailable,
       imageUrl1: req.fileName1,
       imageUrl2: req.fileName2,
@@ -164,7 +177,21 @@ function AdminController() {
   this.editChildItem = async (req, res) => {
     const childItem = await ChildItemModel.findById(req.params.id)
     if (!childItem) return res.status(400).send('این گزینه قبلا از سرور حذف شده')
-    const { battery, network, operatingSystem, title, price, info, ram, cpuCore, camera, storage, warranty, color, display, fullSpecifications, meanStar, num, total, available } = req.body
+    const { 
+      battery,
+      network,
+      operatingSystem,
+      title,
+      price,
+      info,
+      ram,
+      cpuCore,
+      camera,
+      storage,
+      warranty,
+      color,
+      display,
+     } = req.body
 
 
     if (req.fileName1) {
@@ -208,12 +235,7 @@ function AdminController() {
     childItem.warranty = warranty
     childItem.color = JSON.parse(color)
     childItem.display = display
-    childItem.fullSpecifications = fullSpecifications
     childItem.info = info
-    childItem.meanStar = meanStar
-    childItem.num = num
-    childItem.total = total
-    childItem.available = available
     childItem.availableCount = numberAvailable
     if (req.fileName1) childItem.imageUrl1 = req.fileName1;
     if (req.fileName2) childItem.imageUrl2 = req.fileName2;

@@ -359,13 +359,6 @@ function UserController() {
 
 
 
-
-  // this.deleteMainItemTicketBox = async (req, res) => {
-  //   await TicketModel.findByIdAndDelete(req.params.id)
-  //   res.json({ message: 'با موفقیت حذف شد' })
-  // }
-
-
   this.ticketSeen = async (req, res) => {
     const ticket = await TicketModel.findOne({ _id: req.params.id })
     if (!req.user.payload.isAdmin) ticket.userSeen = 1
