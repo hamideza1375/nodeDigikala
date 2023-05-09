@@ -5,7 +5,7 @@
 const fs = require("fs");
 const appRootPath = require("app-root-path");
 const sharp = require("sharp");
-const { CategoryModel, ChildItemModel, PaymentModel, SpecificationsSoldModel } = require("../model/ClientModel");
+const { CategoryModel, ChildItemModel, PaymentModel, SpecificationsSoldModel, CommenteModel } = require("../model/ClientModel");
 const { NotifeeModel, PostPriceModel, SellerModel, SliderModel } = require("../model/AdminModel");
 const { UserModel, ProposalModel, TicketModel, SavedItemModel } = require("../model/UserModel");
 
@@ -269,6 +269,7 @@ function AdminController() {
     if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl}`))
       fs.unlinkSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl}`)
     await ChildItemModel.findByIdAndRemove(req.params.id)
+    await CommenteModel.deleteMany({ commentId: req.params.id })
     await SavedItemModel.deleteMany({ itemId: req.params.id })
     res.status(200).json({ message: 'با موفقیت حذف شد', value: childItem })
   }

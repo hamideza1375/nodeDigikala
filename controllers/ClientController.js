@@ -475,7 +475,7 @@ function ClientController() {
         phone: seller.phone
       })
 
-      setTimeout(() => { cache.del('productBasket') }, 10000);
+      setTimeout(() => { cache.del('productBasket') }, 100000);
     })
   }
 
@@ -559,8 +559,6 @@ function ClientController() {
         address: req.body.address,
         latlng: req.body.latlng,
         paymentCode: response.authority,
-        // description: req.body.description,
-        // id: payments.length ? payments[payments.length - 1].id + 1 : 1,
       }).save();
       res.status(200).json({ value: response.url });
     } catch (error) {
