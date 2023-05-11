@@ -1,31 +1,47 @@
+//! rn-class
+class Car extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { brand: "Ford", model: "Mustang", color: "red", year: 1964 };
+  }
+  static getDerivedStateFromProps(props, state) { return { color: props.favcol } }
+  shouldComponentUpdate() { return false  /* true */ }
+  componentDidMount() { setTimeout(() => { this.setState({ color: "yellow" }) }, 1000) }
+  getSnapshotBeforeUpdate(prevProps, prevState) { console.log("Before the update, the favorite was " + prevState.color); }
+  componentDidUpdate() { console.log("The updated favorite is " + this.state.color); }
+  changeColor = () => { this.setState({ color: "blue" }) }
+  render() {return <button type="button" onClick={this.changeColor}>{this.state.color}</button>}
+}
+//! rn-class
+
 //! fs
 this.allProduct = async (req, res) => {
   const testArray = [
     { id: "1", fullname: "younes ghorbany" },
     { id: "2", fullname: "Iman Madaeny" },
     { id: "3", fullname: "Sajad Bagherzade" },
-];
- fs.writeFileSync(`${appRootPath}/a/newFile.json`, JSON.stringify(testArray));
- const textFile = fs.readFileSync(`${appRootPath}/a/newFile.json`);
- const value = JSON.parse(textFile)
- const filterValue = value.filter((val)=>val.id !== "2" )
- fs.writeFileSync(`${appRootPath}/a/newFile.json`, JSON.stringify(filterValue));
- res.send();
+  ];
+  fs.writeFileSync(`${appRootPath}/a/newFile.json`, JSON.stringify(testArray));
+  const textFile = fs.readFileSync(`${appRootPath}/a/newFile.json`);
+  const value = JSON.parse(textFile)
+  const filterValue = value.filter((val) => val.id !== "2")
+  fs.writeFileSync(`${appRootPath}/a/newFile.json`, JSON.stringify(filterValue));
+  res.send();
 }
 //! fs
 
 // [{"color":"red", "value":"3"}] //! for rapid client
 // await UserModel.updateOne({ sellerId: req.params.id },  
-  // async function (err, user) {
-  //     if (user != null) {
-  //       user = user.toObject();
-  //       delete user.sellerId
-  //       await user.save()
-  //       console.log(user)
-  //     } 
-  //   }
-  //   )
-  
+// async function (err, user) {
+//     if (user != null) {
+//       user = user.toObject();
+//       delete user.sellerId
+//       await user.save()
+//       console.log(user)
+//     } 
+//   }
+//   )
+
 //!
 decodeURIComponent
 encodeURIComponent
@@ -47,9 +63,33 @@ console.log(person.greeting());
 //!
 
 //! extends
+class Car {
+  constructor(name) {
+    this.brand = name;
+  }
+
+  present() {
+    return 'I have a ' + this.brand;
+  }
+}
+
+class Model extends Car {
+  constructor(name, mod) {
+    super(name);
+    this.model = mod;
+  }
+  show() {
+    return this.present() + ', it is a ' + this.model
+  }
+}
+
+const mycar = new Model("Ford", "Mustang");
+
+//* &&
+
 class Animal {
   constructor(legs) { this.legs = legs; }
-  walk(value) { return value.padEnd(7)  + this.legs }
+  walk(value) { return value.padEnd(7) + this.legs }
 }
 
 class Bird extends Animal {
@@ -68,17 +108,17 @@ console.log(bird.fly());
 //! extends
 
 //! Class
-class Convert{
-  constructor(array){
-  this.obj = {}
-  array.forEach(a=>(this.obj[a._id] = a))
-}
- get value(){return this.obj}
- set rm(a){ this.obj = a}
+class Convert {
+  constructor(array) {
+    this.obj = {}
+    array.forEach(a => (this.obj[a._id] = a))
+  }
+  get value() { return this.obj }
+  set rm(a) { this.obj = a }
 
 
 }
-const array = [{_id:'one'}, {_id:'two'}]
+const array = [{ _id: 'one' }, { _id: 'two' }]
 const convert = new Convert(array)
 const a = convert.value
 convert.rm = {}
