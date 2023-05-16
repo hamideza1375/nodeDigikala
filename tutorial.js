@@ -62,50 +62,27 @@ const person = new Person('John', 'Doe');
 console.log(person.greeting());
 //!
 
-//! extends
-class Car {
-  constructor(name) {
-    this.brand = name;
-  }
-
-  present() {
-    return 'I have a ' + this.brand;
+//!class extends
+class Car{
+  constructor(name, age){
+    this.name = name
+    this.age = age
+    this.color = 'red'
   }
 }
 
-class Model extends Car {
-  constructor(name, mod) {
-    super(name);
-    this.model = mod;
+class Car2 extends Car {
+  constructor(name, age){
+    super(name, age)
+    this.x = name + this.color
+    console.log(this.d);
   }
-  show() {
-    return this.present() + ', it is a ' + this.model
-  }
+  get d(){return 222222}
 }
 
-const mycar = new Model("Ford", "Mustang");
-
-//* &&
-
-class Animal {
-  constructor(legs) { this.legs = legs; }
-  walk(value) { return value.padEnd(7) + this.legs }
-}
-
-class Bird extends Animal {
-  constructor(legs) { super(legs); }
-  fly() { return this.legs }
-}
-
-
-let bird = new Bird(2);
-let animal = new Animal(2);
-
-console.log(bird.walk('bird'));
-console.log(animal.walk('animal'));
-
-console.log(bird.fly());
-//! extends
+const car2 = new Car2('ford ', 1998)
+console.log(car2);
+//!class extends
 
 //! Class
 class Convert {
@@ -336,12 +313,12 @@ parseFloat(_number1) = 15.095; type = 'number'
 
 //! arguments
 const numberArray = [{ id: 1, price: 50 }, { id: 2, price: 70 }, { id: 3, price: 50 }]
-function sum() {
+function Car() {
   var number = 0
   for (let i = 0; i < arguments.length; i++) number += arguments[i].price
   console.log(number)
 }
-sum(...numberArray)
+Car(...numberArray)
 //! arguments
 
 
