@@ -107,17 +107,17 @@ function AdminController() {
 
 
   //! ChildItems
-  this.getChildItemsTable = async (req, res) => {
+  this.getProductsTable = async (req, res) => {
     let childItems = await ChildItemModel.find({ categoryId: req.params.id, sellerId: req.query.sellerId }).sort({ data: -1 })
     res.status(200).json({ value: childItems });
   }
 
-  this.getSingleItem = async (req, res) => {
+  this.getSingleProduct = async (req, res) => {
     let singleItem = await ChildItemModel.findById(req.params.id)
     res.status(200).json({ value: singleItem });
   }
 
-  this.createChildItem = async (req, res) => {
+  this.createProduct = async (req, res) => {
     const {
        battery,
        network,
@@ -174,7 +174,7 @@ function AdminController() {
 
 
 
-  this.editChildItem = async (req, res) => {
+  this.editProduct = async (req, res) => {
     const childItem = await ChildItemModel.findById(req.params.id)
     if (!childItem) return res.status(400).send('این گزینه قبلا از سرور حذف شده')
     const { 
@@ -263,7 +263,7 @@ function AdminController() {
 
 
 
-  this.deleteChildItem = async (req, res) => {
+  this.deleteProduct = async (req, res) => {
     const childItem = await ChildItemModel.findById(req.params.id)
     if (!childItem) return res.status(400).send('این گزینه قبلا از سرور حذف شده')
     if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl}`))

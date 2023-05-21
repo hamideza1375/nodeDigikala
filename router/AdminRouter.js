@@ -21,11 +21,11 @@ router.delete('/deleteSeller/:id', AuthMainAdmin, AdminController.deleteSeller)
 router.get('/getAllSellers', AuthMainAdmin, AdminController.getAllSellers)
 router.put('/setSellerAvailable/:id', AuthMainAdmin, AdminController.setSellerAvailable)
 
-router.get('/getChildItemsTable/:id', [AuthMainAdmin], AdminController.getChildItemsTable);
-router.get('/admin/getSingleItem/:id', [AuthMainAdmin], AdminController.getSingleItem);
-router.post('/createChildItem/:id', [AuthMainAdmin, multiFileUpload], AdminController.createChildItem);
-router.put('/editChildItem/:id', [AuthMainAdmin, multiFileUpload], AdminController.editChildItem);
-router.delete('/deleteChildItem/:id', AuthMainAdmin, AdminController.deleteChildItem);
+router.get('/getProductsTable/:id', [AuthMainAdmin], AdminController.getProductsTable);
+router.get('/admin/getSingleProduct/:id', [AuthMainAdmin], AdminController.getSingleProduct);
+router.post('/createProduct/:id', [AuthMainAdmin, multiFileUpload], AdminController.createProduct);
+router.put('/editProduct/:id', [AuthMainAdmin, multiFileUpload], AdminController.editProduct);
+router.delete('/deleteProduct/:id', AuthMainAdmin, AdminController.deleteProduct);
 router.post('/setOffer/:id', AuthMainAdmin, AdminController.setOffer);
 
 router.get('/listUnAvailable', AuthMainAdmin, AdminController.listUnAvailable);
@@ -49,10 +49,8 @@ router.post('/postedOrder/:id', AuthAllAdmin, AdminController.postedOrder);
 router.post('/postQueue/:id', AuthAllAdmin, AdminController.postQueue);
 router.get('/getAllPaymentSuccessFalseAndTrue', Auth, AdminController.getAllPaymentSuccessFalseAndTrue);
 
-// priceForPost
 router.post('/sendPostPrice', AuthMainAdmin, AdminController.sendPostPrice);
 router.get('/getPostPrice', Auth, AdminController.getPostPrice);
-// priceForPost
 
 router.get('/adminTicketBox', AuthMainAdmin, AdminController.adminTicketBox)
 router.get('/getAdminTicketSeen', AuthMainAdmin, AdminController.getAdminTicketSeen)

@@ -370,7 +370,7 @@ function UserController() {
 
 
   //! savedItem
-  this.savedItem = async (req, res) => {
+  this.savedProduct = async (req, res) => {
     const ChildItem = await ChildItemModel.findOne({ _id: req.params.id })
     const savedItem = await SavedItemModel.findOne().and([{ itemId: req.params.id }, { userId: req.user.payload.userId }])
     if (!savedItem) {
@@ -390,13 +390,13 @@ function UserController() {
   }
 
 
-  this.removeSavedItem = async (req, res) => {
+  this.removeSavedProduct = async (req, res) => {
     await SavedItemModel.deleteOne().and([{ itemId: req.params.id }, { userId: req.user.payload.userId }])
     res.json({ message: 'از ذخیره ها حذف شد' })
   }
 
 
-  this.getSavedItems = async (req, res) => {
+  this.getSavedProducts = async (req, res) => {
     const savedItem = await SavedItemModel.find({ userId: req.user.payload.userId }).select({ title: 1, price: 1, imageUrl: 1, itemId: 1 })
     res.json({ value: savedItem })
   }

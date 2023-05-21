@@ -64,7 +64,7 @@ function ClientController() {
 
 
   //! product
-  this.getSingleSavedItems = async (req, res) => {
+  this.getSingleSavedsavedProducts = async (req, res) => {
     if (req.user.payload?.userId) {
       const savedItem = await SavedItemModel.findOne().and([{ itemId: req.params.id }, { userId: req.user.payload.userId }])
       savedItem ? res.json({ value: true }) : res.json({ value: false })
@@ -74,13 +74,13 @@ function ClientController() {
 
 
 
-  this.getChildItems = async (req, res) => {
+  this.getProducts = async (req, res) => {
     let childItems = await ChildItemModel.find({ categoryId: req.params.id }).sort({ data: -1 })
     res.status(200).json({ value: childItems });
   }
 
 
-  this.getSingleItem = async (req, res) => {
+  this.getSingleProduct = async (req, res) => {
     let singleItem = await ChildItemModel.findById(req.params.id)
     res.status(200).json({ value: singleItem });
   }
@@ -367,7 +367,7 @@ function ClientController() {
 
 
 
-  this.getChildItemComments = async (req, res) => {
+  this.getProductComments = async (req, res) => {
     const comment = await CommenteModel.find({ commentId: req.params.id }).sort({ date: -1 })
     res.status(200).json({ value: comment })
   }
@@ -541,6 +541,7 @@ function ClientController() {
       const price = postPrice ? postPrice.price : 30000
       this.setUserPhone(req)
       const { _totalPrice, _title, _itemsId } = await this.addBuyBasket(req.body.productBasket, res)
+
       const response = await zarinpal.PaymentRequest({
         Amount: _totalPrice + price,
         CallbackURL: 'http://localhost:4000/verifyPayment',

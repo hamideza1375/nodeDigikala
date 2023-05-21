@@ -34,12 +34,10 @@ router.delete("/deleteTicket/:id", [Auth], UserController.deleteTicket);
 router.put("/editAnswerTicket/:id", [Auth, fileUpload], UserController.editAnswerTicket);
 router.get("/getSingleAnswerTicket/:id", [Auth, fileUpload], UserController.getSingleAnswerTicket);
 router.post("/ticketSeen/:id", [Auth], UserController.ticketSeen);
-
-router.post("/savedItem/:id", Auth, UserController.savedItem);
-router.delete("/removeSavedItem/:id", Auth, UserController.removeSavedItem);
-router.get("/getSavedItems", Auth, UserController.getSavedItems);
+router.post("/savedProduct/:id", Auth, UserController.savedProduct);
+router.delete("/removeSavedProduct/:id", Auth, UserController.removeSavedProduct);
+router.get("/getSavedProducts", Auth, UserController.getSavedProducts);
 router.get("/getAllProductForSeller", Auth, UserController.getAllProductForSeller);
-
 router.get("/captcha.png/:id", UserController.captcha);
 
 module.exports = router;
