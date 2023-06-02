@@ -1,7 +1,8 @@
 // sprouter
 const router = require('express').Router();
 const AdminController = require('../controllers/AdminController');
-const Auth = require('../middleware/user');
+const Auth = require('../middleware/Auth');
+const user = require('../middleware/user');
 const AuthMainAdmin = require('../middleware/AuthMainAdmin');
 const AuthAllAdmin = require('../middleware/AuthAllAdmin');
 const fileUpload = require('../middleware/fileUpload');
@@ -50,7 +51,7 @@ router.post('/postQueue/:id', AuthAllAdmin, AdminController.postQueue);
 router.get('/getAllPaymentSuccessFalseAndTrue', Auth, AdminController.getAllPaymentSuccessFalseAndTrue);
 
 router.post('/sendPostPrice', AuthMainAdmin, AdminController.sendPostPrice);
-router.get('/getPostPrice', Auth, AdminController.getPostPrice);
+router.get('/getPostPrice', user, AdminController.getPostPrice);
 
 router.get('/adminTicketBox', AuthMainAdmin, AdminController.adminTicketBox)
 router.get('/getAdminTicketSeen', AuthMainAdmin, AdminController.getAdminTicketSeen)

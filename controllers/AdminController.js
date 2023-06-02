@@ -13,8 +13,7 @@ var interval
 
 function AdminController() {
 
-
-  
+  /** @type {import("express").RequestHandler} */
   //! Category
   this.createCategory = async (req, res) => {
     if (!req.files) return res.status(400).send('لطفا یک فایل انتخاب کنید')

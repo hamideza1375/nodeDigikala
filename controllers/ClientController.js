@@ -149,7 +149,8 @@ function ClientController() {
     else if (req.user.payload.seller === 1) fullname = 'فروشندگان'
     else fullname = 'کاربر'
 
-    await comment.answer.push({ message, fullname, commentId: req.params.id, userphoneOrEmail: req.user.payload.phoneOrEmail, to: to })
+     comment.answer.push({ message, fullname, commentId: req.params.id, userphoneOrEmail: req.user.payload.phoneOrEmail, to: to })
+    // await comment.answer.push({ message, fullname, commentId: req.params.id, userphoneOrEmail: req.user.payload.phoneOrEmail, to: to })
     await comment.save()
 
     res.status(200).json({ message: 'ساخته شد', value: comment.answer[comment.answer.length - 1] })
@@ -481,7 +482,7 @@ function ClientController() {
 
 
 
-
+ 
   this.addBuyBasket = (productBasket, res) => new Promise(async (resolve, reject) => {
     if (!Object.values(productBasket).length) return res.status(400).send('هنوز محصولی انتخاب نکرده اید')
     var _totalPrice = 0,

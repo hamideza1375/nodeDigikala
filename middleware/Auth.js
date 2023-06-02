@@ -2,6 +2,7 @@
 const jwt = require('jsonwebtoken');
 const { UserModel } = require('../model/UserModel');
 
+/** @type {import("express").RequestHandler} */
 
 module.exports = async (req, res, next) => {
   const user = jwt.decode(req.header('Authorization'), { complete: true });

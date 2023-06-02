@@ -43,7 +43,8 @@ app.use(errorHandler)
 const port = process.env.PORT || 4000
 server.listen(port, (err) => { console.log(`App Listen to port ${port}`) })
 
-mongoose.connect("mongodb://localhost:27017/digikala", { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false /* ,useFindAndModify: false */ })
+mongoose.set('strictQuery', true);
+mongoose.connect("mongodb://127.0.0.1:27017/digikala")
   .then(() => console.log('db connected'))
   .catch((err) => console.error('db not connected', err));
 

@@ -74,11 +74,6 @@ module.exports = (req, res, myCache, cacheSetTimeForSendNewCode, cacheSpecificat
 
 
 
-
-
-
-
-
 // module.exports = (req, res, myCache, cacheSetTimeForSendNewCode, cacheSpecification) => {
 //   const code = myCache.set("code", 12345)
 // res.send(code)
