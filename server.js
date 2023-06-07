@@ -7,6 +7,7 @@
 // spuse
 // mongodb://localhost:27017/
 const express = require("express");
+// const webPush = require('web-push');
 const app = express();
 const mongoose = require('mongoose');
 const fileUpload = require("express-fileupload");
@@ -24,6 +25,8 @@ const socketIo = require('./socketIo/socketIo');
 const errorHandler = require("./middleware/errorHandler");
 const user = require("./middleware/user");
 
+
+
 process.on('uncaughtException', (err) => { });
 process.on('unhandledRejection', (err) => { });
 app.use(express.json());
@@ -33,6 +36,19 @@ app.use(express.static("public"));
 app.use(fileUpload());
 app.set('view engine', 'ejs');
 app.set('views', './views');
+
+// ./node_modules/.bin/web-push generate-vapid-keys
+// const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
+// const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
+
+// webPush.setVapidDetails('mailto:test@example.com', publicVapidKey, privateVapidKey);
+
+// app.post('/createNotification2', async (req, res) => {
+//   const payload = JSON.stringify({ title: req.body.title, message: req.body.message });
+//   webPush.sendNotification(req.body.subscription, payload)
+//   res.status(201).json({});
+// });
+
 
 socketIo(server, app)
 app.use(user, Client)

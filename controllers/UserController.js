@@ -5,7 +5,7 @@ const { UserModel, ProposalModel, ImageProfileModel, TicketModel, SavedItemModel
 const captchapng = require("captchapng");
 const nodeCache = require("node-cache");
 const appRootPath = require('app-root-path');
-const sharp = require('sharp');
+// const sharp = require('sharp');
 const { ChildItemModel, PaymentModel } = require('../model/ClientModel');
 const sendCode = require('../middleware/sendCode');
 const { RegisterValidator } = require('../validator/UserValidator');
@@ -222,11 +222,12 @@ function UserController() {
         fs.unlinkSync(`${appRootPath}/public/upload/profile/${imageProfile.imageUrl}`)
     }
     await ImageProfileModel.deleteMany({ userId: req.user.payload.userId })
-    sharp(req.file.data)
-      .jpeg({ quality: 85 })
-      .toFile(`${appRootPath}/public/upload/profile/${req.fileName}`)
-      .then(data => { })
-      .catch(err => { })
+    fs.writeFileSync(`${appRootPath}/public/upload/profile/${req.fileName}`, req.file.data);
+    // sharp(req.file.data)
+    //   .jpeg({ quality: 85 })
+    //   .toFile(`${appRootPath}/public/upload/profile/${req.fileName}`)
+    //   .then(data => { })
+    //   .catch(err => { })
     await new ImageProfileModel({ imageUrl: req.fileName, userId: req.user.payload.userId }).save()
 
     res.status(200).json({ message: 'تصویر با موفقیت بروزرسانی شد', imageUrl: req.fileName })
@@ -261,7 +262,8 @@ function UserController() {
 
   //! Ticket
   this.sendNewTicket = async (req, res) => {
-    if (req.files) await sharp(req.file.data).toFile(`${appRootPath}/public/upload/ticket/${req.fileName}`)
+    if (req.files) fs.writeFileSync(`${appRootPath}/public/upload/ticket/${req.fileName}`, req.file.data);
+    // if (req.files) await sharp(req.file.data).toFile(`${appRootPath}/public/upload/ticket/${req.fileName}`)
     const newTicket = await TicketModel.create({ date: new Date(), title: req.body.title, message: req.body.message, imageUrl: req.fileName, userId: req.user.payload.userId })
     res.json({ message: 'تیکت شما با موفقیت ارسال شد', value: newTicket })
   }
@@ -290,7 +292,8 @@ function UserController() {
 
 
   this.sendTicketAnswer = async (req, res) => {
-    if (req.files) await sharp(req.file.data).toFile(`${appRootPath}/public/upload/ticket/${req.fileName}`)
+    if (req.files) fs.writeFileSync(`${appRootPath}/public/upload/ticket/${req.fileName}`, req.file.data);
+    // if (req.files) await sharp(req.file.data).toFile(`${appRootPath}/public/upload/ticket/${req.fileName}`)
     const ticket = await TicketModel.findById(req.params.id)
     ticket.userSeen = 0
     ticket.adminSeen = 0
@@ -317,7 +320,8 @@ function UserController() {
         if (fs.existsSync(`${appRootPath}/public/upload/ticket/${answer.imageUrl}`))
           fs.unlinkSync(`${appRootPath}/public/upload/ticket/${answer.imageUrl}`)
       }
-      await sharp(req.file.data).toFile(`${appRootPath}/public/upload/ticket/${req.fileName}`)
+      fs.writeFileSync(`${appRootPath}/public/upload/ticket/${req.fileName}`, req.file.data);
+      // await sharp(req.file.data).toFile(`${appRootPath}/public/upload/ticket/${req.fileName}`)
     }
     if (req.body.message) answer.message = req.body.message
     if (req.files) answer.imageUrl = req.fileName

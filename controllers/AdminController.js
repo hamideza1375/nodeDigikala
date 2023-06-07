@@ -4,7 +4,7 @@
 // apprenderparams
 const fs = require("fs");
 const appRootPath = require("app-root-path");
-const sharp = require("sharp");
+// const sharp = require("sharp");
 const { CategoryModel, ChildItemModel, PaymentModel, SpecificationsSoldModel, CommenteModel } = require("../model/ClientModel");
 const { NotifeeModel, PostPriceModel, SellerModel, SliderModel } = require("../model/AdminModel");
 const { UserModel, ProposalModel, TicketModel, SavedItemModel } = require("../model/UserModel");
@@ -17,7 +17,9 @@ function AdminController() {
   //! Category
   this.createCategory = async (req, res) => {
     if (!req.files) return res.status(400).send('لطفا یک فایل انتخاب کنید')
-    await sharp(req.file.data).toFile(`${appRootPath}/public/upload/category/${req.fileName}`)
+    // await sharp(req.file.data).toFile(`${appRootPath}/public/upload/category/${req.fileName}`)
+    fs.writeFileSync(`${appRootPath}/public/upload/category/${req.fileName}`, req.file.data);
+
     const category = await new CategoryModel({ title: req.body.title, imageUrl: req.fileName }).save();
     res.status(200).json({ message: 'با موفقیت ساخته شد', value: category })
   }
@@ -38,7 +40,8 @@ function AdminController() {
     const category = await CategoryModel.findById(req.params.id);
     if (!category) return res.status(400).send('این گزینه از سرور حذف شده است')
     if (req.files) {
-      await sharp(req.file.data).toFile(`${appRootPath}/public/upload/category/${req.fileName}`)
+      fs.writeFileSync(`${appRootPath}/public/upload/category/${req.fileName}`, req.file.data);
+      // await sharp(req.file.data).toFile(`${appRootPath}/public/upload/category/${req.fileName}`)
       if (fs.existsSync(`${appRootPath}/public/upload/category/${category.imageUrl}`))
         fs.unlinkSync(`${appRootPath}/public/upload/category/${category.imageUrl}`)
     } else {
@@ -194,25 +197,29 @@ function AdminController() {
 
 
     if (req.fileName1) {
-      await sharp(req.file1.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName1}`)
+      fs.writeFileSync(`${appRootPath}/public/upload/childItem/${req.fileName1}`, req.file1.data);
+      // await sharp(req.file1.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName1}`)
       if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem?.imageUrl1}`))
         fs.unlinkSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl1}`)
     }
 
     if (req.fileName2) {
-      await sharp(req.file2.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName2}`)
+      fs.writeFileSync(`${appRootPath}/public/upload/childItem/${req.fileName2}`, req.file2.data);
+      // await sharp(req.file2.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName2}`)
       if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem?.imageUrl2}`))
         fs.unlinkSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl2}`)
     }
 
     if (req.fileName3) {
-      await sharp(req.file3.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName3}`)
+      fs.writeFileSync(`${appRootPath}/public/upload/childItem/${req.fileName3}`, req.file3.data);
+      // await sharp(req.file3.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName3}`)
       if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem?.imageUrl3}`))
         fs.unlinkSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl3}`)
     }
 
     if (req.fileName4) {
-      await sharp(req.file4.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName4}`)
+      fs.writeFileSync(`${appRootPath}/public/upload/childItem/${req.fileName4}`, req.file4.data);
+      // await sharp(req.file4.data).toFile(`${appRootPath}/public/upload/childItem/${req.fileName4}`)
       if (fs.existsSync(`${appRootPath}/public/upload/childItem/${childItem?.imageUrl4}`))
         fs.unlinkSync(`${appRootPath}/public/upload/childItem/${childItem.imageUrl4}`)
     }
@@ -487,37 +494,43 @@ function AdminController() {
 
 
     if (req.fileName1) {
-      await sharp(req.file1.data).toFile(`${appRootPath}/public/upload/slider/${req.fileName1}`)
+      fs.writeFileSync(`${appRootPath}/public/upload/slider/${req.fileName1}`, req.file1.data);
+      // await sharp(req.file1.data).toFile(`${appRootPath}/public/upload/slider/${req.fileName1}`)
       if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider?.image1}`))
         fs.unlinkSync(`${appRootPath}/public/upload/slider/${slider.image1}`)
     }
 
     if (req.fileName2) {
-      await sharp(req.file2.data).toFile(`${appRootPath}/public/upload/slider/${req.fileName2}`)
+      fs.writeFileSync(`${appRootPath}/public/upload/slider/${req.fileName2}`, req.file2.data);
+      // await sharp(req.file2.data).toFile(`${appRootPath}/public/upload/slider/${req.fileName2}`)
       if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider?.image2}`))
         fs.unlinkSync(`${appRootPath}/public/upload/slider/${slider.image2}`)
     }
 
     if (req.fileName3) {
-      await sharp(req.file3.data).toFile(`${appRootPath}/public/upload/slider/${req.fileName3}`)
+      fs.writeFileSync(`${appRootPath}/public/upload/slider/${req.fileName3}`, req.file3.data);
+      // await sharp(req.file3.data).toFile(`${appRootPath}/public/upload/slider/${req.fileName3}`)
       if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider?.image3}`))
         fs.unlinkSync(`${appRootPath}/public/upload/slider/${slider.image3}`)
     }
 
     if (req.fileName4) {
-      await sharp(req.file4.data).toFile(`${appRootPath}/public/upload/slider/${req.fileName4}`)
+      fs.writeFileSync(`${appRootPath}/public/upload/slider/${req.fileName4}`, req.file4.data);
+      // await sharp(req.file4.data).toFile(`${appRootPath}/public/upload/slider/${req.fileName4}`)
       if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider?.image4}`))
         fs.unlinkSync(`${appRootPath}/public/upload/slider/${slider.image4}`)
     }
 
     if (req.fileName5) {
-      await sharp(req.file5.data).toFile(`${appRootPath}/public/upload/slider/${req.fileName5}`)
+      fs.writeFileSync(`${appRootPath}/public/upload/slider/${req.fileName5}`, req.file5.data);
+      // await sharp(req.file5.data).toFile(`${appRootPath}/public/upload/slider/${req.fileName5}`)
       if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider?.image5}`))
         fs.unlinkSync(`${appRootPath}/public/upload/slider/${slider.image5}`)
     }
 
     if (req.fileName6) {
-      await sharp(req.file6.data).toFile(`${appRootPath}/public/upload/slider/${req.fileName6}`)
+      fs.writeFileSync(`${appRootPath}/public/upload/slider/${req.fileName6}`, req.file6.data);
+      // await sharp(req.file6.data).toFile(`${appRootPath}/public/upload/slider/${req.fileName6}`)
       if (fs.existsSync(`${appRootPath}/public/upload/slider/${slider?.image6}`))
         fs.unlinkSync(`${appRootPath}/public/upload/slider/${slider.image6}`)
     }
