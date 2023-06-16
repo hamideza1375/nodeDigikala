@@ -23,7 +23,7 @@ module.exports = (server, app) => {
   )
 
 
-  app.post('/imageChat',(req, res)=> {
+  app.post('/imageChat', (req, res) => {
     try {
       const image = req.files.uri;
       if (!image) return res.status(400).send(err)
@@ -37,7 +37,7 @@ module.exports = (server, app) => {
 
 
 
-  app.post('/videoChat', (req, res)=> {
+  app.post('/videoChat', (req, res) => {
     try {
       const video = req.files.uri;
       if (!video) return res.status(400).send(err)
@@ -50,7 +50,7 @@ module.exports = (server, app) => {
   })
 
 
-  app.post('/audioChat', (req, res)=> {
+  app.post('/audioChat', (req, res) => {
     try {
       console.log(req.body);
       const audio = req.files.uri;
@@ -72,10 +72,10 @@ module.exports = (server, app) => {
       users.push({ user: data.user, userId: data.userId, socketId: socket.id })
       io.sockets.emit("online", users);
       let msgModel
-      if(data.user.isAdmin)
-       msgModel = await SocketMessageModel.find().sort({ date: -1 })
-       else
-       msgModel = await SocketMessageModel.find().sort({ date: -1 })
+      if (data.user.isAdmin)
+        msgModel = await SocketMessageModel.find().sort({ date: -1 })
+      else
+        msgModel = await SocketMessageModel.find().sort({ date: -1 })
       if (data.user.isAdmin) {
         await SocketMessageModel.updateMany(
           { seen: 0 },
@@ -83,9 +83,11 @@ module.exports = (server, app) => {
         )
         msgModel.forEach(async (item, index) => {
           if (item.expTime <= new Date().getTime()) {
-            await SocketMessageModel.deleteMany(
-              { _id: item._id },
-            )
+            await SocketMessageModel.deleteMany({ _id: item._id })
+            if (item.uri) {
+              if (fs.existsSync(`${appRootPath}/public/upload/socket/${item.uri}`))
+                fs.unlinkSync(`${appRootPath}/public/upload/socket/${item.uri}`)
+            }
           }
         });
       }
@@ -96,7 +98,7 @@ module.exports = (server, app) => {
 
     socket.on("pvChat", async (data) => {
       try {
-        const socketMsg = await new SocketMessageModel({type:data.type, uri:data.uri, message: data.pvMessage, id: socket.id, to: data.to, userId: data.userId, getTime: new Date().getTime(), expTime: new Date().getTime() + (60 * 1000 * 60 * 24 * 7) })
+        const socketMsg = await new SocketMessageModel({ type: data.type, uri: data.uri, message: data.pvMessage, id: socket.id, to: data.to, userId: data.userId, getTime: new Date().getTime(), expTime: new Date().getTime() + (60 * 1000 * 60 * 24 * 7) })
         if (!data.isAdmin) socketMsg.seen = 0
         await socketMsg.save()
 
@@ -115,7 +117,7 @@ module.exports = (server, app) => {
       try {
         socket.broadcast.in('1').emit("typing", data);
       } catch (err) { console.log(err); }
-  
+
     });
 
 
