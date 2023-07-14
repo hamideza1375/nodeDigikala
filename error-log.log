@@ -2398,3 +2398,26 @@
 {"level":"error","message":"\"expiresIn\" should be a number of seconds or string representing a timespan"}
 {"level":"error","message":"\"expiresIn\" should be a number of seconds or string representing a timespan"}
 {"level":"error","message":"\"expiresIn\" should be a number of seconds or string representing a timespan"}
+{"level":"error","message":"a is not defined"}
+{"level":"error","message":"a is not defined"}
+{"level":"error","message":"a is not defined"}
+{"level":"error","message":"a is not defined"}
+{"level":"error","message":"c is not defined"}
+{"level":"error","message":"c is not defined"}
+{"level":"error","message":"c is not defined"}
+{"level":"error","message":"a is not defined"}
+{"level":"error","message":"a is not defined"}
+{"level":"error","message":"a is not defined"}
+{"level":"error","message":"a is not defined"}
+{"level":"error","message":"a is not defined"}
+{"level":"error","message":"a is not defined"}
+{"level":"error","message":"a is not defined"}
+{"level":"error","message":"a is not defined"}
+{"level":"error","message":"a is not defined"}
+{"level":"error","message":"a is not defined"}
+{"level":"error","message":"a is not defined"}
+{"level":"error","message":"a is not defined"}
+{"level":"error","message":"a is not defined"}
+{"level":"error","message":"awaitRegisterValidator is not defined"}
+{"level":"error","message":"awaitRegisterValidator is not defined"}
+{"level":"error","message":"a is not defined"}

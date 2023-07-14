@@ -19,10 +19,12 @@
 // app.use(errorHandler, User)
 // app.use(errorHandler, Admin)
 
+
 const winston = require("winston");
 
 module.exports = async (error, req, res, next) => {
-  console.log(error.stack);
+  console.error("««««««««{ " + error.message + " }»»»»»»»»")
+  console.error(error.stack);
   winston.add(new winston.transports.File({ filename: 'error-log.log' }));
   winston.error(error.message);
   res.status(500).send()
