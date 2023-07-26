@@ -11,6 +11,12 @@ const nodeCache = require("node-cache");
 const { ConfirmPaymentShama } = require('../validator/ClientValidator');
 const cache = new nodeCache({ stdTTL: 60 * 30, checkperiod: 60 * 30 })
 
+  /**
+* @param {express.Request} req
+* @param {express.Response} res
+* @param {() => void} next
+* @returns {void}
+*/
 
 const convertColor = (item) => {
   let color

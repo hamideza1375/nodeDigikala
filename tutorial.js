@@ -410,7 +410,13 @@ setInterval(() => {
 // $in:[6, 7, 2] = اگه مقدار برابر با یکی از مقادیر داخل آرایه بود اونارو برمیگردونه
 // $nin:[1, 7, 9] اگه مقدار برابر یکی از مقادیر داخل آرایه بود اونارو برنمیگردونه
 
-
+find({
+  title: {
+    $elemMatch: {
+      school: { $exists: true }
+    }
+  }
+})
 
 //! unset
 const user = await UserModel.updateOne(
