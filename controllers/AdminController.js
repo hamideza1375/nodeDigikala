@@ -475,12 +475,29 @@ function AdminController() {
 
 
   //! DataForChart
+  // this.getDataForChart = async (req, res) => {
+  //   const getAddress7DeyForChart = await PaymentModel.find({ success: true, date: { $gt: new Date(new Date().getTime() - (60000 * 60 * 24 * (7 + 1))) } })
+  //   const getAddress1YearsForChart = await PaymentModel.find({ success: true, date: { $gt: new Date(new Date().getTime() - (60000 * 60 * 24 * (365 + 30))) } })
+  //   const getUsers7DeyForChart = await UserModel.find({ date: { $gt: new Date(new Date().getTime() - (60000 * 60 * 24 * (7 + 1))) } }).select({ date: 1 })
+  //   const getUsersLength = await UserModel.find().countDocuments()
+  //   res.json({ getAddress7DeyForChart, getAddress1YearsForChart, getUsers7DeyForChart, getUsersLength })
+  // }
   this.getDataForChart = async (req, res) => {
-    const getAddress7DeyForChart = await PaymentModel.find({ success: true, date: { $gt: new Date(new Date().getTime() - (60000 * 60 * 24 * (7 + 1))) } })
-    const getAddress1YearsForChart = await PaymentModel.find({ success: true, date: { $gt: new Date(new Date().getTime() - (60000 * 60 * 24 * (365 + 30))) } })
-    const getUsers7DeyForChart = await UserModel.find({ date: { $gt: new Date(new Date().getTime() - (60000 * 60 * 24 * (7 + 1))) } }).select({ date: 1 })
-    const getUsersLength = await UserModel.find().countDocuments()
-    res.json({ getAddress7DeyForChart, getAddress1YearsForChart, getUsers7DeyForChart, getUsersLength })
+    switch (req.query.type) {
+      case 'address7DeyForChart': {
+        const getAddress7DeyForChart = await PaymentModel.find({ success: true, date: { $gt: new Date(new Date().getTime() - (60000 * 60 * 24 * (7 + 1))) } })
+        res.json({ value: getAddress7DeyForChart })
+      } break;
+      case 'users7DeyForChart': {
+        const users7DeyForChart = await UserModel.find({ date: { $gt: new Date(new Date().getTime() - (60000 * 60 * 24 * (7 + 1))) } }).select({ date: 1 })
+        const usersLength = await UserModel.find().countDocuments()
+        res.json({ value: { users7DeyForChart, usersLength } })
+      } break;
+      case 'address1YearsForChart': {
+        const getAddress1YearsForChart = await PaymentModel.find({ success: true, date: { $gt: new Date(new Date().getTime() - (60000 * 60 * 24 * (365 + 30))) } })
+        res.json({ value: getAddress1YearsForChart })
+      } break;
+    }
   }
   //! DataForChart
 

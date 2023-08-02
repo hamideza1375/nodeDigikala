@@ -11,7 +11,7 @@ const nodeCache = require("node-cache");
 const { ConfirmPaymentShama } = require('../validator/ClientValidator');
 const cache = new nodeCache({ stdTTL: 60 * 30, checkperiod: 60 * 30 })
 
-  /**
+/**
 * @param {express.Request} req
 * @param {express.Response} res
 * @param {() => void} next
@@ -34,13 +34,17 @@ const convertColor = (item) => {
   return color
 }
 
-
+const log = (value) => {console.log(value)}
 function ClientController() {
 
 
   this.allProduct = async (req, res) => {
-    let allChild = await ChildItemModel.find().select({ imageUrl1: 1, title: 1 })
-    res.status(200).json({ value: allChild });
+    let allChild
+    if(req.query.text)
+     allChild = await ChildItemModel.find({ title: { $regex: req.query.text, $options: 'i' } }).select({ imageUrl1: 1, title: 1 })
+   else allChild = []
+   log(allChild)
+     res.status(200).json({ value: allChild });
   }
 
   //! getSlider
@@ -155,7 +159,7 @@ function ClientController() {
     else if (req.user.payload.seller === 1) fullname = 'فروشندگان'
     else fullname = 'کاربر'
 
-     comment.answer.push({ message, fullname, commentId: req.params.id, userphoneOrEmail: req.user.payload.phoneOrEmail, to: to })
+    comment.answer.push({ message, fullname, commentId: req.params.id, userphoneOrEmail: req.user.payload.phoneOrEmail, to: to })
     // await comment.answer.push({ message, fullname, commentId: req.params.id, userphoneOrEmail: req.user.payload.phoneOrEmail, to: to })
     await comment.save()
 
@@ -466,7 +470,7 @@ function ClientController() {
 
       await ChildItemModel.updateOne(
         { _id: item[0] },
-        { $set: {sold:ChildItem.sold + item[1].number } }
+        { $set: { sold: ChildItem.sold + item[1].number } }
       )
 
       const seller = await SellerModel.findOne({ _id: ChildItem.sellerId })
@@ -488,7 +492,7 @@ function ClientController() {
 
 
 
- 
+
   this.addBuyBasket = (productBasket, res) => new Promise(async (resolve, reject) => {
     if (!Object.values(productBasket).length) return res.status(400).send('هنوز محصولی انتخاب نکرده اید')
     var _totalPrice = 0,

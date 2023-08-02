@@ -2421,3 +2421,16 @@
 {"level":"error","message":"awaitRegisterValidator is not defined"}
 {"level":"error","message":"awaitRegisterValidator is not defined"}
 {"level":"error","message":"a is not defined"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'text')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'text')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'text')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'text')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'text')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'text')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'text')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'text')"}
+{"level":"error","message":"Parameter \"filter\" to find() must be an object, got \"[object Object]\" (type object)"}
+{"level":"error","message":"text is not defined"}
+{"level":"error","message":"Can't use $match with String."}
+{"level":"error","message":"Can't use $match with String."}
+{"level":"error","message":"Can't use $match with String."}
