@@ -2434,3 +2434,21 @@
 {"level":"error","message":"Can't use $match with String."}
 {"level":"error","message":"Can't use $match with String."}
 {"level":"error","message":"Can't use $match with String."}
+{"level":"error","message":"utils.populate: invalid path. Expected string. Got typeof `object`"}
+{"level":"error","message":"utils.populate: invalid path. Expected string. Got typeof `object`"}
+{"level":"error","message":"Cannot populate path `userLike` because it is not in your schema. Set the `strictPopulate` option to false to override."}
+{"level":"error","message":"Cannot populate path `userLike` because it is not in your schema. Set the `strictPopulate` option to false to override."}
+{"level":"error","message":"Cannot read properties of undefined (reading 'filter')"}
+{"level":"error","message":"Arguments must be aggregate pipeline operators"}
+{"level":"error","message":"Cannot read properties of null (reading 'like')"}
+{"level":"error","message":"Cannot read properties of null (reading 'like')"}
+{"level":"error","message":"Arguments must be aggregate pipeline operators"}
+{"level":"error","message":"Mongoose 5.x disallows passing a spread of operators to `Model.aggregate()`. Instead of `Model.aggregate({ $match }, { $skip })`, do `Model.aggregate([{ $match }, { $skip }])`"}
+{"level":"error","message":"invalid argument to $skip stage: Expected a number in: $skip: { _id: \"64cb1ec2cb4abe4871f38ea9\" }"}
+{"level":"error","message":"ObjectId is not defined"}
+{"level":"error","message":"$elemMatch needs an Object"}
+{"level":"error","message":"Arguments must be aggregate pipeline operators"}
+{"level":"error","message":"the count field must be a non-empty string"}
+{"level":"error","message":"CommenteModel.aggregate(...).length is not a function"}
+{"level":"error","message":"Cannot read properties of undefined (reading '0')"}
+{"level":"error","message":"Cannot read properties of null (reading 'answer')"}

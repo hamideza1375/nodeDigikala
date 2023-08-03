@@ -9,6 +9,7 @@ const ZarinpalCheckout = require('zarinpal-checkout');
 const zarinpal = ZarinpalCheckout.create('00000000-0000-0000-0000-000000000000', true);
 const nodeCache = require("node-cache");
 const { ConfirmPaymentShama } = require('../validator/ClientValidator');
+const mongoose = require('mongoose');
 const cache = new nodeCache({ stdTTL: 60 * 30, checkperiod: 60 * 30 })
 
 /**
@@ -203,66 +204,53 @@ function ClientController() {
     res.status(200).json({ message: 'نظر شما حذف شد' })
   }
 
+
   this.commentLike = async (req, res) => {
-    const falseLike = await CommenteModel.findById({ _id: req.params.id })
-    const truLike = await CommenteModel.findOne({ _id: req.params.id, like: { $elemMatch: { userId: req.user.payload.userId } } })
-
-    const like = truLike?.like
-    const findLike = like?.length && like.find(l => l.userId == req.user.payload.userId)
-    const preLike = findLike ? !findLike.value : 0
-
-    if (truLike) {
+    const comment = await CommenteModel.findById(req.params.id)
+    const truLike = await CommenteModel.findOne({ _id: req.params.id, like: { $elemMatch: { userId: req.user.payload.userId } } }).select({like: { $elemMatch: { userId: req.user.payload.userId } }})
+    const preLike = (truLike && truLike.like[0]) ? !truLike.like[0].value : 0
+    if (truLike?.like?.length) {
       await CommenteModel.findOneAndUpdate({ _id: req.params.id, like: { $elemMatch: { userId: req.user.payload.userId } } },
         { $set: { "like.$.value": preLike } },
         { new: true }
       )
-      const comment = await CommenteModel.findOne({ _id: req.params.id })
-      const filterValueTrue = comment.like.filter(l => l.value === 1)
-      comment.likeCount = filterValueTrue.length
+      const aggregateComment = await CommenteModel.aggregate([{ $match: { _id: mongoose.Types.ObjectId(req.params.id) } },{ $unwind: '$like' },{ $match: { 'like.value': 1 } }])
+      comment.likeCount = aggregateComment.length
       await comment.save()
-      res.status(200).json({ value: filterValueTrue.length })
+      res.status(200).json({ value: aggregateComment.length })
     }
-
-    else if (falseLike) {
-      falseLike.like.push({ value: 1, userId: req.user.payload.userId })
-      await falseLike.save()
-      const comment = await CommenteModel.findOne({ _id: req.params.id })
-      const filterValueTrue = comment.like.filter(l => l.value === 1)
-      comment.likeCount = filterValueTrue.length
+    else if (comment) {
+      comment.like.push({ value: 1, userId: req.user.payload.userId })
       await comment.save()
-      res.status(200).json({ value: filterValueTrue.length })
+      const aggregateComment = await CommenteModel.aggregate([{ $match: { _id: mongoose.Types.ObjectId(req.params.id) } },{ $unwind: '$like' },{ $match: { 'like.value': 1 } }])
+      comment.likeCount = aggregateComment.length
+      await comment.save()
+      res.status(200).json({ value: aggregateComment.length })
     }
   }
 
 
-
   this.commentDisLike = async (req, res) => {
-    const falseDisLike = await CommenteModel.findById({ _id: req.params.id })
-    const truDisLike = await CommenteModel.findOne({ _id: req.params.id, disLike: { $elemMatch: { userId: req.user.payload.userId } } })
-
-    const disLike = truDisLike?.disLike
-    const findDisLike = disLike?.length && disLike.find(l => l.userId == req.user.payload.userId)
-    const preDisLike = findDisLike ? !findDisLike.value : 0
-
-    if (truDisLike) {
+    const comment = await CommenteModel.findById(req.params.id)
+    const truDisLike = await CommenteModel.findOne({ _id: req.params.id, disLike: { $elemMatch: { userId: req.user.payload.userId } } }).select({disLike: { $elemMatch: { userId: req.user.payload.userId } }})
+    const preDisLike = (truDisLike && truDisLike.disLike[0]) ? !truDisLike.disLike[0].value : 0
+    if (truDisLike?.disLike?.length) {
       await CommenteModel.findOneAndUpdate({ _id: req.params.id, disLike: { $elemMatch: { userId: req.user.payload.userId } } },
         { $set: { "disLike.$.value": preDisLike } },
         { new: true }
       )
-      const comment = await CommenteModel.findOne({ _id: req.params.id })
-      const filterValueTrue = comment.disLike.filter(l => l.value === 1)
-      comment.disLikeCount = filterValueTrue.length
+      const aggregateComment = await CommenteModel.aggregate([{ $match: { _id: mongoose.Types.ObjectId(req.params.id) } },{ $unwind: '$disLike' },{ $match: { 'disLike.value': 1 } }])
+      comment.disLikeCount = aggregateComment.length
       await comment.save()
-      res.status(200).json({ value: filterValueTrue.length })
+      res.status(200).json({ value: aggregateComment.length })
     }
-    else if (falseDisLike) {
-      falseDisLike.disLike.push({ value: 1, userId: req.user.payload.userId })
-      await falseDisLike.save()
-      const comment = await CommenteModel.findOne({ _id: req.params.id })
-      const filterValueTrue = comment.disLike.filter(l => l.value === 1)
-      comment.disLikeCount = filterValueTrue.length
+    else if (comment) {
+      comment.disLike.push({ value: 1, userId: req.user.payload.userId })
       await comment.save()
-      res.status(200).json({ value: filterValueTrue.length })
+      const aggregateComment = await CommenteModel.aggregate([{ $match: { _id: mongoose.Types.ObjectId(req.params.id) } },{ $unwind: '$disLike' },{ $match: { 'disLike.value': 1 } }])
+      comment.disLikeCount = aggregateComment.length
+      await comment.save()
+      res.status(200).json({ value: aggregateComment.length })
     }
   }
 
@@ -271,20 +259,10 @@ function ClientController() {
 
   this.likeAnswer = async (req, res) => {
     const falseLike = await CommenteModel.findOne({ _id: req.params.id }).select({ answer: { $elemMatch: { _id: req.query.commentId } } })
-    const _truLike = await CommenteModel.findOne({
-      _id: req.params.id,
-      answer: { $elemMatch: { _id: req.query.commentId, like: { $elemMatch: { userId: req.user.payload.userId } } } },
-    }
-    )
-      .select({
-        _id: req.params.id,
-        answer: { $elemMatch: { _id: req.query.commentId, like: { $elemMatch: { userId: req.user.payload.userId } } } },
-      })
+    const _truLike = await CommenteModel.findOne({_id: req.params.id, answer: { $elemMatch: { _id: req.query.commentId, like: { $elemMatch: { userId: req.user.payload.userId } } } },})
+    .select({_id: req.params.id,answer: { $elemMatch: { _id: req.query.commentId, like: { $elemMatch: { userId: req.user.payload.userId } } } },})
 
     const truLike = _truLike?.answer[0]
-    const like = truLike?.like
-    const findLike = like?.length && like.find(l => l.userId == req.user.payload.userId)
-    const preLike = findLike ? !findLike.value : 0
 
     if (truLike) {
       await CommenteModel.findOneAndUpdate(
@@ -324,46 +302,22 @@ function ClientController() {
 
   this.disLikeAnswer = async (req, res) => {
     const falseLike = await CommenteModel.findOne({ _id: req.params.id }).select({ answer: { $elemMatch: { _id: req.query.commentId } } })
-    const _truLike = await CommenteModel.findOne({
-      _id: req.params.id,
-      answer: { $elemMatch: { _id: req.query.commentId, disLike: { $elemMatch: { userId: req.user.payload.userId } } } },
-    }
-    )
-      .select({
-        _id: req.params.id,
-        answer: { $elemMatch: { _id: req.query.commentId, disLike: { $elemMatch: { userId: req.user.payload.userId } } } },
-      })
-
+    const _truLike = await CommenteModel.findOne({_id: req.params.id,answer: { $elemMatch: { _id: req.query.commentId, disLike: { $elemMatch: { userId: req.user.payload.userId } } } },})
+    .select({_id: req.params.id, answer: { $elemMatch: { _id: req.query.commentId, disLike: { $elemMatch: { userId: req.user.payload.userId } } } },})
+   
     const truLike = _truLike?.answer[0]
-    const like = truLike?.disLike
-    const findLike = like?.length && like.find(l => l.userId == req.user.payload.userId)
-    const preLike = findLike ? !findLike.value : 0
-
     if (truLike) {
-
       await CommenteModel.findOneAndUpdate(
-        {
-          _id: req.params.id,
-          answer: { $elemMatch: { _id: req.query.commentId } }
-        },
+        {_id: req.params.id, answer: { $elemMatch: { _id: req.query.commentId } }},
         { $pull: { 'answer.$.disLike': { userId: req.user.payload.userId } } },
         { new: true }
       )
-      // await CommenteModel.findOneAndUpdate(
-      //   {
-      //     _id: req.params.id,
-      //     answer: { $elemMatch: { _id: req.query.commentId, disLike: { $elemMatch: { userId: req.user.payload.userId } } } }
-      //   },
-      //   { $set: { "answer.$.disLike": { value: preLike } } },
-      //   { new: true }
-      // )
       const comment = await CommenteModel.findOne({ _id: req.params.id }).select({ answer: { $elemMatch: { _id: req.query.commentId } } })
       const filterValueTrue = comment.answer[0].disLike.filter(l => l.value === 1)
       comment.answer[0].disLikeCount = filterValueTrue.length
       await comment.save()
       res.status(200).json({ value: filterValueTrue.length })
     }
-
     else if (falseLike) {
       falseLike.answer[0].disLike.push({ value: 1, userId: req.user.payload.userId })
       await falseLike.save()

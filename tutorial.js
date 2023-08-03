@@ -410,6 +410,25 @@ setInterval(() => {
 // $in:[6, 7, 2] = اگه مقدار برابر با یکی از مقادیر داخل آرایه بود اونارو برمیگردونه
 // $nin:[1, 7, 9] اگه مقدار برابر یکی از مقادیر داخل آرایه بود اونارو برنمیگردونه
 
+//!aggregate //!aggregate
+const pipeline = [
+  { $match: { 'person.name': 'newPerson' } },
+  { $unwind: '$person' },
+  { $match: { 'person.name': 'newPerson' } },
+]
+let uuser = await userPerson.aggregate(pipeline)
+res.status(200).json({ value: uuser });
+//!aggregate //!aggregate
+
+
+const comment2 = await CommenteModel.aggregate([
+  { $match: { _id: mongoose.Types.ObjectId(req.params.id) } },
+  { $unwind: '$like' },
+  { $match: { 'like.value': 1 } }
+])
+
+
+//!exists
 find({
   title: {
     $elemMatch: {
@@ -417,6 +436,7 @@ find({
     }
   }
 })
+//!exists
 
 //! unset
 const user = await UserModel.updateOne(
