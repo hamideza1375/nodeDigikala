@@ -256,20 +256,14 @@ function ClientController() {
 
 
 
-
   this.likeAnswer = async (req, res) => {
     const falseLike = await CommenteModel.findOne({ _id: req.params.id }).select({ answer: { $elemMatch: { _id: req.query.commentId } } })
     const _truLike = await CommenteModel.findOne({_id: req.params.id, answer: { $elemMatch: { _id: req.query.commentId, like: { $elemMatch: { userId: req.user.payload.userId } } } },})
     .select({_id: req.params.id,answer: { $elemMatch: { _id: req.query.commentId, like: { $elemMatch: { userId: req.user.payload.userId } } } },})
-
     const truLike = _truLike?.answer[0]
-
     if (truLike) {
       await CommenteModel.findOneAndUpdate(
-        {
-          _id: req.params.id,
-          answer: { $elemMatch: { _id: req.query.commentId } }
-        },
+        {_id: req.params.id,answer: { $elemMatch: { _id: req.query.commentId } }},
         { $pull: { 'answer.$.like': { userId: req.user.payload.userId } } },
         { new: true }
       )
@@ -277,26 +271,18 @@ function ClientController() {
       const filterValueTrue = comment.answer[0].like.filter(l => l.value === 1)
       comment.answer[0].likeCount = filterValueTrue.length
       await comment.save()
-
       res.status(200).json({ value: filterValueTrue.length })
     }
-
     else if (falseLike) {
       falseLike.answer[0].like.push({ value: 1, userId: req.user.payload.userId })
       await falseLike.save()
       const comment = await CommenteModel.findOne({ _id: req.params.id }).select({ answer: { $elemMatch: { _id: req.query.commentId } } })
       const filterValueTrue = comment.answer[0].like.filter(l => l.value === 1)
       comment.answer[0].likeCount = filterValueTrue.length
-
       await comment.save()
-
-
       res.status(200).json({ value: filterValueTrue.length })
     }
   }
-
-
-
 
 
 

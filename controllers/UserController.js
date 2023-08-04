@@ -234,6 +234,29 @@ function UserController() {
   }
 
 
+
+
+  // this.sendImageProfile = async (req, res) => {
+  //   if (!req.files) return res.status(400).json('بعدا دوباره امتحان کنید')
+  //   let imageProfile = await ImageProfileModel.findOne({ userId: req.user.payload.userId })
+  //   if (imageProfile) {
+  //     if (fs.existsSync(`${appRootPath}/public/upload/profile/${imageProfile.imageUrl}`))
+  //     fs.unlinkSync(`${appRootPath}/public/upload/profile/${imageProfile.imageUrl}`)
+  //     fs.writeFileSync(`${appRootPath}/public/upload/profile/${req.fileName}`, req.file.data);
+  //     imageProfile.imageUrl = req.fileName
+  //     await imageProfile.save()
+  //     res.status(200).json({ message: 'تصویر با موفقیت بروزرسانی شد', imageUrl: req.fileName })
+  //   }
+  //   else{
+  //     fs.writeFileSync(`${appRootPath}/public/upload/profile/${req.fileName}`, req.file.data);
+  //     await new ImageProfileModel({ imageUrl: req.fileName, userId: req.user.payload.userId }).save()
+  //     res.status(200).json({ message: 'تصویر با موفقیت بروزرسانی شد', imageUrl: req.fileName })
+  //   }
+  // }
+
+
+
+
   this.getImageProfile = async (req, res, next) => {
     const imageProfile = await ImageProfileModel.findOne({ userId: req.user.payload.userId })
     if (imageProfile) res.status(200).json({ imageUrl: imageProfile.imageUrl })
